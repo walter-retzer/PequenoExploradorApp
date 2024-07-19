@@ -23,7 +23,7 @@ fun PequenoExploradorAppTheme(
         }
 
         darkTheme -> darkScheme
-        else -> lightScheme
+        else -> darkScheme
     }
 
     MaterialTheme(
