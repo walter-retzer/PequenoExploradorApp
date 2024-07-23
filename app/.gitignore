@@ -1,1 +1,13 @@
-/build
+*.iml
+.gradle
+**/build/
+xcuserdata
+!src/**/build/
+local.properties
+/secrets.properties
+.idea
+.DS_Store
+captures
+.externalNativeBuild
+.cxx
+google-services.json
