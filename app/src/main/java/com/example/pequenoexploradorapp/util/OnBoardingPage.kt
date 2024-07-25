@@ -11,19 +11,19 @@ sealed class OnBoardingPage(
 ) {
     object First : OnBoardingPage(
         image = R.drawable.splah_screen_image,
-        title = "Meeting",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Pequeno Explorador",
+        description = "Seja um Astronauta Explorador!"
     )
 
     object Second : OnBoardingPage(
         image = R.drawable.splah_screen_image,
-        title = "Coordination",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Pequeno Explorador",
+        description = "Muitas curiosidades e fotos do Universo"
     )
 
     object Third : OnBoardingPage(
         image = R.drawable.splah_screen_image,
-        title = "Dialogue",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod."
+        title = "Pequeno Explorador",
+        description = "Conheça os Planetas do Sistema Solar"
     )
 }
