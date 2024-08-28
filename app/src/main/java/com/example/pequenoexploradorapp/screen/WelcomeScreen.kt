@@ -18,6 +18,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -35,6 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.ui.theme.mainColor
+import com.example.pequenoexploradorapp.ui.theme.primaryDark
 import com.example.pequenoexploradorapp.util.OnBoardingPage
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -62,7 +65,7 @@ fun WelcomeScreen() {
 
     ) {
         HorizontalPager(
-            modifier = Modifier.weight(2f),
+            modifier = Modifier.weight(3.2f),
             state = pagerState,
             verticalAlignment = Alignment.Top
         ) { position ->
@@ -77,7 +80,7 @@ fun WelcomeScreen() {
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
-                    if (pagerState.currentPage == iteration) Color.LightGray else Color.DarkGray
+                    if (pagerState.currentPage == iteration) primaryDark else Color.DarkGray
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
@@ -100,34 +103,36 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 80.dp),
+            .padding(top = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         Image(
             painter = painterResource(id = onBoardingPage.image),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Inside,
             modifier = Modifier
                 .size(250.dp)
-                .clip(CircleShape),
+                .clip(RoundedCornerShape(32.dp)),
             contentDescription = "Pager Image"
         )
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 20.dp),
+                .padding(top = 20.dp),
             text = onBoardingPage.title,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
         Text(
+            text = onBoardingPage.description,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 40.dp)
-                .padding(top = 20.dp),
-            text = onBoardingPage.description,
-            fontSize = 18.sp,
+                .wrapContentHeight()
+                .padding(horizontal = 16.dp)
+                .padding(top = 20.dp, bottom = 20.dp),
+
+            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center
         )
@@ -154,8 +159,10 @@ fun FinishButton(
         ) {
             Button(
                 onClick = onClick,
+                shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White
+                    contentColor = Color.Black,
+                    containerColor = mainColor
                 )
             ) {
                 Text(text = "Continuar")
