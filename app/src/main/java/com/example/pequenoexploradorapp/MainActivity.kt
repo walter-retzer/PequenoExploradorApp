@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,9 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.example.pequenoexploradorapp.screen.SplashScreen
+import com.example.pequenoexploradorapp.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PequenoExploradorAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    SplashScreen()
+                    WelcomeScreen()
                 }
             }
         }
