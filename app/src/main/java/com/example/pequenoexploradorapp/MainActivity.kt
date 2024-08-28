@@ -13,13 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.pequenoexploradorapp.navigation.SplashScreenRoute
+import com.example.pequenoexploradorapp.navigation.WelcomeScreenRoute
 import com.example.pequenoexploradorapp.screen.SplashScreen
 import com.example.pequenoexploradorapp.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
 
+
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalAnimationApi::class)
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,8 +39,23 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PequenoExploradorAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    WelcomeScreen()
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = SplashScreenRoute
+                ) {
+                    composable<SplashScreenRoute> {
+                        SplashScreen(
+                            onNavigateToWelcomeScreen = {
+                                navController.navigate(WelcomeScreenRoute)
+                            }
+                        )
+                    }
+                    composable<WelcomeScreenRoute> {
+                        Scaffold(modifier = Modifier.fillMaxSize()) {
+                            WelcomeScreen()
+                        }
+                    }
                 }
             }
         }
@@ -44,6 +66,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SplashScreenPreview() {
     PequenoExploradorAppTheme {
-        SplashScreen()
+        SplashScreen(
+            onNavigateToWelcomeScreen = {}
+        )
     }
 }
