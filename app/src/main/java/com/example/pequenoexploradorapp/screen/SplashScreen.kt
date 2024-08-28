@@ -26,10 +26,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pequenoexploradorapp.R
+import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    onNavigateToWelcomeScreen: () -> Unit
+) {
     val scale = remember { Animatable(0f) }
     val animationDelay = 900
     val circles = listOf(
@@ -37,6 +40,11 @@ fun SplashScreen() {
         remember { Animatable(initialValue = 0f) },
         remember { Animatable(initialValue = 0f) }
     )
+
+    LaunchedEffect(key1 = true) {
+        delay(3000L)
+        onNavigateToWelcomeScreen()
+    }
 
     circles.forEach { animatable ->
         LaunchedEffect(key1 = true) {
