@@ -7,3 +7,6 @@ object SplashScreenRoute
 
 @Serializable
 object WelcomeScreenRoute
+
+@Serializable
+object LoginScreenRoute
