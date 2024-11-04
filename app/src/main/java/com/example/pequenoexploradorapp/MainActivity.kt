@@ -1,6 +1,5 @@
 package com.example.pequenoexploradorapp
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,7 +24,6 @@ import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +50,8 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<WelcomeScreenRoute> {
-                        Scaffold(modifier = Modifier.fillMaxSize()) {
-                            WelcomeScreen()
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            WelcomeScreen(innerPadding)
                         }
                     }
                 }
