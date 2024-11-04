@@ -2,12 +2,12 @@ package com.example.pequenoexploradorapp.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,10 +40,9 @@ import com.example.pequenoexploradorapp.ui.theme.mainColor
 import com.example.pequenoexploradorapp.ui.theme.primaryDark
 import com.example.pequenoexploradorapp.util.OnBoardingPage
 
-@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalAnimationApi
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(innerPadding: PaddingValues) {
     val pages = listOf(
         OnBoardingPage.First,
         OnBoardingPage.Second,
@@ -58,6 +57,7 @@ fun WelcomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(innerPadding)
             .paint(
                 painterResource(id = R.drawable.simple_background),
                 contentScale = ContentScale.FillBounds
@@ -139,7 +139,7 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @ExperimentalAnimationApi
 @Composable
 fun FinishButton(
