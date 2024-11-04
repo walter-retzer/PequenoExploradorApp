@@ -86,12 +86,12 @@ fun SplashScreen(
         }
 
         Image(
-            painter = painterResource(R.drawable.splah_screen_image),
+            painter = painterResource(R.drawable.splash),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .scale(scale.value)
-                .size(180.dp)
+                .size(220.dp)
                 .clip(CircleShape)
                 .border(1.dp, Color.White, CircleShape)
                 .background(Color.Black, CircleShape)
