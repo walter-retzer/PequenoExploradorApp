@@ -15,8 +15,10 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pequenoexploradorapp.navigation.LoginScreenRoute
 import com.example.pequenoexploradorapp.navigation.SplashScreenRoute
 import com.example.pequenoexploradorapp.navigation.WelcomeScreenRoute
+import com.example.pequenoexploradorapp.screen.LoginScreen
 import com.example.pequenoexploradorapp.screen.SplashScreen
 import com.example.pequenoexploradorapp.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
@@ -31,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val actionBar = actionBar
         actionBar?.hide()
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        window.statusBarColor= Color.BLACK
+        window.statusBarColor = Color.BLACK
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
 
         enableEdgeToEdge()
@@ -51,8 +53,21 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<WelcomeScreenRoute> {
                         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                            WelcomeScreen(innerPadding)
+                            WelcomeScreen(
+                                innerPadding = innerPadding,
+                                onNavigateToLogin = {
+                                    navController.navigate(LoginScreenRoute)
+                                }
+                            )
                         }
+                    }
+
+                    composable<LoginScreenRoute> {
+                        LoginScreen(
+                            modifier = Modifier,
+                            onNavigateToHome = {},
+                            onNavigateToSignIn = {}
+                        )
                     }
                 }
             }
