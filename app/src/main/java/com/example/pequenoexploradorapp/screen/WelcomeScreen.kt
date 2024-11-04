@@ -42,7 +42,10 @@ import com.example.pequenoexploradorapp.util.OnBoardingPage
 
 @ExperimentalAnimationApi
 @Composable
-fun WelcomeScreen(innerPadding: PaddingValues) {
+fun WelcomeScreen(
+    innerPadding: PaddingValues,
+    onNavigateToLogin: () -> Unit,
+) {
     val pages = listOf(
         OnBoardingPage.First,
         OnBoardingPage.Second,
@@ -93,7 +96,7 @@ fun WelcomeScreen(innerPadding: PaddingValues) {
         FinishButton(
             modifier = Modifier.weight(1f),
             pagerState = pagerState,
-            onClick = { }
+            onClick = { onNavigateToLogin() }
         )
     }
 }
