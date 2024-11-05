@@ -24,6 +24,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pequenoexploradorapp.navigation.LoginScreenRoute
+import com.example.pequenoexploradorapp.navigation.NavAnimations.popEnterRightAnimation
+import com.example.pequenoexploradorapp.navigation.NavAnimations.popExitRightAnimation
+import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftEnterAnimation
+import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftExitAnimation
 import com.example.pequenoexploradorapp.navigation.SplashScreenRoute
 import com.example.pequenoexploradorapp.navigation.WelcomeScreenRoute
 import com.example.pequenoexploradorapp.screen.LoginScreen
@@ -63,7 +67,11 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = SplashScreenRoute
+                    startDestination = SplashScreenRoute,
+                    enterTransition = slideLeftEnterAnimation,
+                    exitTransition = slideLeftExitAnimation,
+                    popEnterTransition = popEnterRightAnimation,
+                    popExitTransition = popExitRightAnimation
                 ) {
                     composable<SplashScreenRoute> {
                         SplashScreen(
