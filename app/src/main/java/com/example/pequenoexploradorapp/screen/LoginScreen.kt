@@ -192,7 +192,7 @@ fun LoginScreen(
                         viewModel.validateEmail(userLogin.email)
                         viewModel.validatePassword(userLogin.password)
                         if (!emailError && !passwordError && userLogin.password.length == ConstantsApp.PASSWORD_MAX_NUMBER) {
-                            viewModel.onSignIn(userLogin.email, userLogin.password)
+                            viewModel.onFirebaseAuthSignIn(userLogin.email, userLogin.password)
                         }
                     }
                 )
@@ -326,7 +326,7 @@ fun BottomSheet(viewModel: LoginUserViewModel, onDismiss: () -> Unit) {
                 text = "Enviar",
                 isLoading = false,
                 onClick = {
-                    viewModel.onResetPassword(userLogin.emailForResetPassword)
+                    viewModel.onFirebaseAuthResetPassword(userLogin.emailForResetPassword)
                     onDismiss()
                 }
             )

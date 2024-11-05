@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.data.SignInResult
-import com.example.pequenoexploradorapp.data.UserData
+import com.example.pequenoexploradorapp.data.GoogleSignInResult
+import com.example.pequenoexploradorapp.data.GoogleUserData
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.GoogleAuthProvider
@@ -33,15 +33,15 @@ class GoogleAuthUiClient(
         return result?.pendingIntent?.intentSender
     }
 
-    suspend fun signInWithIntent(intent: Intent): SignInResult {
+    suspend fun signInWithIntent(intent: Intent): GoogleSignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try {
             val user = auth.signInWithCredential(googleCredentials).await().user
-            SignInResult(
+            GoogleSignInResult(
                 data = user?.run {
-                    UserData(
+                    GoogleUserData(
                         userId = uid,
                         username = displayName,
                         profilePictureUrl = photoUrl?.toString()
@@ -52,7 +52,7 @@ class GoogleAuthUiClient(
         } catch(e: Exception) {
             e.printStackTrace()
             if(e is CancellationException) throw e
-            SignInResult(
+            GoogleSignInResult(
                 data = null,
                 errorMessage = e.message
             )
@@ -69,8 +69,8 @@ class GoogleAuthUiClient(
         }
     }
 
-    fun getSignedInUser(): UserData? = auth.currentUser?.run {
-        UserData(
+    fun getSignedInUser(): GoogleUserData? = auth.currentUser?.run {
+        GoogleUserData(
             userId = uid,
             username = displayName,
             profilePictureUrl = photoUrl?.toString()
