@@ -63,7 +63,7 @@ import org.koin.compose.koinInject
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSignIn: () -> Unit,
+    onSignInClick: () -> Unit,
     onNavigateToHome: () -> Unit,
     viewModel: LoginUserViewModel = koinInject()
 ) {
@@ -209,7 +209,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    modifier = Modifier.clickable { onNavigateToSignIn() },
+                    modifier = Modifier.clickable { onSignInClick() },
                     text = "Cadastre-se",
                     style = MaterialTheme.typography.bodyLarge,
                     color = mainColor,
