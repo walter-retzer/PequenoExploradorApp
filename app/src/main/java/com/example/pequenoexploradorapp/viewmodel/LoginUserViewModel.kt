@@ -2,22 +2,27 @@ package com.example.pequenoexploradorapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pequenoexploradorapp.data.SignInResult
+import com.example.pequenoexploradorapp.data.SignInState
 import com.example.pequenoexploradorapp.util.ConstantsApp
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.delay
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class LoginUserViewModel : ViewModel() {
 
     //private val settingsPref = Settings()
     private val authService = Firebase.auth
     private var firebaseUser: FirebaseUser? = null
+
+    private val _state = MutableStateFlow(SignInState())
+    val state = _state.asStateFlow()
 
     private val _emailError = MutableStateFlow(false)
     val emailError = _emailError.asStateFlow()
@@ -31,30 +36,38 @@ class LoginUserViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Dashboard)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
 
+    fun onSignInResult(result: SignInResult) {
+        _state.update { it.copy(
+            isSignInSuccessful = result.data != null,
+            signInError = result.errorMessage
+        ) }
+    }
+
+    fun resetState() {
+        _state.update { SignInState() }
+    }
+
     fun onSignIn(email: String, password: String) {
-        _uiState.value = LoginUserViewState.Loading
         viewModelScope.launch {
-            try {
-                authService.signInWithEmailAndPassword(
-                     email,
-                     password
-                )
-                delay(3000L)
+            _uiState.value = LoginUserViewState.Loading
 
-                firebaseUser = authService.currentUser
-//                settingsPref.putString(UserPreferences.UID, firebaseUser?.uid.toString())
-//                settingsPref.putString(UserPreferences.NAME, firebaseUser?.displayName.toString())
-//                settingsPref.putString(UserPreferences.EMAIL, firebaseUser?.email.toString())
+           val result =  authService.signInWithEmailAndPassword(email, password).await()
+            LoginUserViewState.Success(result?.user?.email.toString())
 
-                if (firebaseUser != null) _uiState.value =
-                    LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
-                else _uiState.value = LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
-
-            } catch (e: Exception) {
-                println(e)
-                _uiState.value = LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
-            }
+//            if (result == AuthResult) {
+//                LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
+//            } else {
+//                LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
+//            }
         }
+
+//        auth.signInWithEmailAndPassword( email, password).addOnCompleteListener(this) { task ->
+//            if (task.isSuccessful) {
+//                LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
+//            } else {
+//                LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
+//            }
+//        }
     }
 
     fun onResetPassword(email: String) {
