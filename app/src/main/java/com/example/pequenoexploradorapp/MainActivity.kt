@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
 
                         LoginScreen(
                             onNavigateToHome = {},
-                            onSignInClick = {
+                            onGoogleSignInClick = {
                                 lifecycleScope.launch {
                                     val signInIntentSender = googleAuthUiClient.signInGoogle()
                                     launcher.launch(
