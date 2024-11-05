@@ -13,16 +13,22 @@ serialization = "1.6.3"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
 koin = "3.6.0-alpha3"
+playServiceAuth = "20.4.1"
 
 [libraries]
 
 #Firebase Auth
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServiceAuth" }
 
 #Koin
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+
+#Navigation Lib
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -38,12 +44,6 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-
-
-
-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -72,8 +72,10 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
     implementation(libs.koin)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
 
+    implementation(libs.play.service.auth)
 }
