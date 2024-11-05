@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         window.statusBarColor = Color.BLACK
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+
         enableEdgeToEdge()
 
         setContent {
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
 
                     composable<LoginScreenRoute> {
                         val viewModel: LoginUserViewModel = koinInject()
-                        val state by viewModel.state.collectAsStateWithLifecycle()
+                        val stateSignInGoogle by viewModel.stateSignInGoogle.collectAsStateWithLifecycle()
 
                         LaunchedEffect(key1 = Unit) {
                             if (googleAuthUiClient.getSignedInUser() != null) {
@@ -111,8 +112,8 @@ class MainActivity : ComponentActivity() {
                             }
                         )
 
-                        LaunchedEffect(key1 = state.isSignInSuccessful) {
-                            if (state.isSignInSuccessful) {
+                        LaunchedEffect(key1 = stateSignInGoogle.isSignInSuccessful) {
+                            if (stateSignInGoogle.isSignInSuccessful) {
                                 Toast.makeText(
                                     applicationContext,
                                     "Sign in successful",
@@ -123,7 +124,6 @@ class MainActivity : ComponentActivity() {
                         }
 
                         LoginScreen(
-                            modifier = Modifier,
                             onNavigateToHome = {},
                             onSignInClick = {
                                 lifecycleScope.launch {
