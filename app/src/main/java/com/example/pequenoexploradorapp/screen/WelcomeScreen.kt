@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -30,12 +31,16 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.ui.theme.backgroundDark
+import com.example.pequenoexploradorapp.ui.theme.darkScheme
 import com.example.pequenoexploradorapp.ui.theme.mainColor
 import com.example.pequenoexploradorapp.ui.theme.primaryDark
 import com.example.pequenoexploradorapp.util.OnBoardingPage
@@ -152,12 +157,15 @@ fun FinishButton(
 ) {
     Row(
         modifier = modifier
-            .padding(start = 40.dp, end = 40.dp, top = 16.dp, bottom = 16.dp),
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
     ) {
         AnimatedVisibility(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(54.dp),
             visible = pagerState.currentPage == 2
         ) {
             Button(
@@ -168,7 +176,17 @@ fun FinishButton(
                     containerColor = mainColor
                 )
             ) {
-                Text(text = "Continuar")
+                Text(
+                    text = "Continuar",
+                    color = backgroundDark,
+                    style = TextStyle(
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.5.sp
+                    )
+                )
             }
         }
     }
