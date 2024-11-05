@@ -1,28 +1,22 @@
 package com.example.pequenoexploradorapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.pequenoexploradorapp.data.SignInResult
-import com.example.pequenoexploradorapp.data.SignInState
+import com.example.pequenoexploradorapp.data.FirebaseUserData
+import com.example.pequenoexploradorapp.data.GoogleSignInResult
+import com.example.pequenoexploradorapp.data.GoogleSignInState
 import com.example.pequenoexploradorapp.util.ConstantsApp
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class LoginUserViewModel : ViewModel() {
 
-    //private val settingsPref = Settings()
-    private val authService = Firebase.auth
-    private var firebaseUser: FirebaseUser? = null
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _state = MutableStateFlow(SignInState())
-    val state = _state.asStateFlow()
+    private val _state = MutableStateFlow(GoogleSignInState())
+    val stateSignInGoogle = _state.asStateFlow()
 
     private val _emailError = MutableStateFlow(false)
     val emailError = _emailError.asStateFlow()
@@ -30,53 +24,42 @@ class LoginUserViewModel : ViewModel() {
     private val _passwordError = MutableStateFlow(false)
     val passwordError = _passwordError.asStateFlow()
 
-    private val _userLoginState = MutableStateFlow(LoginUserData())
+    private val _userLoginState = MutableStateFlow(FirebaseUserData())
     val userLoginState = _userLoginState.asStateFlow()
 
     private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Dashboard)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
 
-    fun onSignInResult(result: SignInResult) {
-        _state.update { it.copy(
-            isSignInSuccessful = result.data != null,
-            signInError = result.errorMessage
-        ) }
+    fun onGoogleSignInResult(result: GoogleSignInResult) {
+        _state.update {
+            it.copy(
+                isSignInSuccessful = result.data != null,
+                signInError = result.errorMessage
+            )
+        }
     }
 
     fun resetState() {
-        _state.update { SignInState() }
+        _state.update { GoogleSignInState() }
     }
 
-    fun onSignIn(email: String, password: String) {
-        viewModelScope.launch {
-            _uiState.value = LoginUserViewState.Loading
-
-           val result =  authService.signInWithEmailAndPassword(email, password).await()
-            LoginUserViewState.Success(result?.user?.email.toString())
-
-//            if (result == AuthResult) {
-//                LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
-//            } else {
-//                LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
-//            }
-        }
-
-//        auth.signInWithEmailAndPassword( email, password).addOnCompleteListener(this) { task ->
-//            if (task.isSuccessful) {
-//                LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
-//            } else {
-//                LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
-//            }
-//        }
+    fun onFirebaseAuthSignIn(email: String, password: String) {
+        _uiState.value = LoginUserViewState.Loading
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _uiState.value = LoginUserViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
+                } else {
+                    _uiState.value = LoginUserViewState.Error(ConstantsApp.ERROR_SIGN_IN)
+                }
+            }
     }
 
-    fun onResetPassword(email: String) {
-        viewModelScope.launch {
-            try {
-                authService.sendPasswordResetEmail(email)
-               _uiState.value = LoginUserViewState.SuccessResetPassword(ConstantsApp.SUCCESS_RESET_PASSWORD)
-            } catch (e: Exception) {
-                println(" Error Exception $e")
+    fun onFirebaseAuthResetPassword(email: String) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _uiState.value = LoginUserViewState.Success(ConstantsApp.SUCCESS_RESET_PASSWORD)
+            } else {
                 _uiState.value = LoginUserViewState.Error(ConstantsApp.ERROR_RESET_PASSWORD)
             }
         }
@@ -100,7 +83,7 @@ class LoginUserViewModel : ViewModel() {
 
     fun validateEmail(email: String): String {
         val emailRegex = Regex("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$")
-        if(!emailRegex.matches(email)) {
+        if (!emailRegex.matches(email)) {
             _emailError.value = true
         }
         return "Verifique o email digitado"
@@ -108,18 +91,13 @@ class LoginUserViewModel : ViewModel() {
 
 
     fun validatePassword(password: String): String {
-        if(password.length != ConstantsApp.PASSWORD_MAX_NUMBER) {
+        if (password.length != ConstantsApp.PASSWORD_MAX_NUMBER) {
             _passwordError.value = true
         }
         return "A senha deve conter 6 dígitos"
     }
 }
 
-data class LoginUserData(
-    val email: String = "",
-    val password: String = "",
-    val emailForResetPassword: String = ""
-)
 
 sealed interface LoginUserViewState {
     data object Loading : LoginUserViewState
