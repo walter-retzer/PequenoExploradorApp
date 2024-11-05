@@ -121,7 +121,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Image(
-                    painter = painterResource(R.drawable.splash),
+                    painter = painterResource(R.drawable.image_splash_screen),
                     contentDescription = null,
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
