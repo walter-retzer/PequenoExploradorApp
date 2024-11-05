@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -41,14 +43,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.components.ProgressButton
 import com.example.pequenoexploradorapp.ui.theme.mainColor
@@ -84,20 +91,26 @@ fun LoginScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(it),
+                .padding(it)
+                .paint(
+                    painterResource(id = R.drawable.simple_background),
+                    contentScale = ContentScale.FillBounds
+                ),
             contentAlignment = Alignment.Center
         ) {
             val width = this.maxWidth
             val finalModifier =
                 if (width >= 780.dp) modifier.width(400.dp) else modifier.fillMaxWidth()
             Column(
-                modifier = finalModifier.padding(start = 16.dp, end = 16.dp).fillMaxHeight()
+                modifier = finalModifier
+                    .padding(start = 16.dp, end = 16.dp)
+                    .fillMaxHeight()
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(65.dp))
+                Spacer(modifier = Modifier.height(35.dp))
 
                 Text(
                     text = "Seja Bem Vindo!",
@@ -123,14 +136,16 @@ fun LoginScreen(
                 Text(
                     modifier = Modifier.align(alignment = Alignment.Start),
                     text = "Informe seus dados:",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrect = true,
@@ -150,7 +165,9 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrect = true,
@@ -196,6 +213,33 @@ fun LoginScreen(
                         }
                     }
                 )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                val shape = RoundedCornerShape(20.dp)
+
+                Button(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(54.dp)
+                        .clip(shape)
+                        .background(Color.DarkGray),
+                    shape = shape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    onClick = {  },
+                ) {
+                    Text(
+                        text = "Google",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 17.sp,
+                            lineHeight = 16.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

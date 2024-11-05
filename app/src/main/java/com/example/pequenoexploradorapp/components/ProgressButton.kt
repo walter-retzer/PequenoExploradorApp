@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.ui.theme.backgroundDark
-import com.example.pequenoexploradorapp.ui.theme.darkScheme
 import com.example.pequenoexploradorapp.ui.theme.mainColor
 
 
