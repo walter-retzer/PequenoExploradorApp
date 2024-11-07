@@ -10,12 +10,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,9 +25,11 @@ import com.example.pequenoexploradorapp.navigation.NavAnimations.popEnterRightAn
 import com.example.pequenoexploradorapp.navigation.NavAnimations.popExitRightAnimation
 import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftEnterAnimation
 import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftExitAnimation
+import com.example.pequenoexploradorapp.navigation.SignInScreenRoute
 import com.example.pequenoexploradorapp.navigation.SplashScreenRoute
 import com.example.pequenoexploradorapp.navigation.WelcomeScreenRoute
 import com.example.pequenoexploradorapp.screen.LoginScreen
+import com.example.pequenoexploradorapp.screen.SignInScreen
 import com.example.pequenoexploradorapp.screen.SplashScreen
 import com.example.pequenoexploradorapp.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
@@ -82,14 +81,11 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<WelcomeScreenRoute> {
-                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                            WelcomeScreen(
-                                innerPadding = innerPadding,
-                                onNavigateToLogin = {
-                                    navController.navigate(LoginScreenRoute)
-                                }
-                            )
-                        }
+                        WelcomeScreen(
+                            onNavigateToLogin = {
+                                navController.navigate(LoginScreenRoute)
+                            }
+                        )
                     }
 
                     composable<LoginScreenRoute> {
@@ -132,7 +128,6 @@ class MainActivity : ComponentActivity() {
                         }
 
                         LoginScreen(
-                            onNavigateToHome = {},
                             onGoogleSignInClick = {
                                 lifecycleScope.launch {
                                     val signInIntentSender = googleAuthUiClient.signInGoogle()
@@ -142,7 +137,17 @@ class MainActivity : ComponentActivity() {
                                         ).build()
                                     )
                                 }
-                            }
+                            },
+                            onNavigateToSignIn = {
+                                navController.navigate(SignInScreenRoute)
+                            },
+                            onNavigateToHome = {},
+                        )
+                    }
+
+                    composable<SignInScreenRoute> {
+                        SignInScreen(
+                            onNavigateToHome = {}
                         )
                     }
                 }
