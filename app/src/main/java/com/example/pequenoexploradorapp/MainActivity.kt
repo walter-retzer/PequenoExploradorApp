@@ -59,8 +59,6 @@ class MainActivity : ComponentActivity() {
         window.statusBarColor = Color.BLACK
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
 
-        enableEdgeToEdge()
-
         setContent {
             PequenoExploradorAppTheme {
                 val navController = rememberNavController()
@@ -118,12 +116,18 @@ class MainActivity : ComponentActivity() {
 
                         LaunchedEffect(key1 = stateSignInGoogle.isSignInSuccessful) {
                             if (stateSignInGoogle.isSignInSuccessful) {
+
+                                val userGoogleData = googleAuthUiClient.getSignedInUser()
+                                viewModel.saveUserGoogleData(userGoogleData)
+
                                 Toast.makeText(
                                     applicationContext,
                                     "Sign in successful",
                                     Toast.LENGTH_LONG
                                 ).show()
                                 viewModel.resetState()
+
+                                navController.navigate(SignInScreenRoute)
                             }
                         }
 
