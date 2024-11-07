@@ -13,6 +13,7 @@ data class GoogleSignInState(
 data class GoogleUserData(
     val userId: String,
     val username: String?,
+    val email: String?,
     val profilePictureUrl: String?
 )
 
@@ -20,4 +21,11 @@ data class FirebaseUserData(
     val email: String = "",
     val password: String = "",
     val emailForResetPassword: String = ""
+)
+
+data class NewUserSignInContact(
+    val name: String = "",
+    val phoneNumber: String = "",
+    val email: String = "",
+    val password: String = "",
 )
