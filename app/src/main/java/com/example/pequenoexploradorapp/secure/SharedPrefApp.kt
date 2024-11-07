@@ -25,6 +25,14 @@ class SharedPrefApp {
         return sharedPref.getString(id, "") ?: ""
     }
 
+    fun deleteId(id: String) {
+        sharedPref.edit()?.remove(id)?.apply()
+    }
+
+    fun deleteAll(id: String) {
+        sharedPref.edit()?.clear()?.apply()
+    }
+
     companion object {
         val instance: SharedPrefApp by lazy { SharedPrefApp() }
     }
