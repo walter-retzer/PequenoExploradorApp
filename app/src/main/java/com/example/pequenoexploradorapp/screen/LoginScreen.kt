@@ -5,15 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -88,194 +86,9 @@ fun LoginScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-    ) {
+    ) { paddingValues ->
         when (val state = uiState) {
-            is LoginUserViewState.DrawScreen -> {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(it)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val width = this.maxWidth
-                    val finalModifier =
-                        if (width >= 780.dp) modifier.width(400.dp) else modifier.fillMaxWidth()
-                    Column(
-                        modifier = finalModifier
-                            .padding(start = 16.dp, end = 16.dp)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        Spacer(modifier = Modifier.height(35.dp))
-
-                        Text(
-                            text = "Seja Bem Vindo!",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Image(
-                            painter = painterResource(R.drawable.image_splash_screen),
-                            contentDescription = null,
-                            contentScale = ContentScale.Inside,
-                            modifier = Modifier
-                                .size(180.dp)
-                                .clip(CircleShape)
-                                .border(2.dp, Color.White, CircleShape)
-                                .background(Color.White)
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            modifier = Modifier.align(alignment = Alignment.Start),
-                            text = "Informe seus dados:",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Black),
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.None,
-                                autoCorrect = true,
-                                keyboardType = KeyboardType.Email,
-                                imeAction = ImeAction.Next
-                            ),
-                            shape = RoundedCornerShape(20.dp),
-                            value = userLogin.email,
-                            isError = emailError,
-                            supportingText = {
-                                if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
-                            },
-                            placeholder = { Text(text = "Email") },
-                            onValueChange = { viewModel.onEmailChange(it) },
-                        )
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Black),
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.None,
-                                autoCorrect = true,
-                                keyboardType = KeyboardType.NumberPassword,
-                                imeAction = ImeAction.Next
-                            ),
-                            shape = RoundedCornerShape(20.dp),
-                            value = userLogin.password,
-                            isError = passwordError,
-                            supportingText = {
-                                if (passwordError)
-                                    Text(text = viewModel.validatePassword(userLogin.password))
-                            },
-                            visualTransformation = PasswordVisualTransformation(),
-                            placeholder = { Text("Senha") },
-                            onValueChange = {
-                                if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
-                                    it
-                                )
-                            }
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .align(alignment = Alignment.End)
-                                .clickable { showBottomSheet = true },
-                            text = "Esqueceu a senha?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        ProgressButton(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .fillMaxWidth(),
-                            text = "Entrar",
-                            isLoading = progressButtonIsActivated,
-                            onClick = {
-                                viewModel.validateEmail(userLogin.email)
-                                viewModel.validatePassword(userLogin.password)
-                                if (!emailError && !passwordError && userLogin.password.length == ConstantsApp.PASSWORD_MAX_NUMBER) {
-                                    viewModel.onFirebaseAuthSignIn(
-                                        userLogin.email,
-                                        userLogin.password
-                                    )
-                                }
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        val shape = RoundedCornerShape(20.dp)
-
-                        Button(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .height(54.dp)
-                                .clip(shape)
-                                .background(Color.DarkGray),
-                            shape = shape,
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                            onClick = { onGoogleSignInClick() },
-                        ) {
-                            Text(
-                                text = "Google",
-                                color = Color.White,
-                                style = TextStyle(
-                                    fontFamily = FontFamily.SansSerif,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 17.sp,
-                                    lineHeight = 16.sp,
-                                    letterSpacing = 0.5.sp
-                                )
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            modifier = Modifier.clickable { },
-                            text = "Ainda não tem uma conta?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
-                        Text(
-                            modifier = Modifier.clickable { onNavigateToSignIn() },
-                            text = "Cadastre-se",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = mainColor,
-                        )
-
-                        if (showBottomSheet) {
-                            BottomSheet(viewModel) {
-                                showBottomSheet = false
-                            }
-                        }
-
-                    }
-                }
-            }
+            is LoginUserViewState.DrawScreen -> {}
 
             is LoginUserViewState.Loading -> {
                 progressButtonIsActivated = true
@@ -298,6 +111,7 @@ fun LoginScreen(
 
             is LoginUserViewState.Success -> {
                 progressButtonIsActivated = false
+
                 LaunchedEffect(key1 = true) {
                     snackBarOnlyMessage(
                         snackBarHostState = snackBarHostState,
@@ -310,7 +124,6 @@ fun LoginScreen(
             }
 
             is LoginUserViewState.SuccessResetPassword -> {
-                println("Success RESET")
                 snackBarIsActivated = true
 
                 LaunchedEffect(snackBarIsActivated) {
@@ -321,6 +134,190 @@ fun LoginScreen(
                         duration = SnackbarDuration.Long
                     )
                     snackBarIsActivated = false
+                }
+            }
+        }
+
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .paint(
+                    painterResource(id = R.drawable.simple_background),
+                    contentScale = ContentScale.FillBounds
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = modifier
+                    .padding(start = 16.dp, end = 16.dp)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.height(35.dp))
+
+                Text(
+                    text = "Seja Bem Vindo!",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Image(
+                    painter = painterResource(R.drawable.image_splash_screen),
+                    contentDescription = null,
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .size(180.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.White, CircleShape)
+                        .background(Color.White)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    modifier = Modifier.align(alignment = Alignment.Start),
+                    text = "Informe seus dados:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = true,
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    value = userLogin.email,
+                    isError = emailError,
+                    supportingText = {
+                        if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
+                    },
+                    placeholder = { Text(text = "Email") },
+                    onValueChange = { viewModel.onEmailChange(it) },
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = true,
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Next
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    value = userLogin.password,
+                    isError = passwordError,
+                    supportingText = {
+                        if (passwordError)
+                            Text(text = viewModel.validatePassword(userLogin.password))
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    placeholder = { Text("Senha") },
+                    onValueChange = {
+                        if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
+                            it
+                        )
+                    }
+                )
+
+                Text(
+                    modifier = Modifier
+                        .align(alignment = Alignment.End)
+                        .clickable { showBottomSheet = true },
+                    text = "Esqueceu a senha?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ProgressButton(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
+                    text = "Entrar",
+                    isLoading = progressButtonIsActivated,
+                    onClick = {
+                        viewModel.validateEmail(userLogin.email)
+                        viewModel.validatePassword(userLogin.password)
+                        if (!emailError && !passwordError && userLogin.password.length == ConstantsApp.PASSWORD_MAX_NUMBER) {
+                            viewModel.onFirebaseAuthSignIn(
+                                userLogin.email,
+                                userLogin.password
+                            )
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                val shape = RoundedCornerShape(20.dp)
+
+                Button(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(54.dp)
+                        .clip(shape)
+                        .background(Color.DarkGray),
+                    shape = shape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    onClick = { onGoogleSignInClick() },
+                ) {
+                    Text(
+                        text = "Google",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 17.sp,
+                            lineHeight = 16.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    modifier = Modifier.clickable { },
+                    text = "Ainda não tem uma conta?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    modifier = Modifier
+                        .clickable { onNavigateToSignIn() },
+                    text = "Cadastre-se",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = mainColor,
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                if (showBottomSheet) {
+                    BottomSheet(viewModel) {
+                        showBottomSheet = false
+                    }
                 }
             }
         }
