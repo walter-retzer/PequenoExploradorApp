@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.example.pequenoexploradorapp.data.FirebaseUserData
 import com.example.pequenoexploradorapp.data.GoogleSignInResult
 import com.example.pequenoexploradorapp.data.GoogleSignInState
+import com.example.pequenoexploradorapp.data.GoogleUserData
+import com.example.pequenoexploradorapp.secure.SharedPrefApp
+import com.example.pequenoexploradorapp.secure.UserPreferences
 import com.example.pequenoexploradorapp.util.ConstantsApp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +17,7 @@ import kotlinx.coroutines.flow.update
 class LoginUserViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val sharedPref: SharedPrefApp = SharedPrefApp.instance
 
     private val _state = MutableStateFlow(GoogleSignInState())
     val stateSignInGoogle = _state.asStateFlow()
@@ -29,6 +33,12 @@ class LoginUserViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.DrawScreen)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
+
+    fun saveUserGoogleData( userGoogleData: GoogleUserData?){
+        userGoogleData?.username?.let { sharedPref.saveString(UserPreferences.NAME, it) }
+        userGoogleData?.email?.let { sharedPref.saveString(UserPreferences.EMAIL, it) }
+        userGoogleData?.userId?.let { sharedPref.saveString(UserPreferences.UID, it) }
+    }
 
     fun onGoogleSignInResult(result: GoogleSignInResult) {
         _state.update {
