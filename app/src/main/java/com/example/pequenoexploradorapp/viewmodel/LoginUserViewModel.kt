@@ -27,7 +27,7 @@ class LoginUserViewModel : ViewModel() {
     private val _userLoginState = MutableStateFlow(FirebaseUserData())
     val userLoginState = _userLoginState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Dashboard)
+    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.DrawScreen)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
 
     fun onGoogleSignInResult(result: GoogleSignInResult) {
@@ -101,7 +101,7 @@ class LoginUserViewModel : ViewModel() {
 
 sealed interface LoginUserViewState {
     data object Loading : LoginUserViewState
-    data object Dashboard : LoginUserViewState
+    data object DrawScreen : LoginUserViewState
     data class Success(val message: String) : LoginUserViewState
     data class SuccessResetPassword(val message: String) : LoginUserViewState
     data class Error(val message: String) : LoginUserViewState

@@ -60,7 +60,6 @@ fun WelcomeScreen(
         pageCount = { 3 }
     )
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()

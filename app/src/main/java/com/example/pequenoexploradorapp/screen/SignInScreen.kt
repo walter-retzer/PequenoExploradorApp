@@ -78,209 +78,236 @@ fun SignInScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .paint(
-                    painterResource(id = R.drawable.simple_background),
-                    contentScale = ContentScale.FillBounds
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            val width = this.maxWidth
-            val finalModifier =
-                if (width >= 780.dp) modifier.width(400.dp) else modifier.fillMaxWidth()
-            Column(
-                modifier = finalModifier.padding(start = 16.dp, end = 16.dp).fillMaxHeight()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Spacer(modifier = Modifier.height(35.dp))
-
-                Text(
-                    text = "Criar uma conta",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Image(
-                    painter = painterResource(R.drawable.splash),
-                    contentDescription = null,
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
-                        .background(Color.White)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    modifier = Modifier.align(alignment = Alignment.Start),
-                    text = "Inscreva-se para começar:",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                OutlinedTextField(
+        when (val state = uiState) {
+            is SignInViewState.DrawScreen -> {
+                BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        autoCorrect = true,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = newUserSignInState.name,
-                    isError = nameError,
-                    supportingText = {
-                        if (nameError) Text(text = viewModel.validateName(newUserSignInState.name))
-                    },
-                    placeholder = { Text("Nome") },
-                    onValueChange = {
-                        if (it.length <= ConstantsApp.NAME_MAX_NUMBER) viewModel.onNameChange(it)
-                    }
-                )
+                        .paint(
+                            painterResource(id = R.drawable.simple_background),
+                            contentScale = ContentScale.FillBounds
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val width = this.maxWidth
+                    val finalModifier =
+                        if (width >= 780.dp) modifier.width(400.dp) else modifier.fillMaxWidth()
+                    Column(
+                        modifier = finalModifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(35.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
-                        keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Next
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = newUserSignInState.phoneNumber,
-                    isError = phoneError,
-                    supportingText = {
-                        if (phoneError) Text(text = viewModel.validatePhoneNumber(newUserSignInState.phoneNumber))
-                    },
-                    placeholder = { Text("Celular") },
-                    onValueChange = {
-                        if (it.length <= ConstantsApp.PHONE_MAX_NUMBER) viewModel.onPhoneNumberChange(
-                            it
+                        Text(
+                            text = "Criar uma conta",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.secondary
                         )
-                    },
-                    visualTransformation = MaskVisualTransformation(MaskVisualTransformation.PHONE)
-                )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = newUserSignInState.email,
-                    isError = emailError,
-                    supportingText = {
-                        if (emailError) Text(text = viewModel.validateEmail(newUserSignInState.email))
-                    },
-                    placeholder = { Text(text = "Email") },
-                    onValueChange = { viewModel.onEmailChange(it) },
-                )
+                        Image(
+                            painter = painterResource(R.drawable.splash),
+                            contentDescription = null,
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .size(180.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color.White, CircleShape)
+                                .background(Color.White)
+                        )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
-                        keyboardType = KeyboardType.NumberPassword,
-                        imeAction = ImeAction.Done
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = newUserSignInState.password,
-                    isError = passwordError,
-                    supportingText = {
-                        if (passwordError)
-                            Text(text = viewModel.validatePassword(newUserSignInState.password))
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    placeholder = { Text("Senha") },
-                    onValueChange = {
-                        if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
-                            it
+                        Text(
+                            modifier = Modifier.align(alignment = Alignment.Start),
+                            text = "Inscreva-se para começar:",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Black),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                autoCorrect = true,
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            value = newUserSignInState.name,
+                            isError = nameError,
+                            supportingText = {
+                                if (nameError) Text(
+                                    text = viewModel.validateName(
+                                        newUserSignInState.name
+                                    )
+                                )
+                            },
+                            placeholder = { Text("Nome") },
+                            onValueChange = {
+                                if (it.length <= ConstantsApp.NAME_MAX_NUMBER) viewModel.onNameChange(
+                                    it
+                                )
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Black),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.None,
+                                autoCorrect = true,
+                                keyboardType = KeyboardType.Phone,
+                                imeAction = ImeAction.Next
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            value = newUserSignInState.phoneNumber,
+                            isError = phoneError,
+                            supportingText = {
+                                if (phoneError) Text(
+                                    text = viewModel.validatePhoneNumber(
+                                        newUserSignInState.phoneNumber
+                                    )
+                                )
+                            },
+                            placeholder = { Text("Celular") },
+                            onValueChange = {
+                                if (it.length <= ConstantsApp.PHONE_MAX_NUMBER) viewModel.onPhoneNumberChange(
+                                    it
+                                )
+                            },
+                            visualTransformation = MaskVisualTransformation(
+                                MaskVisualTransformation.PHONE
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Black),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.None,
+                                autoCorrect = true,
+                                keyboardType = KeyboardType.Email,
+                                imeAction = ImeAction.Next
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            value = newUserSignInState.email,
+                            isError = emailError,
+                            supportingText = {
+                                if (emailError) Text(
+                                    text = viewModel.validateEmail(
+                                        newUserSignInState.email
+                                    )
+                                )
+                            },
+                            placeholder = { Text(text = "Email") },
+                            onValueChange = { viewModel.onEmailChange(it) },
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Black),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.None,
+                                autoCorrect = true,
+                                keyboardType = KeyboardType.NumberPassword,
+                                imeAction = ImeAction.Done
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            value = newUserSignInState.password,
+                            isError = passwordError,
+                            supportingText = {
+                                if (passwordError)
+                                    Text(
+                                        text = viewModel.validatePassword(
+                                            newUserSignInState.password
+                                        )
+                                    )
+                            },
+                            visualTransformation = PasswordVisualTransformation(),
+                            placeholder = { Text("Senha") },
+                            onValueChange = {
+                                if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
+                                    it
+                                )
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        ProgressButton(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .fillMaxWidth(),
+                            text = "Cadastrar",
+                            isLoading = progressButtonIsActivated,
+                            onClick = {
+                                viewModel.validateName(newUserSignInState.name)
+                                viewModel.validatePhoneNumber(newUserSignInState.phoneNumber)
+                                viewModel.validateEmail(newUserSignInState.email)
+                                viewModel.validatePassword(newUserSignInState.password)
+
+                                if (!nameError && !phoneError && !emailError && !passwordError &&
+                                    newUserSignInState.password.length == ConstantsApp.PASSWORD_MAX_NUMBER
+                                )
+                                    viewModel.onSignInUser(
+                                        newUserSignInState.email,
+                                        newUserSignInState.password
+                                    )
+                            }
                         )
                     }
-                )
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+            }
 
-                ProgressButton(
-                    modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
-                    text = "Cadastrar",
-                    isLoading = progressButtonIsActivated,
-                    onClick = {
-                        viewModel.validateName(newUserSignInState.name)
-                        viewModel.validatePhoneNumber(newUserSignInState.phoneNumber)
-                        viewModel.validateEmail(newUserSignInState.email)
-                        viewModel.validatePassword(newUserSignInState.password)
+            is SignInViewState.Error -> {
+                progressButtonIsActivated = false
+                snackBarIsActivated = true
 
-                        if (!nameError && !phoneError && !emailError && !passwordError &&
-                            newUserSignInState.password.length == ConstantsApp.PASSWORD_MAX_NUMBER
-                        )
-                            viewModel.onSignInUser(
-                                newUserSignInState.email,
-                                newUserSignInState.password
-                            )
-                    }
-                )
+                LaunchedEffect(key1 = snackBarIsActivated) {
+                    snackBarOnlyMessage(
+                        snackBarHostState = snackBarHostState,
+                        coroutineScope = scope,
+                        message = state.message,
+                        duration = SnackbarDuration.Long
+                    )
+                    snackBarIsActivated = false
+                }
+            }
 
-                when (val state = uiState) {
-                    is SignInViewState.Dashboard -> { }
+            is SignInViewState.Loading -> {
+                progressButtonIsActivated = true
+            }
 
-                    is SignInViewState.Error -> {
-                        progressButtonIsActivated = false
-                        snackBarIsActivated = true
-
-                        LaunchedEffect(snackBarIsActivated) {
-                            snackBarOnlyMessage(
-                                snackBarHostState = snackBarHostState,
-                                coroutineScope = scope,
-                                message = state.message,
-                                duration = SnackbarDuration.Long
-                            )
-                            snackBarIsActivated = false
-                        }
-                    }
-
-                    is SignInViewState.Loading -> { progressButtonIsActivated = true }
-
-                    is SignInViewState.Success -> {
-                        LaunchedEffect(key1 = true) {
-                            snackBarOnlyMessage(
-                                snackBarHostState = snackBarHostState,
-                                coroutineScope = scope,
-                                message = state.message
-                            )
-                            delay(2000L)
-                            onNavigateToHome()
-                        }
-                    }
+            is SignInViewState.Success -> {
+                LaunchedEffect(key1 = true) {
+                    snackBarOnlyMessage(
+                        snackBarHostState = snackBarHostState,
+                        coroutineScope = scope,
+                        message = state.message
+                    )
+                    delay(2000L)
+                    onNavigateToHome()
                 }
             }
         }

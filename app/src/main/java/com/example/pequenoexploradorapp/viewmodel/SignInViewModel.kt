@@ -13,7 +13,7 @@ class SignInViewModel : ViewModel() {
 
     private val authService: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.Dashboard)
+    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.DrawScreen)
     val uiState: StateFlow<SignInViewState> = _uiState.asStateFlow()
 
     private val _newUserSignInState = MutableStateFlow(NewUserContact())
@@ -107,7 +107,7 @@ data class NewUserContact(
 
 sealed interface SignInViewState {
     data object Loading : SignInViewState
-    data object Dashboard : SignInViewState
+    data object DrawScreen : SignInViewState
     data class Success(val message: String) : SignInViewState
     data class Error(val message: String) : SignInViewState
 }

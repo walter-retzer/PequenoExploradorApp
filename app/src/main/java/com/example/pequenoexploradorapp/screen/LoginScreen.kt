@@ -90,7 +90,7 @@ fun LoginScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) {
         when (val state = uiState) {
-            is LoginUserViewState.Dashboard -> {
+            is LoginUserViewState.DrawScreen -> {
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxWidth()
