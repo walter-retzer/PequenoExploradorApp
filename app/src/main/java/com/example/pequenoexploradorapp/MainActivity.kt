@@ -2,42 +2,17 @@ package com.example.pequenoexploradorapp
 
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.pequenoexploradorapp.navigation.LoginScreenRoute
-import com.example.pequenoexploradorapp.navigation.NavAnimations.popEnterRightAnimation
-import com.example.pequenoexploradorapp.navigation.NavAnimations.popExitRightAnimation
-import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftEnterAnimation
-import com.example.pequenoexploradorapp.navigation.NavAnimations.slideLeftExitAnimation
-import com.example.pequenoexploradorapp.navigation.SignInScreenRoute
-import com.example.pequenoexploradorapp.navigation.SplashScreenRoute
-import com.example.pequenoexploradorapp.navigation.WelcomeScreenRoute
-import com.example.pequenoexploradorapp.screen.LoginScreen
-import com.example.pequenoexploradorapp.screen.SignInScreen
+import com.example.pequenoexploradorapp.navigation.NavHostMain
 import com.example.pequenoexploradorapp.screen.SplashScreen
-import com.example.pequenoexploradorapp.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.ui.theme.PequenoExploradorAppTheme
 import com.example.pequenoexploradorapp.util.GoogleAuthUiClient
-import com.example.pequenoexploradorapp.viewmodel.LoginUserViewModel
 import com.google.android.gms.auth.api.identity.Identity
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 
 class MainActivity : ComponentActivity() {
@@ -49,7 +24,6 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,100 +36,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             PequenoExploradorAppTheme {
                 val navController = rememberNavController()
-                NavHost(
+                NavHostMain(
                     navController = navController,
-                    startDestination = SplashScreenRoute,
-                    enterTransition = slideLeftEnterAnimation,
-                    exitTransition = slideLeftExitAnimation,
-                    popEnterTransition = popEnterRightAnimation,
-                    popExitTransition = popExitRightAnimation
-                ) {
-                    composable<SplashScreenRoute> {
-                        SplashScreen(
-                            onNavigateToWelcomeScreen = {
-                                navController.navigate(WelcomeScreenRoute)
-                            }
-                        )
-                    }
-
-                    composable<WelcomeScreenRoute> {
-                        WelcomeScreen(
-                            onNavigateToLogin = {
-                                navController.navigate(LoginScreenRoute)
-                            }
-                        )
-                    }
-
-                    composable<LoginScreenRoute> {
-                        val viewModel: LoginUserViewModel = koinInject()
-                        val stateSignInGoogle by viewModel.stateSignInGoogle.collectAsStateWithLifecycle()
-
-                        LaunchedEffect(key1 = Unit) {
-                            if (googleAuthUiClient.getSignedInUser() != null) {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Sign in successful, navigate to Profile",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-
-                        val launcher = rememberLauncherForActivityResult(
-                            contract = ActivityResultContracts.StartIntentSenderForResult(),
-                            onResult = { result ->
-                                if (result.resultCode == RESULT_OK) {
-                                    lifecycleScope.launch {
-                                        val signInResult = googleAuthUiClient.signInWithIntent(
-                                            intent = result.data ?: return@launch
-                                        )
-                                        viewModel.onGoogleSignInResult(signInResult)
-                                    }
-                                }
-                            }
-                        )
-
-                        LaunchedEffect(key1 = stateSignInGoogle.isSignInSuccessful) {
-                            if (stateSignInGoogle.isSignInSuccessful) {
-
-                                val userGoogleData = googleAuthUiClient.getSignedInUser()
-                                viewModel.saveUserGoogleData(userGoogleData)
-
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Sign in successful",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                viewModel.resetState()
-
-                                navController.navigate(SignInScreenRoute)
-                            }
-                        }
-
-                        LoginScreen(
-                            onGoogleSignInClick = {
-                                lifecycleScope.launch {
-                                    val signInIntentSender = googleAuthUiClient.signInGoogle()
-                                    launcher.launch(
-                                        IntentSenderRequest.Builder(
-                                            signInIntentSender ?: return@launch
-                                        ).build()
-                                    )
-                                }
-                            },
-                            onNavigateToSignIn = {
-                                navController.navigate(SignInScreenRoute)
-                            },
-                            onNavigateToHome = {},
-                        )
-                    }
-
-                    composable<SignInScreenRoute> {
-                        SignInScreen(
-                            onNavigateToHome = {}
-                        )
-                    }
-                }
-            }
+                    googleAuthUiClient = googleAuthUiClient,
+                    context = applicationContext
+                )
+           }
         }
     }
 }
