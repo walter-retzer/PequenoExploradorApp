@@ -16,7 +16,7 @@ class AppApplication : Application() {
             androidLogger()
             androidContext(this@AppApplication)
             modules(
-                appModule, provideHttpClientModule
+                appModule
             )
         }
     }
