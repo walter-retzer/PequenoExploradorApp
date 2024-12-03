@@ -1,18 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
 }
 
 android {
     namespace = "com.example.pequenoexploradorapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.pequenoexploradorapp"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 29
+        targetSdk = 35
         versionCode = 1
         versionName = "0.1"
 
@@ -76,6 +77,14 @@ dependencies {
     implementation(libs.koin)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.logback.classic)
 
     implementation(libs.play.service.auth)
 }
