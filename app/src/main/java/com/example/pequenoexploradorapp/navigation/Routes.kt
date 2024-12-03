@@ -10,5 +10,6 @@ object WelcomeScreenRoute
 
 @Serializable
 object LoginScreenRoute
+
 @Serializable
 object SignInScreenRoute
