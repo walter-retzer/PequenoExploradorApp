@@ -2,7 +2,6 @@ package com.example.pequenoexploradorapp.repository
 
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.RoverMission
-import com.example.pequenoexploradorapp.network.ApiService
 import com.example.pequenoexploradorapp.network.ResultNetwork
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -17,25 +16,17 @@ import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
 
 
-class RemoteRepositoryImpl(private val apiService: ApiService, private val client: HttpClient) : RemoteRepository {
+class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
 
-
-    private val BASE_URL_ROVERS = "https://api.nasa.gov/mars-photos/api/v1/rovers/"
-
-    override suspend fun getInfoRoversMission(): Result<RoverMission> =
-        runCatching {
-            apiService.getRoversMission().body<RoverMission>()
-        }
-
-    suspend fun getValues(): ResultNetwork<RoverMission> =
-        makeRequest {
-            client.get{
+    override suspend fun getInfoRoversMission(): ResultNetwork<RoverMission> =
+        doRequest {
+            client.get {
                 url(BASE_URL_ROVERS)
-                parameter("api_key", BuildConfig.API_KEY)
+                parameter("api_key", BuildConfig.API_KEY_DEMO)
             }
         }
 
-    suspend inline fun <reified T> makeRequest(crossinline request: suspend () -> HttpResponse): ResultNetwork<T> {
+    private suspend inline fun <reified T> doRequest(crossinline request: suspend () -> HttpResponse): ResultNetwork<T> {
         return try {
             val response: HttpResponse = request()
             ResultNetwork.success(data = response.body(), statusCode = response.status.value)
@@ -61,5 +52,10 @@ class RemoteRepositoryImpl(private val apiService: ApiService, private val clien
             println("Error: ${e.printStackTrace()}")
             ResultNetwork.failure(exception = e, statusCode = null)
         }
+    }
+
+    companion object {
+        private const val BASE_URL_IMAGES = "https://images-api.nasa.gov/"
+        private const val BASE_URL_ROVERS = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/"
     }
 }
