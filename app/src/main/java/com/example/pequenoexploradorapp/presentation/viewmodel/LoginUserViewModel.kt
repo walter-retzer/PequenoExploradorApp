@@ -1,20 +1,24 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.FirebaseUserData
 import com.example.pequenoexploradorapp.data.GoogleSignInResult
 import com.example.pequenoexploradorapp.data.GoogleSignInState
 import com.example.pequenoexploradorapp.data.GoogleUserData
+import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class LoginUserViewModel : ViewModel() {
+class LoginUserViewModel(private val connectivityObserver: ConnectivityObserver) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val sharedPref: SharedPrefApp = SharedPrefApp.instance
@@ -33,6 +37,14 @@ class LoginUserViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.DrawScreen)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
+
+    val isConnected = connectivityObserver
+        .isConnected
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            null
+        )
 
     fun saveUserGoogleData( userGoogleData: GoogleUserData?){
         userGoogleData?.username?.let { sharedPref.saveString(UserPreferences.NAME, it) }
