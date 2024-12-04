@@ -1,4 +1,4 @@
-package com.example.pequenoexploradorapp.api
+package com.example.pequenoexploradorapp.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
