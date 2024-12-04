@@ -1,26 +1,24 @@
 [versions]
 agp = "8.4.2"
 kotlin = "2.0.21"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 logbackClassic = "1.2.11"
 activityCompose = "1.9.3"
-composeBom = "2024.10.01"
-composeNavigation = "2.8.3"
-serialization = "1.6.3"
+composeBom = "2024.11.00"
+composeNavigation = "2.8.4"
+serialization = "1.7.3"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
-koin = "3.6.0-alpha3"
-ktor = "2.3.11"
+koin = "4.0.0"
+ktor = "3.0.1"
 ktorClientSerialization = "3.0.1"
-kotlinxSerializationJson = "1.7.3"
-playServiceAuth = "20.4.1"
+playServiceAuth = "21.2.0"
 
 [libraries]
-
 #Ktor Library
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
@@ -45,6 +43,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
+#Android Core Libs
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
