@@ -54,6 +54,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -77,6 +78,7 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     var progressButtonIsActivated by remember { mutableStateOf(false) }
@@ -136,6 +138,15 @@ fun LoginScreen(
                     snackBarIsActivated = false
                 }
             }
+        }
+
+        if(isConnected?.not() == true){
+            snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = "Não há internet disponível, verifique seu WIFI ou Dados conectado.",
+                duration = SnackbarDuration.Long
+            )
         }
 
         Box(
