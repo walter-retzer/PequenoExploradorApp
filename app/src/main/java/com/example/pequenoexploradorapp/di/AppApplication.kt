@@ -5,6 +5,7 @@ import android.content.Context
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 class AppApplication : Application() {
     override fun onCreate() {
@@ -12,12 +13,14 @@ class AppApplication : Application() {
 
         appContext = applicationContext
 
+        val appModule = module {
+            includes(viewModelModules, networkModule, repositoryModule)
+        }
+
         startKoin {
             androidLogger()
             androidContext(this@AppApplication)
-            modules(
-                appModule
-            )
+            modules( appModule)
         }
     }
 
