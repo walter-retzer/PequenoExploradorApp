@@ -1,8 +1,10 @@
 package com.example.pequenoexploradorapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.pequenoexploradorapp.secure.SharedPrefApp
+import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.NewUserSignInContact
+import com.example.pequenoexploradorapp.repository.RemoteRepositoryImpl
+import com.example.pequenoexploradorapp.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.secure.UserPreferences
 import com.example.pequenoexploradorapp.util.ConstantsApp
 import com.google.firebase.auth.FirebaseAuth
@@ -10,9 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
-class SignInViewModel : ViewModel() {
+class SignInViewModel(private val remoteRepositoryImpl: RemoteRepositoryImpl) : ViewModel() {
 
     private val authService: FirebaseAuth = FirebaseAuth.getInstance()
     private val sharedPref: SharedPrefApp = SharedPrefApp.instance
@@ -35,6 +38,11 @@ class SignInViewModel : ViewModel() {
     private val _phoneNumberError = MutableStateFlow(false)
     val phoneNumberError = _phoneNumberError.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            remoteRepositoryImpl.getInfoRoversMission()
+        }
+    }
 
     fun onSignInUser(name: String, email: String, password: String, phoneNumber: String) {
         _uiState.value = SignInViewState.Loading
