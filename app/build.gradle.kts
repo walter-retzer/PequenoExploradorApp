@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -10,6 +12,10 @@ android {
     namespace = "com.example.pequenoexploradorapp"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.pequenoexploradorapp"
         minSdk = 29
@@ -21,7 +27,15 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        /***   Generating Keys from file secret.properties  ***/
+        val properties = Properties()
+        properties.load(project.rootProject.file("secrets.properties").inputStream())
+        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
+
     }
+
+
 
     buildTypes {
         release {
@@ -50,6 +64,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
