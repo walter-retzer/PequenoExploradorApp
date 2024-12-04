@@ -40,7 +40,7 @@ class SignInViewModel(private val remoteRepositoryImpl: RemoteRepositoryImpl) : 
 
     init {
         viewModelScope.launch {
-            remoteRepositoryImpl.getInfoRoversMission()
+            remoteRepositoryImpl.getValues()
         }
     }
 

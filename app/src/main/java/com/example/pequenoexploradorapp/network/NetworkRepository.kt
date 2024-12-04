@@ -34,60 +34,17 @@ import kotlinx.serialization.json.Json
 
 class NetworkRepository {
 
-    private val NETWORK_TIME_OUT = 6_000L
 
-    val provideHttpClientModule = HttpClient(Android) {
-        install(ContentNegotiation) {
-            json(
-                json = Json {
-                    ignoreUnknownKeys = true
-                    prettyPrint = true
-                    isLenient = true
-                },
-                contentType = ContentType.Any
-            )
-        }
 
-        install(HttpTimeout) {
-            connectTimeoutMillis = NETWORK_TIME_OUT
-            requestTimeoutMillis = NETWORK_TIME_OUT
-            socketTimeoutMillis = NETWORK_TIME_OUT
-        }
+//    suspend fun getRoverMission(): ResultNetwork<RoverMission> =
+//        makeRequest {
+//            provideHttpClientModule.get {
+//                //url(HttpRoutes.BASE_URL_IMAGES)
+//                parameter("api_key", BuildConfig.API_KEY)
+//            }
+//        }
 
-        install(Logging) {
-            logger = object : io.ktor.client.plugins.logging.Logger {
-                override fun log(message: String) {
-                    Log.v("Logger Ktor => ", message)
-                }
-            }
-            level = LogLevel.ALL
-        }
-
-        install(ResponseObserver) {
-            onResponse { response ->
-                Log.d("HTTP status:", "${response.status.value}")
-            }
-        }
-
-        install(DefaultRequest) {
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-        }
-
-        defaultRequest {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-        }
-    }
-
-    suspend fun getRoverMission(): ResultNetwork<RoverMission> =
-        makeRequest {
-            provideHttpClientModule.get {
-                url(HttpRoutes.BASE_URL_IMAGES)
-                parameter("api_key", BuildConfig.API_KEY)
-            }
-        }
-
-    private suspend inline fun <reified T> makeRequest(crossinline request: suspend () -> HttpResponse): ResultNetwork<T> {
+    suspend inline fun <reified T> makeRequest(crossinline request: suspend () -> HttpResponse): ResultNetwork<T> {
         return try {
             val response: HttpResponse = request()
             ResultNetwork.success(data = response.body(), statusCode = response.status.value)
