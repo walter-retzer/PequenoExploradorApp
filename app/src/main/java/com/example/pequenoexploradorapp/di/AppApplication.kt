@@ -11,8 +11,6 @@ class AppApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appContext = applicationContext
-
         val appModule = module {
             includes(viewModelModules, networkModule, repositoryModule)
         }
@@ -22,10 +20,6 @@ class AppApplication : Application() {
             androidContext(this@AppApplication)
             modules( appModule)
         }
-    }
-
-    companion object{
-        var appContext: Context? = null
     }
 
 }
