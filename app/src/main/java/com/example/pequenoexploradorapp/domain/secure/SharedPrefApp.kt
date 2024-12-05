@@ -2,12 +2,11 @@ package com.example.pequenoexploradorapp.domain.secure
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.pequenoexploradorapp.di.AppApplication
 
-class SharedPrefApp {
-    private val sharedPref: SharedPreferences = AppApplication
-        .appContext?.getSharedPreferences("explorador", Context.MODE_PRIVATE)
-        ?: throw IllegalArgumentException("Shared Preferences Error!")
+class SharedPrefApp(context: Context) {
+    private val sharedPref: SharedPreferences =
+        context.getSharedPreferences("explorador", Context.MODE_PRIVATE)
+            ?: throw IllegalArgumentException("Shared Preferences Error!")
 
     fun saveBoolean(id: String, boolean: Boolean) {
         sharedPref.edit()?.putBoolean(id, boolean)?.apply()
@@ -31,9 +30,5 @@ class SharedPrefApp {
 
     fun deleteAll(id: String) {
         sharedPref.edit()?.clear()?.apply()
-    }
-
-    companion object {
-        val instance: SharedPrefApp by lazy { SharedPrefApp() }
     }
 }
