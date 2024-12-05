@@ -18,10 +18,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class LoginUserViewModel(private val connectivityObserver: ConnectivityObserver) : ViewModel() {
+class LoginUserViewModel(
+    private val connectivityObserver: ConnectivityObserver,
+    private val sharedPref: SharedPrefApp
+) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val sharedPref: SharedPrefApp = SharedPrefApp.instance
 
     private val _state = MutableStateFlow(GoogleSignInState())
     val stateSignInGoogle = _state.asStateFlow()
@@ -46,7 +48,7 @@ class LoginUserViewModel(private val connectivityObserver: ConnectivityObserver)
             null
         )
 
-    fun saveUserGoogleData( userGoogleData: GoogleUserData?){
+    fun saveUserGoogleData(userGoogleData: GoogleUserData?) {
         userGoogleData?.username?.let { sharedPref.saveString(UserPreferences.NAME, it) }
         userGoogleData?.email?.let { sharedPref.saveString(UserPreferences.EMAIL, it) }
         userGoogleData?.userId?.let { sharedPref.saveString(UserPreferences.UID, it) }

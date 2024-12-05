@@ -15,10 +15,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-class SignInViewModel(private val remoteRepositoryImpl: RemoteRepositoryImpl) : ViewModel() {
+class SignInViewModel(
+    private val remoteRepositoryImpl: RemoteRepositoryImpl,
+    private val sharedPref: SharedPrefApp
+) : ViewModel() {
 
     private val authService: FirebaseAuth = FirebaseAuth.getInstance()
-    private val sharedPref: SharedPrefApp = SharedPrefApp.instance
 
     private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.DrawScreen)
     val uiState: StateFlow<SignInViewState> = _uiState.asStateFlow()
@@ -51,11 +53,16 @@ class SignInViewModel(private val remoteRepositoryImpl: RemoteRepositoryImpl) : 
                 if (task.isSuccessful) {
                     _uiState.value = SignInViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
 
-                    if(authService.currentUser != null){
+                    if (authService.currentUser != null) {
                         sharedPref.saveString(UserPreferences.NAME, name)
-                        sharedPref.saveString( UserPreferences.EMAIL, email)
+                        sharedPref.saveString(UserPreferences.EMAIL, email)
                         sharedPref.saveString(UserPreferences.PHONE, phoneNumber)
-                        authService.currentUser?.uid?.let { sharedPref.saveString(UserPreferences.UID, it) }
+                        authService.currentUser?.uid?.let {
+                            sharedPref.saveString(
+                                UserPreferences.UID,
+                                it
+                            )
+                        }
                     }
 
                 } else {
