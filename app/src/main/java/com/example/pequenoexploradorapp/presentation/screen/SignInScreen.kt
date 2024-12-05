@@ -62,9 +62,10 @@ import org.koin.compose.koinInject
 fun SignInScreen(
     modifier: Modifier = Modifier,
     onNavigateToHome: () -> Unit,
-    viewModel: SignInViewModel = koinInject()
+    viewModel: SignInViewModel = koinInject(),
+    sharedPref: SharedPrefApp = koinInject(),
 ) {
-    val sharedPref: SharedPrefApp = SharedPrefApp.instance
+
     val email = sharedPref.readString(UserPreferences.EMAIL)
     val uid = sharedPref.readString(UserPreferences.UID)
     val name = sharedPref.readString(UserPreferences.NAME)
