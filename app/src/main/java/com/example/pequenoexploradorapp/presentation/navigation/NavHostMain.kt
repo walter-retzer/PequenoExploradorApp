@@ -72,7 +72,11 @@ private fun NavGraphBuilder.loginNavGraph(
         composable(route = Route.SplashScreenRoute.route) {
             SplashScreen(
                 onNavigateToWelcomeScreen = {
-                    navController.navigate(Route.WelcomeScreenRoute.route)
+                    navController.navigate(Route.WelcomeScreenRoute.route){
+                        popUpTo(Route.SplashScreenRoute.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -126,7 +130,11 @@ private fun NavGraphBuilder.loginNavGraph(
                     ).show()
                     viewModel.resetState()
 
-                    navController.navigate(Route.HomeGraphNav.route)
+                    navController.navigate(Route.HomeGraphNav.route){
+                        popUpTo(Route.LoginScreenRoute.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
 
