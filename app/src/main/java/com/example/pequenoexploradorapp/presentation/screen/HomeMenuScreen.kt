@@ -1,5 +1,6 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,13 +16,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,14 +36,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeMenuScreen(modifier: Modifier = Modifier) {
 
     val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+    BackHandler { }
+
+    Scaffold( 
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        topBar = {
+            MenuToolbar(
+                title = "Menu",
+                onNavigationToMenu = { },
+                onNavigationToProfile = { },
+                onNavigateToNotifications = { },
+                toolbarBehavior = toolbarBehavior,
+                isActivatedBadge = false
+            )
+        },
     ) { paddingValues ->
         Box(
             modifier = modifier
