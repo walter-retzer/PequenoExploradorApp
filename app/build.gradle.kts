@@ -104,4 +104,6 @@ dependencies {
     implementation(libs.logback.classic)
 
     implementation(libs.play.service.auth)
+
+    implementation(libs.lottie.compose)
 }

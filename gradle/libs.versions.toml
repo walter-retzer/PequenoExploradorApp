@@ -7,6 +7,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 logbackClassic = "1.2.11"
+lottie = "6.6.1"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
 composeNavigation = "2.8.4"
@@ -19,6 +20,9 @@ ktorClientSerialization = "3.0.1"
 playServiceAuth = "21.2.0"
 
 [libraries]
+#Lottie Animation Library
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
+
 #Ktor Library
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
