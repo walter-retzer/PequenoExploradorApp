@@ -38,7 +38,7 @@ fun MenuToolbar(
     toolbarBehavior: TopAppBarScrollBehavior? = null,
     isActivatedBadge: Boolean = false
 ) {
-    LargeTopAppBar(
+    CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = color,
             scrolledContainerColor = color,
