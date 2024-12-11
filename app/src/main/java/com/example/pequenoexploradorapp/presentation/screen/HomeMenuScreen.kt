@@ -1,7 +1,6 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,47 +33,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.tertiaryLight
 
-
-private class DrawOption(
-    val titleButtonLeft: String,
-    @DrawableRes
-    val iconButtonLeft: Int,
-    val actionButtonLeft: () -> Unit,
-    val titleButtonRight: String,
-    @DrawableRes
-    val iconButtonRight: Int,
-    val actionButtonRight: () -> Unit,
-    val backgroundColor: Brush = Brush.linearGradient(
-        colors = listOf(
-            mainColor,
-            tertiaryLight
-        )
-    ),
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeMenuScreen(modifier: Modifier = Modifier) {
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val options = remember {
         listOf(
-            DrawOption(
+            DrawOptionsMenuButton(
                 titleButtonLeft = "Pesquisar",
                 iconButtonLeft = R.drawable.icon_search,
                 actionButtonLeft = { },
@@ -82,7 +63,7 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                 iconButtonRight = R.drawable.icon_favorite,
                 actionButtonRight = { }
             ),
-            DrawOption(
+            DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
                 iconButtonLeft = R.drawable.icon_rover,
                 actionButtonLeft = { },
@@ -90,25 +71,24 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                 iconButtonRight = R.drawable.icon_planet,
                 actionButtonRight = { }
             ),
-            DrawOption(
-                titleButtonLeft = "Pesquisar",
-                iconButtonLeft = R.drawable.icon_search,
+            DrawOptionsMenuButton(
+                titleButtonLeft = "Curiosidades",
+                iconButtonLeft = R.drawable.icon_question,
                 actionButtonLeft = { },
                 titleButtonRight = "Favoritos",
                 iconButtonRight = R.drawable.icon_favorite,
                 actionButtonRight = { }
             ),
-            DrawOption(
+            DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
                 iconButtonLeft = R.drawable.icon_rover,
                 actionButtonLeft = { },
-                titleButtonRight = "Planetas",
-                iconButtonRight = R.drawable.icon_planet,
+                titleButtonRight = "Perfil",
+                iconButtonRight = R.drawable.icon_astronaut,
                 actionButtonRight = { }
-            )
+            ),
         )
     }
-
 
     BackHandler { }
 
@@ -134,9 +114,6 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                     contentScale = ContentScale.FillBounds
                 )
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -144,10 +121,35 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Box {
+                    AnimatedLottieFile(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .size(200.dp)
+                            .align(Alignment.TopCenter),
+                        file = R.raw.astronaut_exploration
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 0.dp),
+                        text = "Nossa Exploração pelo Universo começa agora",
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp),
+                    text = "Opções de exploração:",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Left
+                )
                 options.forEach { option ->
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -166,14 +168,14 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = option.titleButtonLeft, style = TextStyle(
+                                text = option.titleButtonLeft,
+                                style = TextStyle(
                                     color = Color.White,
-                                    fontSize = 20.sp,
+                                    fontSize = 19.sp,
                                     textAlign = TextAlign.Center,
                                 )
                             )
                             Spacer(modifier = Modifier.size(16.dp))
-
                             Image(
                                 painter = painterResource(option.iconButtonLeft),
                                 contentDescription = null,
@@ -181,7 +183,6 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                                     .size(64.dp)
                             )
                         }
-
                         Column(
                             Modifier
                                 .clip(RoundedCornerShape(15))
@@ -194,9 +195,10 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = option.titleButtonRight, style = TextStyle(
+                                text = option.titleButtonRight,
+                                style = TextStyle(
                                     color = Color.White,
-                                    fontSize = 20.sp,
+                                    fontSize = 19.sp,
                                     textAlign = TextAlign.Center,
                                 )
                             )
@@ -211,15 +213,6 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                     }
                 }
             }
-
-//            Box {
-//                AnimatedLottieFile(
-//                    modifier = Modifier
-//                        .size(200.dp)
-//                        .align(Alignment.Center),
-//                    file = R.raw.solar_system
-//                )
-//            }
         }
     }
 }
