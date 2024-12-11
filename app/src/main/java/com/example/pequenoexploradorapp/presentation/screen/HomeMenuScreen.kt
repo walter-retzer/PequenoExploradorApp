@@ -56,7 +56,7 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
     val options = remember {
         listOf(
             DrawOptionsMenuButton(
-                titleButtonLeft = "Pesquisar",
+                titleButtonLeft = "Imagens",
                 iconButtonLeft = R.drawable.icon_search,
                 actionButtonLeft = { },
                 titleButtonRight = "Favoritos",
@@ -75,13 +75,13 @@ fun HomeMenuScreen(modifier: Modifier = Modifier) {
                 titleButtonLeft = "Curiosidades",
                 iconButtonLeft = R.drawable.icon_question,
                 actionButtonLeft = { },
-                titleButtonRight = "Favoritos",
-                iconButtonRight = R.drawable.icon_favorite,
+                titleButtonRight = "Perfil",
+                iconButtonRight = R.drawable.icon_astronaut,
                 actionButtonRight = { }
             ),
             DrawOptionsMenuButton(
-                titleButtonLeft = "Rovers",
-                iconButtonLeft = R.drawable.icon_rover,
+                titleButtonLeft = "Sistema Solar",
+                iconButtonLeft = R.drawable.icon_solar_system,
                 actionButtonLeft = { },
                 titleButtonRight = "Perfil",
                 iconButtonRight = R.drawable.icon_astronaut,
