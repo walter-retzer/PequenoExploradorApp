@@ -26,6 +26,7 @@ import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
+import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.screen.WelcomeScreen
@@ -72,8 +73,14 @@ private fun NavGraphBuilder.loginNavGraph(
         composable(route = Route.SplashScreenRoute.route) {
             SplashScreen(
                 onNavigateToWelcomeScreen = {
-                    navController.navigate(Route.WelcomeScreenRoute.route){
-                        popUpTo(Route.SplashScreenRoute.route) {
+//                    navController.navigate(Route.WelcomeScreenRoute.route){
+//                        popUpTo(Route.SplashScreenRoute.route) {
+//                            inclusive = true
+//                        }
+//                    }
+
+                    navController.navigate(Route.HomeGraphNav.route){
+                        popUpTo(Route.LoginScreenRoute.route) {
                             inclusive = true
                         }
                     }
@@ -195,7 +202,14 @@ private fun NavGraphBuilder.homeNavGraph() {
                 Modifier.weight(1f)
             ) {
                 composable(route = Route.HomeScreenRoute.route) {
-                    HomeMenuScreen()
+                    HomeMenuScreen(
+                        onNavigateToSearchImage = {
+                            navController.navigate(Route.SearchImageScreenRoute.route)
+                        }
+                    )
+                }
+                composable(route = Route.SearchImageScreenRoute.route) {
+                    SearchImageScreen()
                 }
             }
             AppBottomNavigationBar(
