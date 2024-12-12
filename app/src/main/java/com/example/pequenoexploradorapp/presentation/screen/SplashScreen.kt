@@ -43,7 +43,7 @@ fun SplashScreen(
     )
 
     LaunchedEffect(key1 = true) {
-        delay(3000L)
+        delay(5000L)
         onNavigateToWelcomeScreen()
     }
 
@@ -82,7 +82,7 @@ fun SplashScreen(
             Box(
                 modifier = Modifier
                     .scale(scale = animatable.value)
-                    .size(size = 350.dp)
+                    .size(size = 400.dp)
                     .clip(shape = CircleShape)
                     .background(
                         color = Color.White
@@ -92,14 +92,14 @@ fun SplashScreen(
         }
 
         Image(
-            painter = painterResource(R.drawable.splash),
+            painter = painterResource(R.drawable.perfil01),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .scale(scale.value)
-                .size(220.dp)
+                .size(200.dp)
                 .clip(CircleShape)
-                .border(1.dp, Color.White, CircleShape)
+                .border(2.dp, Color.White, CircleShape)
                 .background(Color.Black, CircleShape)
         )
     }
