@@ -206,7 +206,7 @@ fun LoginScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
@@ -228,7 +228,7 @@ fun LoginScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.NumberPassword,
                         imeAction = ImeAction.Next
                     ),

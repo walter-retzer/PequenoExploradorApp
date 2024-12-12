@@ -176,7 +176,7 @@ fun SignInScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
@@ -206,7 +206,7 @@ fun SignInScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next
                     ),
@@ -239,7 +239,7 @@ fun SignInScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
@@ -265,7 +265,7 @@ fun SignInScreen(
                         .background(Color.Black),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true,
+                        autoCorrectEnabled = true,
                         keyboardType = KeyboardType.NumberPassword,
                         imeAction = ImeAction.Done
                     ),
