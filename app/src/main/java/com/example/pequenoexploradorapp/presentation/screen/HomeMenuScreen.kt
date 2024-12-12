@@ -49,43 +49,47 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeMenuScreen(modifier: Modifier = Modifier) {
+fun HomeMenuScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToSearchImage: () -> Unit
+) {
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val options = remember {
         listOf(
             DrawOptionsMenuButton(
                 titleButtonLeft = "Imagens",
                 iconButtonLeft = R.drawable.icon_search,
-                actionButtonLeft = { },
+                actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Favoritos",
                 iconButtonRight = R.drawable.icon_favorite,
-                actionButtonRight = { }
+                actionButtonRight = { onNavigateToSearchImage()}
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
                 iconButtonLeft = R.drawable.icon_rover,
-                actionButtonLeft = { },
+                actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Planetas",
                 iconButtonRight = R.drawable.icon_planet,
-                actionButtonRight = { }
+                actionButtonRight = {  onNavigateToSearchImage() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Curiosidades",
                 iconButtonLeft = R.drawable.icon_question,
-                actionButtonLeft = { },
+                actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Perfil",
                 iconButtonRight = R.drawable.icon_astronaut,
-                actionButtonRight = { }
+                actionButtonRight = { onNavigateToSearchImage() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Sistema Solar",
                 iconButtonLeft = R.drawable.icon_solar_system,
-                actionButtonLeft = { },
+                actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Perfil",
                 iconButtonRight = R.drawable.icon_astronaut,
-                actionButtonRight = { }
+                actionButtonRight = { onNavigateToSearchImage() }
             ),
         )
     }
