@@ -110,16 +110,6 @@ private fun ParallaxViewContent(
                     .align(backgroundAlignment),
                 content = { background() }
             )
-
-            middleContent?.let { middle ->
-                Box(
-                    modifier = Modifier
-                        .scale(middleScaleMultiplier)
-                        .align(middleAlignment),
-                    content = { middle() }
-                )
-            }
-
             foregroundContent?.let { foreground ->
                 Box(
                     modifier = Modifier
@@ -132,6 +122,14 @@ private fun ParallaxViewContent(
                         }
                         .align(foregroundAlignment),
                     content = { foreground() }
+                )
+            }
+            middleContent?.let { middle ->
+                Box(
+                    modifier = Modifier
+                        .scale(middleScaleMultiplier)
+                        .align(middleAlignment),
+                    content = { middle() }
                 )
             }
         }
