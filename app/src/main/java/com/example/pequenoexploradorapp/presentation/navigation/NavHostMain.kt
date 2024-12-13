@@ -161,7 +161,7 @@ private fun NavGraphBuilder.loginNavGraph(
                     }
                 },
                 onNavigateToSignIn = {
-                    navController.navigate(Route.HomeGraphNav.route)
+                    navController.navigate(Route.SignInScreenRoute.route)
                 },
                 onNavigateToHome = {
                     navController.navigate(Route.HomeGraphNav.route)
