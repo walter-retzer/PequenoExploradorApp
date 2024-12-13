@@ -57,11 +57,10 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.tertiaryLight
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewState
 import org.koin.compose.koinInject
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,8 +69,7 @@ fun SearchImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val textSearchImage by viewModel.searchImageState.collectAsState()
@@ -224,8 +222,7 @@ fun SearchImageScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
-                                contentDescription = "Clear",
-                                tint = Color.LightGray
+                                contentDescription = "Clear"
                             )
                         }
                     }
@@ -236,8 +233,7 @@ fun SearchImageScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = Color.LightGray
+                            contentDescription = "Search"
                         )
                     }
                 }
