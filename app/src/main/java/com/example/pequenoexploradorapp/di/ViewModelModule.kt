@@ -3,6 +3,7 @@ package com.example.pequenoexploradorapp.di
 import android.content.Context
 import com.example.pequenoexploradorapp.domain.connectivity.AndroidConnectivityObserver
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
+import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
@@ -22,9 +23,13 @@ val viewModelModules = module {
     factory<SignInViewModel> { SignInViewModel(get(), get()) }
     factory<SearchImageViewModel> {
         SearchImageViewModel(
-            provideConnectivityStatus(
-                androidApplication()
-            ), get()
+            provideConnectivityStatus(androidApplication())
+        )
+    }
+    factory<LoadNasaImageViewModel> {
+        LoadNasaImageViewModel(
+            provideConnectivityStatus(androidApplication()),
+            get()
         )
     }
 }
