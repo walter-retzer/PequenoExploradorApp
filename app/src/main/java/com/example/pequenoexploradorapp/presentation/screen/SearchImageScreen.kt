@@ -65,6 +65,7 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchImageScreen(
+    onNavigateToLoadNasaImage: (imageSearch: String?) -> Unit,
     viewModel: SearchImageViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -244,7 +245,10 @@ fun SearchImageScreen(
                     .fillMaxWidth(),
                 text = "Pesquisar",
                 isLoading = progressButtonIsActivated,
-                onClick = { viewModel.onNasaImageSearch(textSearchImage.textInput) }
+                onClick = {
+                    viewModel.onNasaImageSearch(textSearchImage.textInput)
+                    onNavigateToLoadNasaImage(textSearchImage.textInput)
+                }
             )
         }
     }
