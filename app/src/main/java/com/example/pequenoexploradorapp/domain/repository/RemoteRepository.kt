@@ -8,7 +8,7 @@ interface RemoteRepository {
     suspend fun getInfoRoversMission(): ApiResponse<RoverMission>
 
     suspend fun getNasaImage(
-        imageSearch: String,
+        imageSearch: String?,
         page: Int = 1,
         mediaType: String = "image"
     ): ApiResponse<NasaImageResponse>

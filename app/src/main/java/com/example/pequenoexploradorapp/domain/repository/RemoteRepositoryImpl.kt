@@ -29,7 +29,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
         }
 
     override suspend fun getNasaImage(
-        imageSearch: String,
+        imageSearch: String?,
         page: Int,
         mediaType: String
     ): ApiResponse<NasaImageResponse> =
