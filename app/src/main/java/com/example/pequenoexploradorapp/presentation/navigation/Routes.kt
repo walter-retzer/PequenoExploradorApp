@@ -24,6 +24,8 @@ sealed class Route(
     @Serializable
     object SearchImageScreenRoute : Route(route = "SearchImageScreen")
 
+    object LoadNasaImageScreenRoute : Route(route = "LoadNasaImageScreen")
+
     // Routes from Graph Navigation:
 
     @Serializable
