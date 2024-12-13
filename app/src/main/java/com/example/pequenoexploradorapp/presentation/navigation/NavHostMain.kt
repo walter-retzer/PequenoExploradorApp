@@ -73,17 +73,17 @@ private fun NavGraphBuilder.loginNavGraph(
         composable(route = Route.SplashScreenRoute.route) {
             SplashScreen(
                 onNavigateToWelcomeScreen = {
-//                    navController.navigate(Route.WelcomeScreenRoute.route){
-//                        popUpTo(Route.SplashScreenRoute.route) {
-//                            inclusive = true
-//                        }
-//                    }
-
-                    navController.navigate(Route.HomeGraphNav.route){
-                        popUpTo(Route.LoginScreenRoute.route) {
+                    navController.navigate(Route.WelcomeScreenRoute.route) {
+                        popUpTo(Route.SplashScreenRoute.route) {
                             inclusive = true
                         }
                     }
+
+//                    navController.navigate(Route.HomeGraphNav.route){
+//                        popUpTo(Route.LoginScreenRoute.route) {
+//                            inclusive = true
+//                        }
+//                    }
                 }
             )
         }
@@ -137,7 +137,7 @@ private fun NavGraphBuilder.loginNavGraph(
                     ).show()
                     viewModel.resetState()
 
-                    navController.navigate(Route.HomeGraphNav.route){
+                    navController.navigate(Route.HomeGraphNav.route) {
                         popUpTo(Route.LoginScreenRoute.route) {
                             inclusive = true
                         }
@@ -201,17 +201,31 @@ private fun NavGraphBuilder.homeNavGraph() {
                 startDestination = Route.HomeScreenRoute.route,
                 Modifier.weight(1f)
             ) {
-                composable(route = Route.HomeScreenRoute.route) {
+                composable(
+                    route = Route.HomeScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
                     HomeMenuScreen(
                         onNavigateToSearchImage = {
                             navController.navigate(Route.SearchImageScreenRoute.route)
                         }
                     )
                 }
-                composable(route = Route.SearchImageScreenRoute.route) {
+
+                composable(
+                    route = Route.SearchImageScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
                     SearchImageScreen()
                 }
             }
+
             AppBottomNavigationBar(
                 navItems = items,
                 navController = navController
