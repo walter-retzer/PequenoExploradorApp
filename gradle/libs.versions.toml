@@ -1,5 +1,6 @@
 [versions]
 agp = "8.4.2"
+coilCompose = "3.0.4"
 kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -20,6 +21,9 @@ ktorClientSerialization = "3.0.1"
 playServiceAuth = "21.2.0"
 
 [libraries]
+#Coil Lib Images
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+
 #Lottie Animation Library
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 

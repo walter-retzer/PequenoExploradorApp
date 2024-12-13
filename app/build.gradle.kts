@@ -106,4 +106,5 @@ dependencies {
     implementation(libs.play.service.auth)
 
     implementation(libs.lottie.compose)
+    implementation(libs.coil.compose)
 }
