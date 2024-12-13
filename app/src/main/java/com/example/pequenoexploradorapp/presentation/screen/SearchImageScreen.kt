@@ -58,7 +58,6 @@ import com.example.pequenoexploradorapp.presentation.components.parallax.Paralla
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
-import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewState
 import org.koin.compose.koinInject
 
 
@@ -71,11 +70,9 @@ fun SearchImageScreen(
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val textSearchImage by viewModel.searchImageState.collectAsState()
     val isVisible by remember { derivedStateOf { textSearchImage.textInput.isNotBlank() } }
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -92,41 +89,6 @@ fun SearchImageScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        when (val state = uiState) {
-            is SearchImageViewState.DrawScreen -> {}
-
-            is SearchImageViewState.Loading -> {
-                progressButtonIsActivated = true
-            }
-
-            is SearchImageViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-
-            is SearchImageViewState.Success -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = ConstantsApp.SUCCESS_SIGN_IN,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-        }
         if (isConnected?.not() == true) {
             snackBarIsActivated = true
             LaunchedEffect(snackBarIsActivated) {
@@ -244,9 +206,8 @@ fun SearchImageScreen(
                     .padding(16.dp)
                     .fillMaxWidth(),
                 text = "Pesquisar",
-                isLoading = progressButtonIsActivated,
+                isLoading = false,
                 onClick = {
-                    viewModel.onNasaImageSearch(textSearchImage.textInput)
                     onNavigateToLoadNasaImage(textSearchImage.textInput)
                 }
             )
