@@ -18,13 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
+import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
@@ -73,17 +77,17 @@ private fun NavGraphBuilder.loginNavGraph(
         composable(route = Route.SplashScreenRoute.route) {
             SplashScreen(
                 onNavigateToWelcomeScreen = {
-                    navController.navigate(Route.WelcomeScreenRoute.route) {
-                        popUpTo(Route.SplashScreenRoute.route) {
-                            inclusive = true
-                        }
-                    }
-
-//                    navController.navigate(Route.HomeGraphNav.route){
-//                        popUpTo(Route.LoginScreenRoute.route) {
+//                    navController.navigate(Route.WelcomeScreenRoute.route) {
+//                        popUpTo(Route.SplashScreenRoute.route) {
 //                            inclusive = true
 //                        }
 //                    }
+
+                    navController.navigate(Route.HomeGraphNav.route) {
+                        popUpTo(Route.LoginScreenRoute.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -222,7 +226,35 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-                    SearchImageScreen()
+                    SearchImageScreen(
+                        onNavigateToLoadNasaImage = { searchImage ->
+                            navController.navigate(
+                                route = "${Route.LoadNasaImageScreenRoute.route}/${searchImage}"
+                            )
+                        }
+                    )
+                }
+
+                composable(
+                    route = "${Route.LoadNasaImageScreenRoute.route}/{$IMAGE_SEARCH_KEY}",
+                    arguments = listOf(
+                        navArgument(IMAGE_SEARCH_KEY) {
+                            type = NavType.StringType
+                            defaultValue = "Moon"
+                            nullable = false
+                        },
+                    ),
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val imageSearch = arguments.getString(IMAGE_SEARCH_KEY)
+
+                    LoadNasaImageScreen(
+                        imageSearch = imageSearch
+                    )
                 }
             }
 
@@ -232,4 +264,8 @@ private fun NavGraphBuilder.homeNavGraph() {
             )
         }
     }
+}
+
+object ArgumentsKey {
+    const val IMAGE_SEARCH_KEY = "IMAGE_SEARCH_ID"
 }
