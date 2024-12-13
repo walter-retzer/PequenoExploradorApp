@@ -72,7 +72,7 @@ fun HomeMenuScreen(
                 iconButtonLeft = R.drawable.icon_rover,
                 actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Planetas",
-                iconButtonRight = R.drawable.icon_planet,
+                iconButtonRight = R.drawable.icon_planet_earth,
                 actionButtonRight = {  onNavigateToSearchImage() }
             ),
             DrawOptionsMenuButton(
@@ -87,8 +87,8 @@ fun HomeMenuScreen(
                 titleButtonLeft = "Sistema Solar",
                 iconButtonLeft = R.drawable.icon_solar_system,
                 actionButtonLeft = { onNavigateToSearchImage() },
-                titleButtonRight = "Perfil",
-                iconButtonRight = R.drawable.icon_astronaut,
+                titleButtonRight = "Imagem\ndo Dia",
+                iconButtonRight = R.drawable.icon_comet,
                 actionButtonRight = { onNavigateToSearchImage() }
             ),
         )
