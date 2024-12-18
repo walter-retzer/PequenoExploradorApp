@@ -49,6 +49,6 @@ class LoadNasaImageViewModel(
 sealed interface LoadNasaImageViewState {
     data object Loading : LoadNasaImageViewState
     data object DrawScreen : LoadNasaImageViewState
-    data class Success(val collection: NasaImageResponse) : LoadNasaImageViewState
+    data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
     data class Error(val message: String) : LoadNasaImageViewState
 }
