@@ -1,6 +1,11 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,8 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -28,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -58,8 +67,7 @@ fun LoadNasaImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
@@ -79,7 +87,6 @@ fun LoadNasaImageScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-
         when (val state = uiState) {
             is LoadNasaImageViewState.DrawScreen -> {
                 viewModel.onNasaImageSearch(imageSearch)
@@ -130,22 +137,26 @@ fun LoadNasaImageScreen(
             }
 
             is LoadNasaImageViewState.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        )
-                        .fillMaxSize(),
-                    contentPadding = paddingValues,
-                ) {
-                    state.images.collection.items?.size?.let { images ->
-                        items(images) { numberOfImage ->
-                            LoadImageOnCard(
-                                images = state.images.collection.items,
-                                numberOfImage = numberOfImage
+                Box {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = paddingValues,
+                        modifier = Modifier
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
                             )
+                            .clipToBounds(),
+                    ) {
+
+
+                        state.images.collection.items?.size?.let { images ->
+                            items(images) { numberOfImage ->
+                                LoadImageOnCard(
+                                    images = state.images.collection.items,
+                                    numberOfImage = numberOfImage
+                                )
+                            }
                         }
                     }
                 }
@@ -170,30 +181,45 @@ fun LoadNasaImageScreen(
 
 @Composable
 fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
-
-    Text(
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
-            .fillMaxWidth(),
-        text = "Imagens: ${numberOfImage + 1}",
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Justify,
-        color = Color.White
-    )
-
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(images?.get(numberOfImage)?.links?.first()?.href)
-            .crossfade(true)
-            .build(),
-        placeholder = painterResource(R.drawable.icon_comet),
-        contentDescription = "",
-        contentScale = ContentScale.FillBounds,
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(15)),
-    )
+            .padding(start = 16.dp, end = 16.dp)
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(290.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.Black)
+                .border(
+                    width = 1.dp,
+                    color = contentColor,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable { },
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(images?.get(numberOfImage)?.links?.first()?.href)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.simple_background),
+                contentDescription = "",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                text = "Imagem: ${numberOfImage + 1}",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Justify,
+                color = Color.White
+            )
+        }
+    }
 }
