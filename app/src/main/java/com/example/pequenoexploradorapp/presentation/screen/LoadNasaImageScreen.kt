@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +55,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
@@ -68,7 +70,8 @@ fun LoadNasaImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
@@ -118,7 +121,6 @@ fun LoadNasaImageScreen(
                             .width(64.dp)
                             .align(Alignment.Center)
                     )
-
                 }
             }
 
@@ -146,17 +148,47 @@ fun LoadNasaImageScreen(
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    Row {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            text = "Foram encontradas ${state.images.collection.metadata?.totalHits} imagens",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Justify,
-                            color = Color.White
-                        )
+                    if (state.images.collection.metadata?.totalHits == 0) {
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Box {
+                                AnimatedLottieFile(
+                                    modifier = Modifier
+                                        .padding(top = 20.dp)
+                                        .size(200.dp)
+                                        .align(Alignment.TopCenter),
+                                    file = R.raw.astronaut_exploration
+                                )
+                            }
+                        }
+                        Row {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Justify,
+                                color = Color.White
+                            )
+                        }
+                    } else {
+                        Row {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                text = "Foram encontradas ${state.images.collection.metadata?.totalHits} imagens",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Justify,
+                                color = Color.White
+                            )
+                        }
                     }
                     Row {
                         LazyColumn(
