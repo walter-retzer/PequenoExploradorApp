@@ -70,8 +70,7 @@ fun LoadNasaImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
@@ -146,23 +145,19 @@ fun LoadNasaImageScreen(
                         .paint(
                             painterResource(id = R.drawable.simple_background),
                             contentScale = ContentScale.FillBounds
-                        )
+                        ),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (state.images.collection.metadata?.totalHits == 0) {
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Box {
-                                AnimatedLottieFile(
-                                    modifier = Modifier
-                                        .padding(top = 20.dp)
-                                        .size(200.dp)
-                                        .align(Alignment.TopCenter),
-                                    file = R.raw.astronaut_exploration
-                                )
-                            }
+                        Box {
+                            AnimatedLottieFile(
+                                modifier = Modifier
+                                    .padding(top = 20.dp)
+                                    .size(300.dp)
+                                    .align(Alignment.TopCenter),
+                                file = R.raw.animation_telescopy
+                            )
                         }
                         Row {
                             Text(
