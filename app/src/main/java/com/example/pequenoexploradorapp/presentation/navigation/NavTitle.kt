@@ -6,7 +6,7 @@ import com.example.pequenoexploradorapp.R
 object NavTitle {
     const val HOME = "Menu"
     const val IMAGES = "Imagens"
-    const val PROFILE = "Profile"
+    const val FAVOURITE = "Favoritos"
 }
 
 open class Item(
@@ -25,15 +25,15 @@ sealed class NavItem {
 
     object IMAGES :
         Item(
-            pathRoute = Route.HomeScreenRoute.route,
+            pathRoute = Route.SearchImageScreenRoute.route,
             title = NavTitle.IMAGES,
-            icon = R.drawable.icon_home
+            icon = R.drawable.icon_search
         )
 
     object PROFILE :
         Item(
-            pathRoute = Route.HomeScreenRoute.route,
-            title = NavTitle.PROFILE,
-            icon = R.drawable.icon_home
+            pathRoute = Route.FavouriteImageScreenRoute.route,
+            title = NavTitle.FAVOURITE,
+            icon = R.drawable.icon_favorite
         )
 }
