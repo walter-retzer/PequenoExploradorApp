@@ -171,7 +171,7 @@ fun SearchImageScreen(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrectEnabled = true,
                     keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done
                 ),
                 shape = RoundedCornerShape(20.dp),
                 value = textSearchImage.textInput,
@@ -208,7 +208,7 @@ fun SearchImageScreen(
                 text = "Pesquisar",
                 isLoading = false,
                 onClick = {
-                    onNavigateToLoadNasaImage(textSearchImage.textInput)
+                    onNavigateToLoadNasaImage(textSearchImage.textInput.trimEnd())
                 }
             )
         }
