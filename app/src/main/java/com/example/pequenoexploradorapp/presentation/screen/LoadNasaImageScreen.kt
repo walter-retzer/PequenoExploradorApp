@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -112,7 +113,6 @@ fun LoadNasaImageScreen(
                         textAlign = TextAlign.Justify,
                         color = Color.White
                     )
-
                     CircularProgressIndicator(
                         modifier = Modifier
                             .width(64.dp)
@@ -137,25 +137,39 @@ fun LoadNasaImageScreen(
             }
 
             is LoadNasaImageViewState.Success -> {
-                Box {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = paddingValues,
-                        modifier = Modifier
-                            .paint(
-                                painterResource(id = R.drawable.simple_background),
-                                contentScale = ContentScale.FillBounds
-                            )
-                            .clipToBounds(),
-                    ) {
-
-
-                        state.images.collection.items?.size?.let { images ->
-                            items(images) { numberOfImage ->
-                                LoadImageOnCard(
-                                    images = state.images.collection.items,
-                                    numberOfImage = numberOfImage
-                                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .paint(
+                            painterResource(id = R.drawable.simple_background),
+                            contentScale = ContentScale.FillBounds
+                        )
+                ) {
+                    Row {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            text = "Foram encontradas ${state.images.collection.metadata?.totalHits} imagens",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Justify,
+                            color = Color.White
+                        )
+                    }
+                    Row {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.clipToBounds(),
+                        ) {
+                            state.images.collection.items?.size?.let { images ->
+                                items(images) { numberOfImage ->
+                                    LoadImageOnCard(
+                                        images = state.images.collection.items,
+                                        numberOfImage = numberOfImage
+                                    )
+                                }
                             }
                         }
                     }
@@ -207,13 +221,15 @@ fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
                     .build(),
                 placeholder = painterResource(R.drawable.simple_background),
                 contentDescription = "",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
             )
             Text(
-                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
                 text = "Imagem: ${numberOfImage + 1}",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
