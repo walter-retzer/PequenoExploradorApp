@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,11 +32,13 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +63,8 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import org.koin.compose.koinInject
 
 
@@ -75,6 +81,10 @@ fun LoadNasaImageScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
+
+    val scrollState = rememberLazyListState()
+    var imagesNasaPages = listOf<NasaImageItems>()
+
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -189,15 +199,25 @@ fun LoadNasaImageScreen(
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.clipToBounds(),
+                            state = scrollState
                         ) {
-                            state.images.collection.items?.size?.let { images ->
-                                items(images) { numberOfImage ->
+
+                            state.loadImages?.size?.let {
+
+                                imagesNasaPages = state.loadImages + imagesNasaPages
+
+                                items(it) { numberOfImage ->
                                     LoadImageOnCard(
-                                        images = state.images.collection.items,
-                                        numberOfImage = numberOfImage
+                                        images = imagesNasaPages,
+                                        numberOfImage = numberOfImage,
                                     )
                                 }
                             }
+                        }
+
+                        // Handle infinite scrolling
+                        InfiniteListHandler(listState = scrollState) {
+                            viewModel.loadNextItems()
                         }
                     }
                 }
@@ -219,6 +239,39 @@ fun LoadNasaImageScreen(
     }
 }
 
+
+@Composable
+fun InfiniteListHandler(
+    listState: LazyListState,
+    buffer: Int = 50,
+    onLoadMore: () -> Unit
+) {
+    // Derived state to determine when to load more items
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            // Total number of items in the list
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            println("Total itens Count: ${totalItemsCount}")
+            // Index of the last visible item
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            println("Last Visible Index: ${lastVisibleItemIndex}")
+            // Check if we have scrolled near the end
+            println("Last Visible Index >= : ${lastVisibleItemIndex >= (totalItemsCount - buffer)}")
+            lastVisibleItemIndex >= (totalItemsCount - buffer)
+        }
+    }
+
+    // Launch a coroutine when shouldLoadMore becomes true
+    LaunchedEffect(shouldLoadMore) {
+        snapshotFlow { shouldLoadMore.value }
+            .distinctUntilChanged()
+            .filter { it }
+            .collect {
+                onLoadMore()
+            }
+    }
+}
 
 @Composable
 fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
