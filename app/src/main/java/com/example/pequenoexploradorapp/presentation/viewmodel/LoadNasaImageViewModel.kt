@@ -1,11 +1,7 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
@@ -21,12 +17,13 @@ import kotlinx.coroutines.launch
 class LoadNasaImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl
-) : ViewModel(){
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.DrawScreen)
+    private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)
     val uiState: StateFlow<LoadNasaImageViewState> = _uiState.asStateFlow()
 
-    var imagesNasaPages = mutableListOf<NasaImageItems>()
+    private val _isLoading = MutableStateFlow((false))
+    val isLoading = _isLoading.asStateFlow()
 
     val isConnected = connectivityObserver
         .isConnected
@@ -44,47 +41,36 @@ class LoadNasaImageViewModel(
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaImageViewState.Error(responseApi.messageError)
 
-                is ApiResponse.Success -> {
-                    responseApi.data.collection.items?.map {
-                        imagesNasaPages.add(it)
-                    }
+                is ApiResponse.Success -> _uiState.value =
+                    LoadNasaImageViewState.Success(responseApi.data)
 
-                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data, imagesNasaPages)
-                }
             }
         }
     }
 
-    fun loadNextItems(){
+    fun loadNextItems(
+        page: Int,
+        imageSearch: String?
+    ) {
         viewModelScope.launch {
+            _isLoading.value = true
             delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getNasaImage(
-                imageSearch = "sun", page = 2
-            )) {
+            when (val responseApi = remoteRepositoryImpl.getNasaImage(imageSearch, page)) {
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaImageViewState.Error(responseApi.messageError)
 
-                is ApiResponse.Success -> {
-
-                    responseApi.data.collection.items?.map {
-                        imagesNasaPages.add(it)
-                    }
-
-                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data, imagesNasaPages)
-                }
+                is ApiResponse.Success -> _uiState.value =
+                    LoadNasaImageViewState.Success(responseApi.data)
             }
+            _isLoading.value = false
         }
     }
 }
 
-data class ImagesState(
-    val items: List<Any> = emptyList(),
-    val page: Int = 0
-)
 
 sealed interface LoadNasaImageViewState {
     data object Loading : LoadNasaImageViewState
-    data object DrawScreen : LoadNasaImageViewState
-    data class Success(val images: NasaImageResponse, val loadImages: List<NasaImageItems>?) : LoadNasaImageViewState
+    data object Init : LoadNasaImageViewState
+    data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
     data class Error(val message: String) : LoadNasaImageViewState
 }

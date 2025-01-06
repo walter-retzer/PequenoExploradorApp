@@ -1,5 +1,8 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,6 +68,7 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageView
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
@@ -74,16 +78,17 @@ fun LoadNasaImageScreen(
     imageSearch: String?,
     viewModel: LoadNasaImageViewModel = koinInject()
 ) {
+    val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-
-    val scrollState = rememberLazyListState()
-    var imagesNasaPages = listOf<NasaImageItems>()
+    var listOfNasaImages = listOf<NasaImageItems>()
+    var page by remember { mutableStateOf(1) }
 
 
     Scaffold(
@@ -101,7 +106,7 @@ fun LoadNasaImageScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         when (val state = uiState) {
-            is LoadNasaImageViewState.DrawScreen -> {
+            is LoadNasaImageViewState.Init -> {
                 viewModel.onNasaImageSearch(imageSearch)
             }
 
@@ -115,16 +120,6 @@ fun LoadNasaImageScreen(
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
-                            .fillMaxWidth(),
-                        text = imageSearch.toString(),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Justify,
-                        color = Color.White
-                    )
                     CircularProgressIndicator(
                         modifier = Modifier
                             .width(64.dp)
@@ -186,7 +181,12 @@ fun LoadNasaImageScreen(
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .padding(16.dp)
+                                    .clickable {
+                                        scope.launch {
+                                            scrollState.animateScrollToItem(0)
+                                        }
+                                    },
                                 text = "Foram encontradas ${state.images.collection.metadata?.totalHits} imagens",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal,
@@ -201,24 +201,46 @@ fun LoadNasaImageScreen(
                             modifier = Modifier.clipToBounds(),
                             state = scrollState
                         ) {
+                            state.images.collection.items?.let { imagesToLoad ->
+                                listOfNasaImages = listOfNasaImages + imagesToLoad
 
-                            state.loadImages?.size?.let {
-
-                                imagesNasaPages = state.loadImages + imagesNasaPages
-
-                                items(it) { numberOfImage ->
+                                items(listOfNasaImages.size) { numberOfImage ->
                                     LoadImageOnCard(
-                                        images = imagesNasaPages,
+                                        images = listOfNasaImages,
                                         numberOfImage = numberOfImage,
                                     )
                                 }
                             }
-                        }
 
-                        // Handle infinite scrolling
-                        InfiniteListHandler(listState = scrollState) {
-                            viewModel.loadNextItems()
                         }
+                        // Handle infinite scrolling
+                        InfiniteListHandler(
+                            listState = scrollState,
+                            onLoadMore = {
+                                page++
+                                viewModel.loadNextItems(
+                                    imageSearch = imageSearch,
+                                    page = page
+                                )
+                            }
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Transparent)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .width(64.dp)
+                                .align(Alignment.Center)
+                        )
                     }
                 }
             }
@@ -243,26 +265,17 @@ fun LoadNasaImageScreen(
 @Composable
 fun InfiniteListHandler(
     listState: LazyListState,
-    buffer: Int = 50,
+    buffer: Int = 10,
     onLoadMore: () -> Unit
 ) {
-    // Derived state to determine when to load more items
     val shouldLoadMore = remember {
         derivedStateOf {
-            // Total number of items in the list
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            println("Total itens Count: ${totalItemsCount}")
-            // Index of the last visible item
-            val lastVisibleItemIndex =
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            println("Last Visible Index: ${lastVisibleItemIndex}")
-            // Check if we have scrolled near the end
-            println("Last Visible Index >= : ${lastVisibleItemIndex >= (totalItemsCount - buffer)}")
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer)
         }
     }
 
-    // Launch a coroutine when shouldLoadMore becomes true
     LaunchedEffect(shouldLoadMore) {
         snapshotFlow { shouldLoadMore.value }
             .distinctUntilChanged()
