@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -64,6 +66,7 @@ import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -78,10 +81,11 @@ fun LoadNasaImageScreen(
     imageSearch: String?,
     viewModel: LoadNasaImageViewModel = koinInject()
 ) {
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -123,7 +127,8 @@ fun LoadNasaImageScreen(
                     CircularProgressIndicator(
                         modifier = Modifier
                             .width(64.dp)
-                            .align(Alignment.Center)
+                            .align(Alignment.Center),
+                        color = mainColor
                     )
                 }
             }
@@ -196,10 +201,13 @@ fun LoadNasaImageScreen(
                         }
                     }
                     Row {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        LazyVerticalGrid(
+                            state = scrollState,
+                            contentPadding = PaddingValues(all = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            columns = GridCells.Fixed(2),
                             modifier = Modifier.clipToBounds(),
-                            state = scrollState
                         ) {
                             state.images.collection.items?.let { imagesToLoad ->
                                 listOfNasaImages = listOfNasaImages + imagesToLoad
@@ -239,7 +247,8 @@ fun LoadNasaImageScreen(
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .width(64.dp)
-                                .align(Alignment.Center)
+                                .align(Alignment.Center),
+                            color = mainColor
                         )
                     }
                 }
@@ -264,14 +273,15 @@ fun LoadNasaImageScreen(
 
 @Composable
 fun InfiniteListHandler(
-    listState: LazyListState,
+    listState: LazyGridState,
     buffer: Int = 10,
     onLoadMore: () -> Unit
 ) {
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer)
         }
     }
@@ -289,14 +299,12 @@ fun InfiniteListHandler(
 @Composable
 fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(290.dp)
+                .height(180.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.Black)
                 .border(
@@ -317,17 +325,17 @@ fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp)
+                    .height(150.dp)
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(6.dp),
+                    .padding(start = 6.dp),
                 text = "Imagem: ${numberOfImage + 1}",
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Justify,
-                color = Color.White
+                color = contentColor
             )
         }
     }
