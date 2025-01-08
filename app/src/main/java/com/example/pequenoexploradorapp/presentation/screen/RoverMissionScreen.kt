@@ -1,23 +1,28 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -39,18 +44,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionViewModel
@@ -61,13 +66,38 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoverMissionScreen(
-    viewModel: RoverMissionViewModel = koinInject()
+    viewModel: RoverMissionViewModel = koinInject(),
+    onNavigateToRoverSpirit: () -> Unit,
+    onNavigateToRoverCuriosity: () -> Unit,
+    onNavigateToRoverOpportunity: () -> Unit,
+    onNavigateToRoverPerseverance: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+    val options = remember {
+        listOf(
+            DrawOptionsMenuButton(
+                titleButtonLeft = "Spirit",
+                iconButtonLeft = R.drawable.rover_spirit,
+                actionButtonLeft = { onNavigateToRoverSpirit() },
+                titleButtonRight = "Curiosity",
+                iconButtonRight = R.drawable.rover_curiosity,
+                actionButtonRight = { onNavigateToRoverCuriosity() }
+            ),
+            DrawOptionsMenuButton(
+                titleButtonLeft = "Opportunity",
+                iconButtonLeft = R.drawable.rover_opportunity,
+                actionButtonLeft = { onNavigateToRoverOpportunity() },
+                titleButtonRight = "Perseverance",
+                iconButtonRight = R.drawable.rover_perseverance,
+                actionButtonRight = { onNavigateToRoverPerseverance() }
+            )
+        )
+    }
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
@@ -137,46 +167,112 @@ fun RoverMissionScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp)
                             .verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color.Black)
-                                .border(
-                                    width = 1.dp,
-                                    color = ListItemDefaults.contentColor,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .clickable { },
-                            elevation = CardDefaults.cardElevation(8.dp)
-                        ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(state.mission.rover)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(R.drawable.simple_background),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
+                        Box {
+                            AnimatedLottieFile(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .padding(top = 40.dp)
+                                    .size(200.dp)
+                                    .align(Alignment.TopCenter),
+                                file = R.raw.rover
                             )
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 6.dp),
-                                text = "Imagem: ${state.mission.rover}",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = ListItemDefaults.contentColor
+                                    .padding(start = 16.dp, end = 16.dp, top = 0.dp),
+                                text = "Nossa Exploração pelo Planeta Marte começa agora",
+                                fontSize = 21.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                color = Color.White
                             )
                         }
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp),
+                            text = "Opções de rovers:",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Left,
+                            color = Color.White
+                        )
+                        options.forEach { option ->
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Column(
+                                    Modifier
+                                        .clip(RoundedCornerShape(15))
+                                        .clickable { option.actionButtonLeft() }
+                                        .background(option.backgroundColor)
+                                        .width(150.dp)
+                                        .heightIn(150.dp)
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = option.titleButtonLeft,
+                                        style = TextStyle(
+                                            color = Color.White,
+                                            fontSize = 19.sp,
+                                            textAlign = TextAlign.Center,
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.size(16.dp))
+                                    Image(
+                                        painter = painterResource(option.iconButtonLeft),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(120.dp)
+                                            .clip(CircleShape)
+                                            .border(2.dp, Color.Black, CircleShape)
+                                            .background(Color.Black, CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                Column(
+                                    Modifier
+                                        .clip(RoundedCornerShape(15))
+                                        .clickable { option.actionButtonRight() }
+                                        .background(option.backgroundColor)
+                                        .width(150.dp)
+                                        .heightIn(150.dp)
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = option.titleButtonRight,
+                                        style = TextStyle(
+                                            color = Color.White,
+                                            fontSize = 19.sp,
+                                            textAlign = TextAlign.Center,
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.size(16.dp))
+                                    Image(
+                                        painter = painterResource(option.iconButtonRight),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(120.dp)
+                                            .clip(CircleShape)
+                                            .border(2.dp, Color.Black, CircleShape)
+                                            .background(Color.Black, CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(16.dp))
                     }
                 }
             }
