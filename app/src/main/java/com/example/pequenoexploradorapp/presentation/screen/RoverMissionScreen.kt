@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -173,8 +174,8 @@ fun RoverMissionScreen(
                                 modifier = Modifier
                                     .size(120.dp)
                                     .clip(CircleShape)
-                                    .border(2.dp, Color.Black, CircleShape)
-                                    .background(Color.Black, CircleShape),
+                                    .border(1.dp, ListItemDefaults.contentColor, CircleShape)
+                                    .background(ListItemDefaults.contentColor, CircleShape),
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -204,8 +205,8 @@ fun RoverMissionScreen(
                                 modifier = Modifier
                                     .size(120.dp)
                                     .clip(CircleShape)
-                                    .border(2.dp, Color.Black, CircleShape)
-                                    .background(Color.Black, CircleShape),
+                                    .border(1.dp, ListItemDefaults.contentColor, CircleShape)
+                                    .background(ListItemDefaults.contentColor, CircleShape),
                                 contentScale = ContentScale.Crop
                             )
                         }
