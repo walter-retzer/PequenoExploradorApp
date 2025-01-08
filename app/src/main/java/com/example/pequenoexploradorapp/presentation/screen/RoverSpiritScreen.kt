@@ -49,6 +49,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverSpiritViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverSpiritViewState
@@ -99,7 +100,7 @@ fun RoverSpiritScreen(
             }
 
             is RoverSpiritViewState.Init -> {
-                viewModel.onInfoRoversMissionRequest()
+                viewModel.onRoverSpiritMissionRequest()
             }
 
             is RoverSpiritViewState.Loading -> {
@@ -134,16 +135,16 @@ fun RoverSpiritScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(16.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(Color.Black)
                                 .border(
-                                    width = 1.dp,
+                                    width = 2.dp,
                                     color = ListItemDefaults.contentColor,
                                     shape = RoundedCornerShape(16.dp)
                                 )
@@ -156,19 +157,104 @@ fun RoverSpiritScreen(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(15))
-                                    .border(2.dp, Color.White, RoundedCornerShape(15))
-                                    .background(Color.Black, RoundedCornerShape(15))
+                                    .padding(10.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .border(
+                                        1.dp,
+                                        ListItemDefaults.contentColor,
+                                        RoundedCornerShape(16.dp)
+                                    )
+                                    .background(Color.Black, RoundedCornerShape(16.dp))
                             )
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 6.dp),
-                                text = "Imagem: ${state.mission.rover}",
-                                fontSize = 12.sp,
+                                    .padding(start = 16.dp),
+                                text = "Nome: ${state.mission.rover.name}",
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
+                                textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Status: Missão ${state.mission.rover.status}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Total de Fotos: ${state.mission.rover.totalPhotos}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Sol: ${state.mission.rover.maxSun}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Lançamento: ${state.mission.rover.launchDate}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Pouso em Marte: ${state.mission.rover.landingDate}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Última data em operação: ${state.mission.rover.maxDate}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp),
+                                text = "Quantidade de cameras: ${state.mission.rover.cameras.size - 1}",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Start,
+                                color = ListItemDefaults.contentColor
+                            )
+                            ProgressButton(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                text = "Pesquisar",
+                                isLoading = false,
+                                onClick = {
+
+                                }
                             )
                         }
                     }
