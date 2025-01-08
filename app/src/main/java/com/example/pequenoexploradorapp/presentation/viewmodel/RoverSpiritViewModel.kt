@@ -31,7 +31,7 @@ class RoverSpiritViewModel(
     val uiState: StateFlow<RoverSpiritViewState> = _uiState.asStateFlow()
 
 
-    fun onInfoRoversMissionRequest() {
+    fun onRoverSpiritMissionRequest() {
         _uiState.value = RoverSpiritViewState.Loading
         viewModelScope.launch {
             delay(3000L)
