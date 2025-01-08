@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.domain.repository
 
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.NasaImageResponse
+import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.data.RoverMission
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
@@ -39,6 +40,14 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
                 parameter("q", imageSearch)
                 parameter("page", page)
                 parameter("media_type", mediaType)
+            }
+        }
+
+    override suspend fun getPictureOfTheDay(): ApiResponse<PictureOfTheDay>  =
+        doRequest {
+            client.get {
+                url(BASE_URL_PICTURE_OF_THE_DAY)
+                parameter("api_key", BuildConfig.API_KEY_DEMO)
             }
         }
 
@@ -97,5 +106,6 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
     companion object {
         private const val BASE_URL_IMAGES = "https://images-api.nasa.gov/search"
         private const val BASE_URL_ROVERS = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/"
+        private const val BASE_URL_PICTURE_OF_THE_DAY = "https://api.nasa.gov/planetary/apod"
     }
 }
