@@ -32,6 +32,7 @@ import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
+import com.example.pequenoexploradorapp.presentation.screen.RoverSpiritScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
@@ -272,7 +273,6 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-
                     PictureOfTheDayScreen()
                 }
 
@@ -283,13 +283,60 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-
                     RoverMissionScreen(
-                        onNavigateToRoverSpirit = {},
-                        onNavigateToRoverCuriosity = {},
-                        onNavigateToRoverOpportunity = {},
-                        onNavigateToRoverPerseverance = {}
+                        onNavigateToRoverSpirit = {
+                            navController.navigate(Route.RoverMissionSpiritScreenRoute.route)
+                        },
+                        onNavigateToRoverCuriosity = {
+                            navController.navigate(Route.RoverMissionCuriosityScreenRoute.route)
+                        },
+                        onNavigateToRoverOpportunity = {
+                            navController.navigate(Route.RoverMissionOpportunityScreenRoute.route)
+                        },
+                        onNavigateToRoverPerseverance = {
+                            navController.navigate(Route.RoverMissionPerseveranceScreenRoute.route)
+                        }
                     )
+                }
+
+                composable(
+                    route = Route.RoverMissionSpiritScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    RoverSpiritScreen()
+                }
+
+                composable(
+                    route = Route.RoverMissionCuriosityScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    RoverSpiritScreen()
+                }
+
+                composable(
+                    route = Route.RoverMissionPerseveranceScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    RoverSpiritScreen()
+                }
+
+                composable(
+                    route = Route.RoverMissionOpportunityScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    RoverSpiritScreen()
                 }
             }
 
