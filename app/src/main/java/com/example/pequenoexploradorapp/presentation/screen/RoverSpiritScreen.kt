@@ -157,7 +157,7 @@ fun RoverSpiritScreen(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(10.dp)
+                                    .padding(16.dp)
                                     .clip(RoundedCornerShape(16.dp))
                                     .border(
                                         1.dp,
