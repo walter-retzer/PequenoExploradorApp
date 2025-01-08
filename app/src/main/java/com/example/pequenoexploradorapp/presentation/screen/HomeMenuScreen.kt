@@ -52,7 +52,8 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 fun HomeMenuScreen(
     modifier: Modifier = Modifier,
     onNavigateToSearchImage: () -> Unit,
-    onNavigateToPictureOfTheDay: () -> Unit
+    onNavigateToPictureOfTheDay: () -> Unit,
+    onNavigateToRoverMission: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -71,7 +72,7 @@ fun HomeMenuScreen(
             DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
                 iconButtonLeft = R.drawable.icon_rover,
-                actionButtonLeft = { onNavigateToSearchImage() },
+                actionButtonLeft = { onNavigateToRoverMission() },
                 titleButtonRight = "Planetas",
                 iconButtonRight = R.drawable.icon_planet_earth,
                 actionButtonRight = {  onNavigateToSearchImage() }
