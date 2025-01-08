@@ -51,7 +51,8 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 @Composable
 fun HomeMenuScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSearchImage: () -> Unit
+    onNavigateToSearchImage: () -> Unit,
+    onNavigateToPictureOfTheDay: () -> Unit
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -89,7 +90,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Imagem\ndo Dia",
                 iconButtonRight = R.drawable.icon_comet,
-                actionButtonRight = { onNavigateToSearchImage() }
+                actionButtonRight = { onNavigateToPictureOfTheDay() }
             ),
         )
     }
