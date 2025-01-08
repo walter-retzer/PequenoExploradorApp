@@ -3,27 +3,30 @@ package com.example.pequenoexploradorapp.presentation.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +49,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.data.NasaImageItems
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
@@ -57,10 +61,8 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PictureOfTheDayScreen(
-    imageSearch: String?,
     viewModel: PictureOfTheDayViewModel = koinInject()
 ) {
-    val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -68,15 +70,13 @@ fun PictureOfTheDayScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    var listOfNasaImages = listOf<NasaImageItems>()
-    var page by remember { mutableStateOf(1) }
 
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagens",
+                title = "Imagem do Dia",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -88,7 +88,17 @@ fun PictureOfTheDayScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is PictureOfTheDayViewState.Error -> {
-
+                progressButtonIsActivated = false
+                snackBarIsActivated = true
+                LaunchedEffect(snackBarIsActivated) {
+                    snackBarOnlyMessage(
+                        snackBarHostState = snackBarHostState,
+                        coroutineScope = scope,
+                        message = state.message,
+                        duration = SnackbarDuration.Long
+                    )
+                    snackBarIsActivated = false
+                }
             }
 
             is PictureOfTheDayViewState.Init -> {
@@ -115,52 +125,73 @@ fun PictureOfTheDayScreen(
             }
 
             is PictureOfTheDayViewState.Success -> {
-                Column(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
+                        .padding(paddingValues)
                         .paint(
                             painterResource(id = R.drawable.simple_background),
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    Card(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(180.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.Black)
-                            .border(
-                                width = 1.dp,
-                                color = ListItemDefaults.contentColor,
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .clickable { },
-                        elevation = CardDefaults.cardElevation(8.dp)
+                            .padding(10.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(state.image.hdUrl)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.simple_background),
-                            contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(150.dp)
-                        )
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 6.dp),
-                            text = "Imagem: ${state.image.explanation}",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Justify,
-                            color = ListItemDefaults.contentColor
-                        )
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.Black)
+                                .border(
+                                    width = 1.dp,
+                                    color = ListItemDefaults.contentColor,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .clickable { },
+                            elevation = CardDefaults.cardElevation(8.dp)
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(state.image.hdUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.simple_background),
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 6.dp),
+                                text = "Imagem: ${state.image.explanation}",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Justify,
+                                color = ListItemDefaults.contentColor
+                            )
+                        }
                     }
                 }
+            }
+        }
+
+        if (isConnected?.not() == true) {
+            snackBarIsActivated = true
+            LaunchedEffect(snackBarIsActivated) {
+                snackBarOnlyMessage(
+                    snackBarHostState = snackBarHostState,
+                    coroutineScope = scope,
+                    message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                    duration = SnackbarDuration.Long
+                )
+                snackBarIsActivated = false
             }
         }
     }
