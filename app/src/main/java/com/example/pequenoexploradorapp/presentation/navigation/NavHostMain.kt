@@ -31,6 +31,7 @@ import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
+import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
@@ -219,6 +220,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         },
                         onNavigateToPictureOfTheDay = {
                             navController.navigate(Route.PictureOfTheDayScreenRoute.route)
+                        },
+                        onNavigateToRoverMission = {
+                            navController.navigate(Route.RoverMissionScreenRoute.route)
                         }
                     )
                 }
@@ -270,6 +274,17 @@ private fun NavGraphBuilder.homeNavGraph() {
                 ) {
 
                     PictureOfTheDayScreen()
+                }
+
+                composable(
+                    route = Route.RoverMissionScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+
+                    RoverMissionScreen()
                 }
             }
 
