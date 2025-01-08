@@ -284,7 +284,12 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
 
-                    RoverMissionScreen()
+                    RoverMissionScreen(
+                        onNavigateToRoverSpirit = {},
+                        onNavigateToRoverCuriosity = {},
+                        onNavigateToRoverOpportunity = {},
+                        onNavigateToRoverPerseverance = {}
+                    )
                 }
             }
 
