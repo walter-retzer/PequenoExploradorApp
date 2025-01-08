@@ -30,6 +30,9 @@ sealed class Route(
     @Serializable
     object FavouriteImageScreenRoute : Route(route = "FavouriteNasaImageScreen")
 
+    @Serializable
+    object PictureOfTheDayScreenRoute : Route(route = "PictureOfTheDayScreen")
+
     // Routes from Graph Navigation:
     @Serializable
     object LoginGraphNav : Route(route = "LoginNavigation")
