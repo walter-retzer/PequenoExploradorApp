@@ -1,9 +1,7 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.NewUserSignInContact
-import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
@@ -12,11 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 
 class SignInViewModel(
-    private val remoteRepositoryImpl: RemoteRepositoryImpl,
     private val sharedPref: SharedPrefApp
 ) : ViewModel() {
 
@@ -39,12 +35,6 @@ class SignInViewModel(
 
     private val _phoneNumberError = MutableStateFlow(false)
     val phoneNumberError = _phoneNumberError.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            remoteRepositoryImpl.getInfoRoversMission()
-        }
-    }
 
     fun onSignInUser(name: String, email: String, password: String, phoneNumber: String) {
         _uiState.value = SignInViewState.Loading
