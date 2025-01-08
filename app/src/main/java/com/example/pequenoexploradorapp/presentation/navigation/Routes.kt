@@ -33,6 +33,9 @@ sealed class Route(
     @Serializable
     object PictureOfTheDayScreenRoute : Route(route = "PictureOfTheDayScreen")
 
+    @Serializable
+    object RoverMissionScreenRoute : Route(route = "RoverMissionScreen")
+
     // Routes from Graph Navigation:
     @Serializable
     object LoginGraphNav : Route(route = "LoginNavigation")
