@@ -6,7 +6,25 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-data class RoverMission(
+data class RoverMissionCuriosity(
+    @SerialName("rover") val rover: Rover
+)
+
+@Keep
+@Serializable
+data class RoverMissionSpirit(
+    @SerialName("rover") val rover: Rover
+)
+
+@Keep
+@Serializable
+data class RoverMissionOpportunity(
+    @SerialName("rover") val rover: Rover
+)
+
+@Keep
+@Serializable
+data class RoverMissionPerseverance(
     @SerialName("rover") val rover: Rover
 )
 
