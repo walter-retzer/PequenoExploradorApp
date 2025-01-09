@@ -61,6 +61,7 @@ import org.koin.compose.koinInject
 @Composable
 fun RoverMissionDetailScreen(
     idName: String?,
+    onNavigateToSearchImage: (imageSearch: String?) -> Unit,
     viewModel: RoverMissionDetailViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -254,9 +255,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth(),
                                 text = "Pesquisar",
                                 isLoading = false,
-                                onClick = {
-
-                                }
+                                onClick = { onNavigateToSearchImage("") }
                             )
                         }
                     }
