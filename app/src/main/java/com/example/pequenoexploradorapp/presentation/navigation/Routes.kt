@@ -37,16 +37,7 @@ sealed class Route(
     object RoverMissionScreenRoute : Route(route = "RoverMissionScreen")
 
     @Serializable
-    object RoverMissionSpiritScreenRoute : Route(route = "RoverMissionSpiritScreen")
-
-    @Serializable
-    object RoverMissionOpportunityScreenRoute : Route(route = "RoverMissionOpportunityScreen")
-
-    @Serializable
-    object RoverMissionPerseveranceScreenRoute : Route(route = "RoverMissionPerseveranceScreen")
-
-    @Serializable
-    object RoverMissionCuriosityScreenRoute : Route(route = "RoverMissionCuriosityScreen")
+    object RoverMissionDetailScreenRoute : Route(route = "RoverMissionDetailScreen")
 
     // Routes from Graph Navigation:
     @Serializable
