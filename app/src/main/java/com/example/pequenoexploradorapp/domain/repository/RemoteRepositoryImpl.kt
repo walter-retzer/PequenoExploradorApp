@@ -3,10 +3,7 @@ package com.example.pequenoexploradorapp.domain.repository
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
-import com.example.pequenoexploradorapp.data.RoverMissionCuriosity
-import com.example.pequenoexploradorapp.data.RoverMissionOpportunity
-import com.example.pequenoexploradorapp.data.RoverMissionPerseverance
-import com.example.pequenoexploradorapp.data.RoverMissionSpirit
+import com.example.pequenoexploradorapp.data.RoverMission
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import io.ktor.client.HttpClient
@@ -24,7 +21,7 @@ import kotlinx.serialization.SerializationException
 
 class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
 
-    override suspend fun getRoverSpiritMission(): ApiResponse<RoverMissionSpirit> =
+    override suspend fun getRoverSpiritMission(): ApiResponse<RoverMission> =
         doRequest {
             client.get {
                 url(BASE_URL_ROVER_SPIRIT)
@@ -32,7 +29,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             }
         }
 
-    override suspend fun getRoverOpportunityMission(): ApiResponse<RoverMissionOpportunity> =
+    override suspend fun getRoverOpportunityMission(): ApiResponse<RoverMission> =
         doRequest {
             client.get {
                 url(BASE_URL_ROVER_OPPORTUNITY)
@@ -40,7 +37,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             }
         }
 
-    override suspend fun getRoverPerseveranceMission(): ApiResponse<RoverMissionPerseverance> =
+    override suspend fun getRoverPerseveranceMission(): ApiResponse<RoverMission> =
         doRequest {
             client.get {
                 url(BASE_URL_ROVER_PERSEVERANCE)
@@ -48,7 +45,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             }
         }
 
-    override suspend fun getRoverCuriosityMission(): ApiResponse<RoverMissionCuriosity> =
+    override suspend fun getRoverCuriosityMission(): ApiResponse<RoverMission> =
         doRequest {
             client.get {
                 url(BASE_URL_ROVER_CURIOSITY)
