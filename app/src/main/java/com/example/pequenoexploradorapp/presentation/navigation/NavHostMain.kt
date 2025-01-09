@@ -35,6 +35,7 @@ import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScree
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.screen.WelcomeScreen
@@ -325,7 +326,24 @@ private fun NavGraphBuilder.homeNavGraph() {
                     val arguments = requireNotNull(it.arguments)
                     val idName = arguments.getString(ID_NAME_KEY)
 
-                    RoverMissionDetailScreen(idName = idName)
+                    RoverMissionDetailScreen(
+                        idName = idName,
+                        onNavigateToSearchImage = {
+                            navController.navigate(Route.RoverSearchImageScreenRoute.route)
+                        }
+                    )
+                }
+
+                composable(
+                    route = Route.RoverSearchImageScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    RoverSearchImageScreen(
+                        onNavigateToLoadRoverImage = { }
+                    )
                 }
             }
 
