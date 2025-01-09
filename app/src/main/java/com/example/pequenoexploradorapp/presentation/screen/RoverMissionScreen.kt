@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
@@ -52,10 +53,10 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoverMissionScreen(
-    onNavigateToRoverSpirit: () -> Unit,
-    onNavigateToRoverCuriosity: () -> Unit,
-    onNavigateToRoverOpportunity: () -> Unit,
-    onNavigateToRoverPerseverance: () -> Unit
+    onNavigateToRoverSpirit: (idName: String) -> Unit,
+    onNavigateToRoverCuriosity: (idName: String) -> Unit,
+    onNavigateToRoverOpportunity: (idName: String) -> Unit,
+    onNavigateToRoverPerseverance: (idName: String) -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -64,18 +65,18 @@ fun RoverMissionScreen(
             DrawOptionsMenuButton(
                 titleButtonLeft = "Spirit",
                 iconButtonLeft = R.drawable.rover_spirit,
-                actionButtonLeft = { onNavigateToRoverSpirit() },
+                actionButtonLeft = { onNavigateToRoverSpirit(BuildConfig.SPIRIT) },
                 titleButtonRight = "Curiosity",
                 iconButtonRight = R.drawable.rover_curiosity,
-                actionButtonRight = { onNavigateToRoverCuriosity() }
+                actionButtonRight = { onNavigateToRoverCuriosity(BuildConfig.CURIOSITY) },
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Opportunity",
                 iconButtonLeft = R.drawable.rover_opportunity,
-                actionButtonLeft = { onNavigateToRoverOpportunity() },
+                actionButtonLeft = { onNavigateToRoverOpportunity(BuildConfig.OPPORTUNITY) },
                 titleButtonRight = "Perseverance",
                 iconButtonRight = R.drawable.rover_perseverance,
-                actionButtonRight = { onNavigateToRoverPerseverance() }
+                actionButtonRight = { onNavigateToRoverPerseverance(BuildConfig.PERSEVERANCE) },
             )
         )
     }
