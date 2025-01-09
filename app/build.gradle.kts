@@ -34,7 +34,10 @@ android {
         buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         buildConfigField("String", "API_KEY_DEMO", "\"${properties.getProperty("API_KEY_DEMO")}\"")
         buildConfigField("String", "RESULTS", "\"${properties.getProperty("RESULTS")}\"")
-
+        buildConfigField("String", "SPIRIT", "\"${properties.getProperty("SPIRIT")}\"")
+        buildConfigField("String", "CURIOSITY", "\"${properties.getProperty("CURIOSITY")}\"")
+        buildConfigField("String", "OPPORTUNITY", "\"${properties.getProperty("OPPORTUNITY")}\"")
+        buildConfigField("String", "PERSEVERANCE", "\"${properties.getProperty("PERSEVERANCE")}\"")
     }
 
 
