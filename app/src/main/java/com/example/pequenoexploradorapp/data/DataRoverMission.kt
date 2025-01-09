@@ -1,34 +1,13 @@
 package com.example.pequenoexploradorapp.data
 
-import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Keep
 @Serializable
-data class RoverMissionCuriosity(
+data class RoverMission(
     @SerialName("rover") val rover: Rover
 )
 
-@Keep
-@Serializable
-data class RoverMissionSpirit(
-    @SerialName("rover") val rover: Rover
-)
-
-@Keep
-@Serializable
-data class RoverMissionOpportunity(
-    @SerialName("rover") val rover: Rover
-)
-
-@Keep
-@Serializable
-data class RoverMissionPerseverance(
-    @SerialName("rover") val rover: Rover
-)
-
-@Keep
 @Serializable
 data class Rover(
     @SerialName("id") val id: String,
@@ -42,7 +21,6 @@ data class Rover(
     @SerialName("cameras") val cameras: List<RoverCameraType>
 )
 
-@Keep
 @Serializable
 data class RoverCameraType(
     @SerialName("name") val name: String,
