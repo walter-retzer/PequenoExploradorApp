@@ -5,7 +5,9 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.absoluteValue
 
 class MaskVisualTransformation(private val mask: String) : VisualTransformation {
@@ -77,4 +79,16 @@ fun String.formattedDate(): String {
         println(e)
         "--/--/----"
     }
+}
+
+fun Long.toBrazilianDateFormat(
+    pattern: String = "dd/MM/yyyy"
+): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat(
+        pattern, Locale("pt-br")
+    ).apply {
+        timeZone = TimeZone.getTimeZone("GMT")
+    }
+    return formatter.format(date)
 }
