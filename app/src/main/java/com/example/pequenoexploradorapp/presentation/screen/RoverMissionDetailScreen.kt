@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
@@ -211,7 +212,7 @@ fun RoverMissionDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
-                                text = "Lançamento: ${state.mission.rover.launchDate}",
+                                text = "Lançamento: ${state.mission.rover.launchDate.formattedDate()}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
@@ -221,7 +222,7 @@ fun RoverMissionDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
-                                text = "Pouso em Marte: ${state.mission.rover.landingDate}",
+                                text = "Pouso em Marte: ${state.mission.rover.landingDate.formattedDate()}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
@@ -231,7 +232,7 @@ fun RoverMissionDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
-                                text = "Última data em operação: ${state.mission.rover.maxDate}",
+                                text = "Última data em operação: ${state.mission.rover.maxDate.formattedDate()}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
