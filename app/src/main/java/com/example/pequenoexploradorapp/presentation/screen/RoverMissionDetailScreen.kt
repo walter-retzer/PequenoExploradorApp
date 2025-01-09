@@ -51,15 +51,16 @@ import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.viewmodel.RoverSpiritViewModel
-import com.example.pequenoexploradorapp.presentation.viewmodel.RoverSpiritViewState
+import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewState
 import org.koin.compose.koinInject
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoverSpiritScreen(
-    viewModel: RoverSpiritViewModel = koinInject(),
+fun RoverMissionDetailScreen(
+    idName: String?,
+    viewModel: RoverMissionDetailViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -85,7 +86,7 @@ fun RoverSpiritScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         when (val state = uiState) {
-            is RoverSpiritViewState.Error -> {
+            is RoverMissionDetailViewState.Error -> {
                 progressButtonIsActivated = false
                 snackBarIsActivated = true
                 LaunchedEffect(snackBarIsActivated) {
@@ -99,11 +100,11 @@ fun RoverSpiritScreen(
                 }
             }
 
-            is RoverSpiritViewState.Init -> {
-                viewModel.onRoverSpiritMissionRequest()
+            is RoverMissionDetailViewState.Init -> {
+                viewModel.onRoverMissionDetailRequest(idName)
             }
 
-            is RoverSpiritViewState.Loading -> {
+            is RoverMissionDetailViewState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -122,7 +123,7 @@ fun RoverSpiritScreen(
                 }
             }
 
-            is RoverSpiritViewState.Success -> {
+            is RoverMissionDetailViewState.Success -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
