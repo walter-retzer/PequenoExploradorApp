@@ -6,7 +6,7 @@ import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
-import com.example.pequenoexploradorapp.presentation.viewmodel.RoverSpiritViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -40,8 +40,8 @@ val viewModelModules = module {
             get()
         )
     }
-    factory<RoverSpiritViewModel> {
-        RoverSpiritViewModel(
+    factory<RoverMissionDetailViewModel> {
+        RoverMissionDetailViewModel(
             provideConnectivityStatus(androidApplication()),
             get()
         )
