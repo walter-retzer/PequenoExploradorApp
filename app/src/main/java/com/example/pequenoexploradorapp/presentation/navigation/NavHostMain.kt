@@ -26,13 +26,14 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
-import com.example.pequenoexploradorapp.presentation.screen.RoverSpiritScreen
+import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
@@ -284,59 +285,47 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
                     RoverMissionScreen(
-                        onNavigateToRoverSpirit = {
-                            navController.navigate(Route.RoverMissionSpiritScreenRoute.route)
+                        onNavigateToRoverSpirit = { idName ->
+                            navController.navigate(
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                            )
                         },
-                        onNavigateToRoverCuriosity = {
-                            navController.navigate(Route.RoverMissionCuriosityScreenRoute.route)
+                        onNavigateToRoverCuriosity = { idName ->
+                            navController.navigate(
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                            )
                         },
-                        onNavigateToRoverOpportunity = {
-                            navController.navigate(Route.RoverMissionOpportunityScreenRoute.route)
+                        onNavigateToRoverOpportunity = { idName ->
+                            navController.navigate(
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                            )
                         },
-                        onNavigateToRoverPerseverance = {
-                            navController.navigate(Route.RoverMissionPerseveranceScreenRoute.route)
+                        onNavigateToRoverPerseverance = { idName ->
+                            navController.navigate(
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                            )
                         }
                     )
                 }
 
                 composable(
-                    route = Route.RoverMissionSpiritScreenRoute.route,
+                    route = "${Route.RoverMissionDetailScreenRoute.route}/{$ID_NAME_KEY}",
+                    arguments = listOf(
+                        navArgument(ID_NAME_KEY) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        },
+                    ),
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-                    RoverSpiritScreen()
-                }
+                    val arguments = requireNotNull(it.arguments)
+                    val idName = arguments.getString(ID_NAME_KEY)
 
-                composable(
-                    route = Route.RoverMissionCuriosityScreenRoute.route,
-                    enterTransition = NavAnimations.slideLeftEnterAnimation,
-                    exitTransition = NavAnimations.slideLeftExitAnimation,
-                    popEnterTransition = NavAnimations.popEnterRightAnimation,
-                    popExitTransition = NavAnimations.popExitRightAnimation
-                ) {
-                    RoverSpiritScreen()
-                }
-
-                composable(
-                    route = Route.RoverMissionPerseveranceScreenRoute.route,
-                    enterTransition = NavAnimations.slideLeftEnterAnimation,
-                    exitTransition = NavAnimations.slideLeftExitAnimation,
-                    popEnterTransition = NavAnimations.popEnterRightAnimation,
-                    popExitTransition = NavAnimations.popExitRightAnimation
-                ) {
-                    RoverSpiritScreen()
-                }
-
-                composable(
-                    route = Route.RoverMissionOpportunityScreenRoute.route,
-                    enterTransition = NavAnimations.slideLeftEnterAnimation,
-                    exitTransition = NavAnimations.slideLeftExitAnimation,
-                    popEnterTransition = NavAnimations.popEnterRightAnimation,
-                    popExitTransition = NavAnimations.popExitRightAnimation
-                ) {
-                    RoverSpiritScreen()
+                    RoverMissionDetailScreen(idName = idName)
                 }
             }
 
@@ -349,5 +338,6 @@ private fun NavGraphBuilder.homeNavGraph() {
 }
 
 object ArgumentsKey {
-    const val IMAGE_SEARCH_KEY = "IMAGE_SEARCH_ID"
+    const val IMAGE_SEARCH_KEY = "IMAGE_SEARCH_KEY"
+    const val ID_NAME_KEY = "ID_NAME_KEY"
 }
