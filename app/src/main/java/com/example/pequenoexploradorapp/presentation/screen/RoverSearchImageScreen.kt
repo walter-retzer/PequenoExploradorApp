@@ -60,28 +60,77 @@ import com.example.pequenoexploradorapp.presentation.components.parallax.Paralla
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
 import com.example.pequenoexploradorapp.presentation.theme.primaryDark
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoverSearchImageScreen(
+    dateInitial: String?,
+    dateFinal: String?,
+//    dayInitial: Int = 17,
+//    monthInitial: Int = 0,
+//    yearInitial: Int = 2021,
+//    dayFinal: Int = 6,
+//    monthFinal: Int = 0,
+//    yearFinal: Int = 2025,
     onNavigateToLoadRoverImage: (imageSearch: String?) -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val stateScroll = rememberScrollState()
     var isShowDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
+    var dayInitial: Int = 17
+    var monthInitial: Int = 0
+    var yearInitial: Int = 2021
+    var dayFinal: Int= 6
+    var monthFinal: Int = 0
+    var yearFinal: Int = 2025
+
+//    dateInitial.let {
+//        val parser = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
+//        val formatterYear = SimpleDateFormat("yyyy", Locale("pt-BR"))
+//        val formatterMonth = SimpleDateFormat("MM", Locale("pt-BR"))
+//        val formatterDay = SimpleDateFormat("dd", Locale("pt-BR"))
+//
+//        val formattedYear = formatterYear.format(parser.parse(it))
+//        val formattedMonth = formatterMonth.format(parser.parse(it))
+//        val formattedDay = formatterDay.format(parser.parse(it))
+//
+//        yearInitial = formattedYear.toString().toInt()
+//        monthInitial = formattedMonth.toString().toInt() - 1
+//        dayInitial = formattedDay.toString().toInt()
+//    }
+//
+//    dateFinal.let {
+//        val parser = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
+//        val formatterYear = SimpleDateFormat("yyyy", Locale("pt-BR"))
+//        val formatterMonth = SimpleDateFormat("MM", Locale("pt-BR"))
+//        val formatterDay = SimpleDateFormat("dd", Locale("pt-BR"))
+//
+//        val formattedYear = formatterYear.format(parser.parse(it))
+//        val formattedMonth = formatterMonth.format(parser.parse(it))
+//        val formattedDay = formatterDay.format(parser.parse(it))
+//
+//        yearFinal = formattedYear.toString().toInt()
+//        monthFinal = formattedMonth.toString().toInt() - 1
+//        dayFinal = formattedDay.toString().toInt()
+//    }
+
+
     val dateState = rememberDatePickerState(
         selectableDates = FutureSelectableDates(
-            dayInitial = 17,
-            monthInitial = 0,
-            yearInitial = 2021,
-            dayFinal = 6,
-            monthFinal = 0,
-            yearFinal = 2025
+            dayInitial = dayInitial,
+            monthInitial = monthInitial,
+            yearInitial = yearInitial,
+            dayFinal = dayFinal,
+            monthFinal = monthFinal,
+            yearFinal = yearFinal
         )
     )
 
@@ -142,7 +191,7 @@ fun RoverSearchImageScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
-                text = "As imagens da Missão Rover Perseverance estão disponíveis do dia 18.01.2021 ao dia 06.01.2025",
+                text = "As imagens da Missão Rover Perseverance estão disponíveis do dia $dateInitial ao dia $dateFinal",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -176,7 +225,7 @@ fun RoverSearchImageScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .size(54.dp)
-                        .clickable{ isShowDatePickerDialog = true }
+                        .clickable { isShowDatePickerDialog = true }
                 )
 
             }
@@ -248,24 +297,20 @@ class FutureSelectableDates(
     private val yearInitial: Int,
     private val dayFinal: Int,
     private val monthFinal: Int,
-    private val yearFinal: Int,
-
-    ): SelectableDates {
-
+    private val yearFinal: Int
+) : SelectableDates {
     private val initialDate = Calendar.getInstance().apply {
         set(Calendar.YEAR, yearInitial)
         set(Calendar.MONTH, monthInitial)
         set(Calendar.DAY_OF_MONTH, dayInitial)
     }
-    private val adjustInitialDate = initialDate.timeInMillis
-
     private val endDate = Calendar.getInstance().apply {
-         set(Calendar.YEAR, yearFinal)
-         set(Calendar.MONTH, monthFinal)
-         set(Calendar.DAY_OF_MONTH, dayFinal)
-     }
+        set(Calendar.YEAR, yearFinal)
+        set(Calendar.MONTH, monthFinal)
+        set(Calendar.DAY_OF_MONTH, dayFinal)
+    }
+    private val adjustInitialDate = initialDate.timeInMillis
     private val adjustEndDate = endDate.timeInMillis
-
 
     @ExperimentalMaterial3Api
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {

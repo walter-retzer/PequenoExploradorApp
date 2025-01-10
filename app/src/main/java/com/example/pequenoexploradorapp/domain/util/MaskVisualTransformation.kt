@@ -71,9 +71,9 @@ fun String.formattedAsPhone(): String {
 
 fun String.formattedDate(): String {
     return try {
-        val date = SimpleDateFormat("yyyy-mm-dd", Locale("pt-BR"))
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale("pt-BR"))
         val initDate = date.parse(this)
-        val formatter = SimpleDateFormat("dd/mm/yyyy", Locale("pt-BR"))
+        val formatter = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
         formatter.format(initDate!!)
     } catch (e: Exception) {
         println(e)
