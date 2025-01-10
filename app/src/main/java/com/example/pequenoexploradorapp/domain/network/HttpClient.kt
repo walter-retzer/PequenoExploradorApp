@@ -20,6 +20,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 private const val NETWORK_TIME_OUT = 30_000L
+private const val TAG = "HTTP_CLIENT"
 
 val httpClientAndroid = HttpClient(Android) {
     install(ContentNegotiation) {
@@ -43,7 +44,7 @@ val httpClientAndroid = HttpClient(Android) {
     install(Logging) {
         logger = object : Logger {
             override fun log(message: String) {
-                Log.v("Logger Ktor => ", message)
+                Log.i(TAG, "KTOR LOGGER =>: $message")
             }
         }
         level = LogLevel.ALL
@@ -51,7 +52,7 @@ val httpClientAndroid = HttpClient(Android) {
 
     install(ResponseObserver) {
         onResponse { response ->
-            Log.d("HTTP status => ", "${response.status.value}")
+            Log.i(TAG, "KTOR HTTP STATUS =>: ${response.status.value}")
         }
     }
 
