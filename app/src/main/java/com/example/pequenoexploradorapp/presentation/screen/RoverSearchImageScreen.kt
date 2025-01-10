@@ -60,9 +60,7 @@ import com.example.pequenoexploradorapp.presentation.components.parallax.Paralla
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
 import com.example.pequenoexploradorapp.presentation.theme.primaryDark
-import java.time.LocalDate
-import java.time.ZoneOffset
-import java.util.*
+import java.util.Calendar
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -76,11 +74,15 @@ fun RoverSearchImageScreen(
     val stateScroll = rememberScrollState()
     var isShowDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
-
-
-
     val dateState = rememberDatePickerState(
-        selectableDates = FutureSelectableDates()
+        selectableDates = FutureSelectableDates(
+            dayInitial = 17,
+            monthInitial = 0,
+            yearInitial = 2021,
+            dayFinal = 6,
+            monthFinal = 0,
+            yearFinal = 2025
+        )
     )
 
     Scaffold(
@@ -241,31 +243,37 @@ fun RoverSearchImageScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 class FutureSelectableDates(
+    private val dayInitial: Int,
+    private val monthInitial: Int,
+    private val yearInitial: Int,
+    private val dayFinal: Int,
+    private val monthFinal: Int,
+    private val yearFinal: Int,
 
-): SelectableDates {
+    ): SelectableDates {
 
-    val initialDate = Calendar.getInstance().apply {
-        set(Calendar.YEAR, 2021)
-        set(Calendar.MONTH, 0)
-        set(Calendar.DAY_OF_MONTH, 17)
+    private val initialDate = Calendar.getInstance().apply {
+        set(Calendar.YEAR, yearInitial)
+        set(Calendar.MONTH, monthInitial)
+        set(Calendar.DAY_OF_MONTH, dayInitial)
     }
-    val adjustInitialDate = initialDate.timeInMillis
+    private val adjustInitialDate = initialDate.timeInMillis
 
-     val endDate = Calendar.getInstance().apply {
-         set(Calendar.YEAR, 2025)
-         set(Calendar.MONTH, 0)
-         set(Calendar.DAY_OF_MONTH, 6)
+    private val endDate = Calendar.getInstance().apply {
+         set(Calendar.YEAR, yearFinal)
+         set(Calendar.MONTH, monthFinal)
+         set(Calendar.DAY_OF_MONTH, dayFinal)
      }
-     val adjustEndDate = endDate.timeInMillis
+    private val adjustEndDate = endDate.timeInMillis
 
 
     @ExperimentalMaterial3Api
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return adjustEndDate >= utcTimeMillis && adjustInitialDate <= utcTimeMillis
+        return utcTimeMillis in adjustInitialDate..adjustEndDate
     }
 
     @ExperimentalMaterial3Api
     override fun isSelectableYear(year: Int): Boolean {
-        return year <= 2025 && year >= 2021
+        return year in yearInitial..yearFinal
     }
 }
