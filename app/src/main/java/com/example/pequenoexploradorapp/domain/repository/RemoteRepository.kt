@@ -2,10 +2,13 @@ package com.example.pequenoexploradorapp.domain.repository
 
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
+import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.data.RoverMission
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 
 interface RemoteRepository {
+
+    suspend fun getRoverSpiritImages(): ApiResponse<RoverImageResponse>
 
     suspend fun getRoverSpiritMission(): ApiResponse<RoverMission>
 
