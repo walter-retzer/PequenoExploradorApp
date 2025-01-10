@@ -27,6 +27,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -59,6 +60,9 @@ import com.example.pequenoexploradorapp.presentation.components.parallax.Paralla
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
 import com.example.pequenoexploradorapp.presentation.theme.primaryDark
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.util.*
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -69,11 +73,15 @@ fun RoverSearchImageScreen(
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val dateState = rememberDatePickerState()
     val stateScroll = rememberScrollState()
     var isShowDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
 
+
+
+    val dateState = rememberDatePickerState(
+        selectableDates = FutureSelectableDates()
+    )
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -228,5 +236,36 @@ fun RoverSearchImageScreen(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+class FutureSelectableDates(
+
+): SelectableDates {
+
+    val initialDate = Calendar.getInstance().apply {
+        set(Calendar.YEAR, 2021)
+        set(Calendar.MONTH, 0)
+        set(Calendar.DAY_OF_MONTH, 17)
+    }
+    val adjustInitialDate = initialDate.timeInMillis
+
+     val endDate = Calendar.getInstance().apply {
+         set(Calendar.YEAR, 2025)
+         set(Calendar.MONTH, 0)
+         set(Calendar.DAY_OF_MONTH, 6)
+     }
+     val adjustEndDate = endDate.timeInMillis
+
+
+    @ExperimentalMaterial3Api
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        return adjustEndDate >= utcTimeMillis && adjustInitialDate <= utcTimeMillis
+    }
+
+    @ExperimentalMaterial3Api
+    override fun isSelectableYear(year: Int): Boolean {
+        return year <= 2025 && year >= 2021
     }
 }
