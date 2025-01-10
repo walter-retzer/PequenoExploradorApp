@@ -3,6 +3,7 @@ package com.example.pequenoexploradorapp.domain.repository
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
+import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.data.RoverMission
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
@@ -20,6 +21,14 @@ import kotlinx.serialization.SerializationException
 
 
 class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
+    override suspend fun getRoverSpiritImages(): ApiResponse<RoverImageResponse> =
+        doRequest {
+            client.get {
+                url(BASE_URL_IMAGES_CURIOSITY)
+                parameter("earth_date", "2015-5-4")
+                parameter("api_key", BuildConfig.API_KEY_DEMO)
+            }
+        }
 
     override suspend fun getRoverSpiritMission(): ApiResponse<RoverMission> =
         doRequest {
@@ -81,7 +90,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             ApiResponse.success(data = response.body(), statusCode = response.status.value)
         } catch (e: RedirectResponseException) {
             // 3xx - response
-            println("Error: ${e.response.status.description}")
+            println("Error 3XX: ${e.response.status.description}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
@@ -89,40 +98,40 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: ClientRequestException) {
             // 4xx - response
-            println("Error: ${e.response.status.description}")
+            println("Error 4XXX: ${e.response.status.description}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
-                messageError = ConstantsApp.ERROR_API
+                messageError = e.message
             )
         } catch (e: ServerResponseException) {
             // 5xx - response
-            println("Error: ${e.response.status.description}")
+            println("Error 5XX: ${e.response.status.description}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
                 messageError = ConstantsApp.ERROR_SERVER
             )
         } catch (e: UnresolvedAddressException) {
-            println("Error: ${e.printStackTrace()}")
+            println("Error Address: ${e.printStackTrace()}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
                 messageError = ConstantsApp.ERROR_SERVER
             )
         } catch (e: SerializationException) {
-            println("Error: ${e.printStackTrace()}")
+            println("Error Serialization: ${e.printStackTrace()}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
                 messageError = ConstantsApp.ERROR_API
             )
         } catch (e: Exception) {
-            println("Error: ${e.printStackTrace()}")
+            println("Error Exception: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
-                messageError = ConstantsApp.ERROR_API
+                messageError = e.message + ConstantsApp.ERROR_API
             )
         }
     }
@@ -134,5 +143,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
         private const val BASE_URL_ROVER_OPPORTUNITY = "https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/"
         private const val BASE_URL_ROVER_PERSEVERANCE = "https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/"
         private const val BASE_URL_PICTURE_OF_THE_DAY = "https://api.nasa.gov/planetary/apod"
+        private const val BASE_URL_IMAGES_SPIRIT = "https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/photos"
+        private const val BASE_URL_IMAGES_CURIOSITY = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos"
+        private const val BASE_URL_IMAGES_OPPORTUNITY = "https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos"
+        private const val BASE_URL_IMAGES_PERSEVERANCE = "https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/photos"
     }
 }
