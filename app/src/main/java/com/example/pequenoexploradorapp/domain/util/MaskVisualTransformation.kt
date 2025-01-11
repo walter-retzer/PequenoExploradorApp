@@ -83,6 +83,18 @@ fun String.formattedDate(): String {
     }
 }
 
+fun String.formattedRequestDateApi(): String {
+    return try {
+        val date = SimpleDateFormat("dd/MM/yyyy", Locale("pt-BR"))
+        val initDate = date.parse(this)
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale("pt-BR"))
+        formatter.format(initDate!!)
+    } catch (e: Exception) {
+        println(e)
+        ""
+    }
+}
+
 fun Long.toBrazilianDateFormat(
     pattern: String = "dd/MM/yyyy"
 ): String {
