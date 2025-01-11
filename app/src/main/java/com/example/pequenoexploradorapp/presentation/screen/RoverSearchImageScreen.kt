@@ -254,12 +254,10 @@ class FutureSelectableDates(
     private val yearInitial = dateInitial.formattedYear()
     private val yearFinal = dateFinal.formattedYear()
 
-    @ExperimentalMaterial3Api
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
         return utcTimeMillis in adjustInitialDate..adjustEndDate
     }
 
-    @ExperimentalMaterial3Api
     override fun isSelectableYear(year: Int): Boolean {
         return year in yearInitial..yearFinal
     }
