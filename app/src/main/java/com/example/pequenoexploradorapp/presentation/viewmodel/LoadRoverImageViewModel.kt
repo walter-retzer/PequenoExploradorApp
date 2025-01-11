@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
@@ -33,36 +34,46 @@ class LoadRoverImageViewModel(
             null
         )
 
-    fun onRoverSpiritImages(date: String? = "") {
+    fun onRequestRoverImages(date: String, nameRover: String) {
         _uiState.value = LoadRoverImageViewState.Loading
         viewModelScope.launch {
             delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getRoverSpiritImages()) {
-                is ApiResponse.Failure -> _uiState.value =
-                    LoadRoverImageViewState.Error(responseApi.messageError)
+            if(nameRover == BuildConfig.SPIRIT) {
+                when (val responseApi = remoteRepositoryImpl.getRoverSpiritImages(date)) {
+                    is ApiResponse.Failure -> _uiState.value =
+                        LoadRoverImageViewState.Error(responseApi.messageError)
 
-                is ApiResponse.Success -> _uiState.value =
-                    LoadRoverImageViewState.Success(responseApi.data)
-
+                    is ApiResponse.Success -> _uiState.value =
+                        LoadRoverImageViewState.Success(responseApi.data)
+                }
             }
-        }
-    }
+            if(nameRover == BuildConfig.OPPORTUNITY) {
+                when (val responseApi = remoteRepositoryImpl.getRoverOpportunityImages(date)) {
+                    is ApiResponse.Failure -> _uiState.value =
+                        LoadRoverImageViewState.Error(responseApi.messageError)
 
-    fun loadNextItems(
-        page: Int,
-        date: String?
-    ) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getRoverSpiritImages()) {
-                is ApiResponse.Failure -> _uiState.value =
-                    LoadRoverImageViewState.Error(responseApi.messageError)
-
-                is ApiResponse.Success -> _uiState.value =
-                    LoadRoverImageViewState.Success(responseApi.data)
+                    is ApiResponse.Success -> _uiState.value =
+                        LoadRoverImageViewState.Success(responseApi.data)
+                }
             }
-            _isLoading.value = false
+            if(nameRover == BuildConfig.PERSEVERANCE) {
+                when (val responseApi = remoteRepositoryImpl.getRoverPerseveranceImages(date)) {
+                    is ApiResponse.Failure -> _uiState.value =
+                        LoadRoverImageViewState.Error(responseApi.messageError)
+
+                    is ApiResponse.Success -> _uiState.value =
+                        LoadRoverImageViewState.Success(responseApi.data)
+                }
+            }
+            if(nameRover == BuildConfig.CURIOSITY) {
+                when (val responseApi = remoteRepositoryImpl.getRoverCuriosityImages(date)) {
+                    is ApiResponse.Failure -> _uiState.value =
+                        LoadRoverImageViewState.Error(responseApi.messageError)
+
+                    is ApiResponse.Success -> _uiState.value =
+                        LoadRoverImageViewState.Success(responseApi.data)
+                }
+            }
         }
     }
 }

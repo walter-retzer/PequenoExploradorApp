@@ -52,16 +52,13 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
@@ -81,14 +78,14 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoadRoverImageScreen(
-    date: String?,
+    date: String,
+    nameRover: String,
     viewModel: LoadRoverImageViewModel = koinInject()
 ) {
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -114,7 +111,7 @@ fun LoadRoverImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadRoverImageViewState.Init -> {
-                viewModel.onRoverSpiritImages()
+                viewModel.onRequestRoverImages(date, nameRover)
             }
 
             is LoadRoverImageViewState.Loading -> {
@@ -127,18 +124,6 @@ fun LoadRoverImageScreen(
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01004/opgs/edr/fcam/FLB_486615455EDR_F0481570FHAZ00323M_.JPG")
-                            .crossfade(true)
-                            .build(),
-                        placeholder = painterResource(R.drawable.simple_background),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                    )
                     CircularProgressIndicator(
                         modifier = Modifier
                             .width(64.dp)
@@ -236,14 +221,11 @@ fun LoadRoverImageScreen(
                             }
 
                         }
+                        //TODO:
                         InfiniteImageListHandler(
                             listState = scrollState,
                             onLoadMore = {
                                 page++
-                                viewModel.loadNextItems(
-                                    date = "",
-                                    page = page
-                                )
                             }
                         )
                     }
@@ -330,7 +312,6 @@ fun LoadRoverImageOnCard(images: List<RoverImageInfo>, numberOfImage: Int) {
                 .clickable { },
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
-
             SubcomposeAsyncImage(
                 model = imageToLoad,
                 loading = {
@@ -349,19 +330,6 @@ fun LoadRoverImageOnCard(images: List<RoverImageInfo>, numberOfImage: Int) {
                     .fillMaxWidth()
                     .height(150.dp)
             )
-
-//            AsyncImage(
-//                model = ImageRequest.Builder(LocalContext.current)
-//                    .data(imageToLoad)
-//                    .crossfade(true)
-//                    .build(),
-//                placeholder = painterResource(R.drawable.simple_background),
-//                contentDescription = "",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(150.dp)
-//            )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()

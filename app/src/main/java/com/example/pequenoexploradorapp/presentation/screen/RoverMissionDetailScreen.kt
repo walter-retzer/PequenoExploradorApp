@@ -60,8 +60,8 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoverMissionDetailScreen(
-    idName: String?,
-    onNavigateToSearchImage: (firstDate: String, lastDate: String) -> Unit,
+    roverName: String,
+    onNavigateToSearchImage: (firstDate: String, lastDate: String, nameRover: String) -> Unit,
     viewModel: RoverMissionDetailViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -103,7 +103,7 @@ fun RoverMissionDetailScreen(
             }
 
             is RoverMissionDetailViewState.Init -> {
-                viewModel.onRoverMissionDetailRequest(idName)
+                viewModel.onRoverMissionDetailRequest(roverName)
             }
 
             is RoverMissionDetailViewState.Loading -> {
@@ -258,7 +258,8 @@ fun RoverMissionDetailScreen(
                                 onClick = {
                                     onNavigateToSearchImage(
                                         state.mission.rover.landingDate.formattedDate(),
-                                        state.mission.rover.maxDate.formattedDate()
+                                        state.mission.rover.maxDate.formattedDate(),
+                                        roverName
                                     )
                                 }
                             )

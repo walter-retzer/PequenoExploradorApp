@@ -24,12 +24,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_FINAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_INITIAL_KEY
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
-import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
@@ -320,7 +321,7 @@ private fun NavGraphBuilder.homeNavGraph() {
                             type = NavType.StringType
                             defaultValue = ""
                             nullable = false
-                        },
+                        }
                     ),
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
@@ -328,20 +329,20 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
                     val arguments = requireNotNull(it.arguments)
-                    val idName = arguments.getString(ID_NAME_KEY)
+                    val idName = arguments.getString(ID_NAME_KEY).toString()
 
                     RoverMissionDetailScreen(
-                        idName = idName,
-                        onNavigateToSearchImage = { initialDate, finalDate ->
+                        roverName = idName,
+                        onNavigateToSearchImage = { initialDate, finalDate, nameRover ->
                             navController.navigate(
-                                route = "${Route.RoverSearchImageScreenRoute.route}/${initialDate}/${finalDate}"
+                                route = "${Route.RoverSearchImageScreenRoute.route}/${initialDate}/${finalDate}/${nameRover}"
                             )
                         }
                     )
                 }
 
                 composable(
-                    route = "${Route.RoverSearchImageScreenRoute.route}/{$DATE_INITIAL_KEY}/{$DATE_FINAL_KEY}",
+                    route = "${Route.RoverSearchImageScreenRoute.route}/{$DATE_INITIAL_KEY}/{$DATE_FINAL_KEY}/{$ID_NAME_KEY}",
                     arguments = listOf(
                         navArgument(DATE_INITIAL_KEY) {
                             type = NavType.StringType
@@ -353,6 +354,11 @@ private fun NavGraphBuilder.homeNavGraph() {
                             defaultValue = ""
                             nullable = false
                         },
+                        navArgument(ID_NAME_KEY) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
                     ),
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
@@ -362,25 +368,46 @@ private fun NavGraphBuilder.homeNavGraph() {
                     val arguments = requireNotNull(it.arguments)
                     val dateInitial = arguments.getString(DATE_INITIAL_KEY).toString()
                     val dateFinal = arguments.getString(DATE_FINAL_KEY).toString()
+                    val nameRover = arguments.getString(ID_NAME_KEY).toString()
 
                     RoverSearchImageScreen(
+                        nameRover = nameRover,
                         dateInitial = dateInitial,
                         dateFinal = dateFinal,
-                        onNavigateToLoadRoverImage = {
-                            navController.navigate(Route.LoadRoverImageScreenRoute.route)
+                        onNavigateToLoadRoverImage = { date, rover ->
+                            navController.navigate(
+                                route = "${Route.LoadRoverImageScreenRoute.route}/${date}/${nameRover}"
+                            )
                         }
                     )
                 }
 
                 composable(
-                    route = Route.LoadRoverImageScreenRoute.route,
+                    route = "${Route.LoadRoverImageScreenRoute.route}/{$DATE_KEY}/{$ID_NAME_KEY}",
+                    arguments = listOf(
+                        navArgument(DATE_KEY) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        },
+                        navArgument(ID_NAME_KEY) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        },
+                    ),
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val date = arguments.getString(DATE_KEY).toString()
+                    val nameRover = arguments.getString(ID_NAME_KEY).toString()
+
                     LoadRoverImageScreen(
-                       date = ""
+                        date = date,
+                        nameRover = nameRover
                     )
                 }
             }
@@ -396,7 +423,7 @@ private fun NavGraphBuilder.homeNavGraph() {
 object ArgumentsKey {
     const val IMAGE_SEARCH_KEY = "IMAGE_SEARCH_KEY"
     const val ID_NAME_KEY = "ID_NAME_KEY"
-    const val IMAGE_KEY = "IMAGE_KEY"
+    const val DATE_KEY = "DATE_KEY"
     const val DATE_INITIAL_KEY = "DATE_INITIAL_KEY"
     const val DATE_FINAL_KEY = "DATE_FINAL_KEY"
 }

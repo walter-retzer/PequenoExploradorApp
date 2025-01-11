@@ -52,8 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.domain.util.formattedDayMonth
-import com.example.pequenoexploradorapp.domain.util.formattedMonth
+import com.example.pequenoexploradorapp.domain.util.formattedRequestDateApi
 import com.example.pequenoexploradorapp.domain.util.formattedToMillis
 import com.example.pequenoexploradorapp.domain.util.formattedYear
 import com.example.pequenoexploradorapp.domain.util.toBrazilianDateFormat
@@ -70,9 +69,10 @@ import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoverSearchImageScreen(
+    nameRover: String,
     dateInitial: String,
     dateFinal: String,
-    onNavigateToLoadRoverImage: (imageSearch: String?) -> Unit,
+    onNavigateToLoadRoverImage: (imageSearch: String?, nameRover: String) -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -145,7 +145,7 @@ fun RoverSearchImageScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
-                text = "Year:${dateInitial.formattedYear()}  mes:${dateInitial.formattedMonth()} dia:${dateInitial.formattedDayMonth()}As imagens da Missão Rover Perseverance estão disponíveis do dia $dateInitial ao dia $dateFinal",
+                text = "As imagens da Missão Rover $nameRover estão disponíveis do dia $dateInitial ao dia $dateFinal",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -236,7 +236,7 @@ fun RoverSearchImageScreen(
                     text = "Pesquisar",
                     isLoading = false,
                     onClick = {
-                        onNavigateToLoadRoverImage(selectedDate)
+                        onNavigateToLoadRoverImage(selectedDate.formattedRequestDateApi(), nameRover)
                     }
                 )
             }
