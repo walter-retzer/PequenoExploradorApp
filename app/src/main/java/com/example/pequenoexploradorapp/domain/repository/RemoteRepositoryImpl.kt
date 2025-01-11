@@ -21,11 +21,38 @@ import kotlinx.serialization.SerializationException
 
 
 class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
-    override suspend fun getRoverSpiritImages(): ApiResponse<RoverImageResponse> =
+    override suspend fun getRoverSpiritImages(date: String): ApiResponse<RoverImageResponse> =
+        doRequest {
+            client.get {
+                url(BASE_URL_IMAGES_SPIRIT)
+                parameter("earth_date", date)
+                parameter("api_key", BuildConfig.API_KEY_DEMO)
+            }
+        }
+
+    override suspend fun getRoverOpportunityImages(date: String): ApiResponse<RoverImageResponse> =
+    doRequest {
+        client.get {
+            url(BASE_URL_IMAGES_OPPORTUNITY)
+            parameter("earth_date", date)
+            parameter("api_key", BuildConfig.API_KEY_DEMO)
+        }
+    }
+
+    override suspend fun getRoverPerseveranceImages(date: String): ApiResponse<RoverImageResponse> =
+        doRequest {
+            client.get {
+                url(BASE_URL_IMAGES_PERSEVERANCE)
+                parameter("earth_date", date)
+                parameter("api_key", BuildConfig.API_KEY_DEMO)
+            }
+        }
+
+    override suspend fun getRoverCuriosityImages(date: String): ApiResponse<RoverImageResponse> =
         doRequest {
             client.get {
                 url(BASE_URL_IMAGES_CURIOSITY)
-                parameter("earth_date", "2015-5-4")
+                parameter("earth_date", date)
                 parameter("api_key", BuildConfig.API_KEY_DEMO)
             }
         }

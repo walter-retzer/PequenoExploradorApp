@@ -8,7 +8,13 @@ import com.example.pequenoexploradorapp.domain.network.ApiResponse
 
 interface RemoteRepository {
 
-    suspend fun getRoverSpiritImages(): ApiResponse<RoverImageResponse>
+    suspend fun getRoverSpiritImages(date: String): ApiResponse<RoverImageResponse>
+
+    suspend fun getRoverOpportunityImages(date: String): ApiResponse<RoverImageResponse>
+
+    suspend fun getRoverPerseveranceImages(date: String): ApiResponse<RoverImageResponse>
+
+    suspend fun getRoverCuriosityImages(date: String): ApiResponse<RoverImageResponse>
 
     suspend fun getRoverSpiritMission(): ApiResponse<RoverMission>
 
