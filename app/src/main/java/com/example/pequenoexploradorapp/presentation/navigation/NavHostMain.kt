@@ -360,9 +360,8 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
                     val arguments = requireNotNull(it.arguments)
-                    val image = arguments.getString(IMAGE_KEY)
-                    val dateInitial = arguments.getString(DATE_INITIAL_KEY)
-                    val dateFinal = arguments.getString(DATE_FINAL_KEY)
+                    val dateInitial = arguments.getString(DATE_INITIAL_KEY).toString()
+                    val dateFinal = arguments.getString(DATE_FINAL_KEY).toString()
 
                     RoverSearchImageScreen(
                         dateInitial = dateInitial,
