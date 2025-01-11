@@ -5,6 +5,8 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -93,7 +95,6 @@ fun Long.toBrazilianDateFormat(
     return formatter.format(date)
 }
 
-
 fun String.toHttpsPrefix(): String =
     if (isNotEmpty() && !startsWith("https://") && !startsWith("http://")) {
         "https://$this"
@@ -101,3 +102,53 @@ fun String.toHttpsPrefix(): String =
         replace("http://", "https://")
     } else this
 
+fun String.formattedYear(): Int {
+    return try {
+        val date = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
+        val initDate = date.parse(this)
+        val formatter = SimpleDateFormat("yyyy", Locale("pt-BR"))
+        formatter.format(initDate!!).toString().toInt()
+    } catch (e: Exception) {
+        println(e)
+        LocalDate.now().year
+    }
+}
+
+fun String.formattedMonth(): Int {
+    return try {
+        val date = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
+        val initDate = date.parse(this)
+        val formatter = SimpleDateFormat("MM", Locale("pt-BR"))
+        formatter.format(initDate!!).toString().toInt()
+    } catch (e: Exception) {
+        println(e)
+        LocalDate.now().monthValue
+    }
+}
+
+fun String.formattedDayMonth(): Int {
+    return try {
+        val date = SimpleDateFormat("dd.MM.yyyy", Locale("pt-BR"))
+        val initDate = date.parse(this)
+        val formatter = SimpleDateFormat("dd", Locale("pt-BR")).apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }
+        formatter.format(initDate!!).toString().toInt()
+    } catch (e: Exception) {
+        println(e)
+        LocalDate.now().dayOfMonth
+    }
+}
+
+fun String.formattedToMillis(adjustDataPickerInitialDate: Int = 0): Long {
+    val day = this.formattedDayMonth() - adjustDataPickerInitialDate
+    val month = this.formattedMonth() - 1
+    val year = this.formattedYear()
+
+    val date = Calendar.getInstance().apply {
+        set(Calendar.YEAR, year)
+        set(Calendar.MONTH, month)
+        set(Calendar.DAY_OF_MONTH, day)
+    }
+   return date.timeInMillis
+}
