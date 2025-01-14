@@ -62,6 +62,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
@@ -192,7 +193,7 @@ fun LoadRoverImageScreen(
                                             scrollState.animateScrollToItem(0)
                                         }
                                     },
-                                text = "Foram encontradas ${state.images.photos.size} imagens",
+                                text = "Foram encontradas ${state.images.photos.size} imagens em ${date.formattedDate()}",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Justify,
