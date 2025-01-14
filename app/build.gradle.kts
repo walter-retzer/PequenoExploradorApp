@@ -112,7 +112,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     // for language translation
-    implementation("com.google.mlkit:translate:17.0.3")
+    implementation(libs.translate)
 
 
 }
