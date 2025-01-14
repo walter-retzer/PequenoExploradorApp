@@ -6,6 +6,10 @@ import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
 
 class LoadNasaImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
@@ -33,29 +38,51 @@ class LoadNasaImageViewModel(
             null
         )
 
+    private var image = ""
+
     fun onNasaImageSearch(imageSearch: String?) {
         _uiState.value = LoadNasaImageViewState.Loading
-        viewModelScope.launch {
-            delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getNasaImage(imageSearch)) {
-                is ApiResponse.Failure -> _uiState.value =
-                    LoadNasaImageViewState.Error(responseApi.messageError)
-
-                is ApiResponse.Success -> _uiState.value =
-                    LoadNasaImageViewState.Success(responseApi.data)
-
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(TranslateLanguage.PORTUGUESE)
+            .setTargetLanguage(TranslateLanguage.ENGLISH)
+            .build()
+        val textTranslator = Translation.getClient(options)
+        val conditions = DownloadConditions.Builder()
+            .requireWifi()
+            .build()
+        textTranslator.downloadModelIfNeeded(conditions)
+            .addOnSuccessListener {
+                println("Success Download Model Translation")
             }
-        }
+            .addOnFailureListener { exception ->
+                println("Error Download Model Translation: ${exception.printStackTrace()}")
+            }
+        textTranslator.translate(imageSearch.toString())
+            .addOnSuccessListener { translatedText ->
+                println("Success Text Translation: $translatedText")
+                image = translatedText
+                viewModelScope.launch {
+                    when (val responseApi = remoteRepositoryImpl.getNasaImage(translatedText)) {
+                        is ApiResponse.Failure -> _uiState.value =
+                            LoadNasaImageViewState.Error(responseApi.messageError)
+
+                        is ApiResponse.Success -> _uiState.value =
+                            LoadNasaImageViewState.Success(responseApi.data)
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                println("Error Text Translation: ${exception.printStackTrace()}")
+            }
     }
 
     fun loadNextItems(
-        page: Int,
-        imageSearch: String?
+        page: Int
     ) {
         viewModelScope.launch {
             _isLoading.value = true
             delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getNasaImage(imageSearch, page)) {
+            when (val responseApi = remoteRepositoryImpl.getNasaImage(image, page)) {
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaImageViewState.Error(responseApi.messageError)
 

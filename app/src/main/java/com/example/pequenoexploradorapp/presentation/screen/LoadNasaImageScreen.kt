@@ -227,7 +227,6 @@ fun LoadNasaImageScreen(
                             onLoadMore = {
                                 page++
                                 viewModel.loadNextItems(
-                                    imageSearch = imageSearch,
                                     page = page
                                 )
                             }
