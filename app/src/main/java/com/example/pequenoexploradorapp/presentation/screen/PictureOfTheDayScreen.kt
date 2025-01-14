@@ -169,9 +169,9 @@ fun PictureOfTheDayScreen(
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 6.dp),
+                                    .padding(6.dp),
                                 text = "Imagem: ${state.image.explanation}",
-                                fontSize = 12.sp,
+                                fontSize = 13.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Justify,
                                 color = ListItemDefaults.contentColor
