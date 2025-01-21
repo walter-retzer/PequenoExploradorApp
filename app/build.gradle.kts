@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
+    id("kotlin-kapt")
 }
 
 android {
@@ -39,9 +40,6 @@ android {
         buildConfigField("String", "OPPORTUNITY", "\"${properties.getProperty("OPPORTUNITY")}\"")
         buildConfigField("String", "PERSEVERANCE", "\"${properties.getProperty("PERSEVERANCE")}\"")
     }
-
-
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -69,11 +67,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -90,14 +86,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.koin)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
-
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.logging)
@@ -105,14 +98,10 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.serialization)
     implementation(libs.logback.classic)
-
     implementation(libs.play.service.auth)
-
     implementation(libs.lottie.compose)
     implementation(libs.coil.compose)
-
-    // for language translation
     implementation(libs.translate)
-
-
+    implementation ("androidx.room:room-ktx:2.5.0")
+    kapt("androidx.room:room-compiler:2.5.0")
 }
