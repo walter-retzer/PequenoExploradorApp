@@ -2,9 +2,11 @@ package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
+import com.example.pequenoexploradorapp.domain.repository.NasaImageRepository
 import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
@@ -17,11 +19,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
 
 
 class LoadNasaImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
-    private val remoteRepositoryImpl: RemoteRepositoryImpl
+    private val remoteRepositoryImpl: RemoteRepositoryImpl,
+    private val dbImageNasaRepository: NasaImageRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)
@@ -39,6 +43,19 @@ class LoadNasaImageViewModel(
         )
 
     private var image = ""
+
+    fun onSaveFavourite(){
+        val image = NasaImageData(
+            title = "test",
+            dateCreated = "11/05/198",
+            creators = "ey",
+            keywords = null,
+            isFavourite = true
+        )
+        viewModelScope.launch {
+            dbImageNasaRepository.save(image)
+        }
+    }
 
     fun onNasaImageSearch(imageSearch: String?) {
         _uiState.value = LoadNasaImageViewState.Loading

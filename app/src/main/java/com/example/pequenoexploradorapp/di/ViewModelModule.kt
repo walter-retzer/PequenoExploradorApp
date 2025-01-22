@@ -32,6 +32,7 @@ val viewModelModules = module {
     factory<LoadNasaImageViewModel> {
         LoadNasaImageViewModel(
             provideConnectivityStatus(androidApplication()),
+            get(),
             get()
         )
     }
