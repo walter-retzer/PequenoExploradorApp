@@ -11,7 +11,7 @@ class AppApplication : Application() {
         super.onCreate()
 
         val appModule = module {
-            includes(viewModelModules, networkModule, repositoryModule)
+            includes(viewModelModules, networkModule, repositoryModule, dataBaseRoomModules)
         }
 
         startKoin {
