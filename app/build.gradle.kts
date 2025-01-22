@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.gms.google.services)
-    id("kotlin-kapt")
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -39,6 +39,7 @@ android {
         buildConfigField("String", "CURIOSITY", "\"${properties.getProperty("CURIOSITY")}\"")
         buildConfigField("String", "OPPORTUNITY", "\"${properties.getProperty("OPPORTUNITY")}\"")
         buildConfigField("String", "PERSEVERANCE", "\"${properties.getProperty("PERSEVERANCE")}\"")
+
     }
     buildTypes {
         release {
@@ -102,6 +103,9 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.coil.compose)
     implementation(libs.translate)
-    implementation ("androidx.room:room-ktx:2.5.0")
-    kapt("androidx.room:room-compiler:2.5.0")
+
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 }
