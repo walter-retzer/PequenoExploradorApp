@@ -3,6 +3,7 @@ package com.example.pequenoexploradorapp.presentation.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -58,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pequenoexploradorapp.R
@@ -216,6 +218,7 @@ fun LoadNasaImageScreen(
                                     LoadImageOnCard(
                                         images = listOfNasaImages,
                                         numberOfImage = numberOfImage,
+                                        viewModel = viewModel
                                     )
                                 }
                             }
@@ -296,14 +299,18 @@ fun InfiniteListHandler(
 }
 
 @Composable
-fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
+fun LoadImageOnCard(
+    images: List<NasaImageItems>?,
+    numberOfImage: Int,
+    viewModel: LoadNasaImageViewModel
+) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp)
+                .height(250.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.Black)
                 .border(
@@ -335,6 +342,16 @@ fun LoadImageOnCard(images: List<NasaImageItems>?, numberOfImage: Int) {
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Justify,
                 color = contentColor
+            )
+
+            Image(
+                painter = painterResource(R.drawable.icon_favorite),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clickable {
+                         viewModel.onSaveFavourite()
+                    }
             )
         }
     }
