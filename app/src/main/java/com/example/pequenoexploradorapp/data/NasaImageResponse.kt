@@ -23,7 +23,6 @@ data class NasaImageItems(
     @SerialName("href") val href: String?,
     @SerialName("data") val data: List<NasaImageData?>,
     @SerialName("links") val links: List<NasaImageLink?>,
-    @SerialName("isFavourite") val isFavourite: Boolean = false
 )
 
 @Serializable
@@ -31,7 +30,8 @@ data class NasaImageData(
     @SerialName("title") var title: String?,
     @SerialName("date_created") val dateCreated: String?,
     @SerialName("secondary_creator") val creators: String? = null,
-    @SerialName("keywords") val keywords: List<String>? = null
+    @SerialName("keywords") val keywords: List<String>? = null,
+    @SerialName("isFavourite") val isFavourite: Boolean = false
 )
 
 @Serializable
