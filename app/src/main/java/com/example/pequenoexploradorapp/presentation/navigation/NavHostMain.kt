@@ -33,6 +33,7 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DAT
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
+import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadRoverImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
@@ -231,6 +232,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         },
                         onNavigateToRoverMission = {
                             navController.navigate(Route.RoverMissionScreenRoute.route)
+                        },
+                        onNavigateToFavouriteImage = {
+                            navController.navigate(Route.LoadFavouriteImageScreenRoute.route)
                         }
                     )
                 }
@@ -409,6 +413,16 @@ private fun NavGraphBuilder.homeNavGraph() {
                         date = date,
                         nameRover = nameRover
                     )
+                }
+
+                composable(
+                    route = Route.LoadFavouriteImageScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    LoadFavouriteImageScreen()
                 }
             }
 
