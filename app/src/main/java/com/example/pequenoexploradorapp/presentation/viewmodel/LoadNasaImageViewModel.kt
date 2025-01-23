@@ -6,8 +6,9 @@ import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
-import com.example.pequenoexploradorapp.domain.repository.NasaImageRepository
-import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
+import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepository
+import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepositoryImpl
+import com.example.pequenoexploradorapp.domain.repository.remote.RemoteRepositoryImpl
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
@@ -19,13 +20,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerialName
 
 
 class LoadNasaImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
-    private val dbImageNasaRepository: NasaImageRepository,
+    private val dbImageNasaRepository: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)

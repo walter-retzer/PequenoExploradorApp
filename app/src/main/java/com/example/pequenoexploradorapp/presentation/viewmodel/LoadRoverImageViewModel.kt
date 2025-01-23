@@ -6,7 +6,7 @@ import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
-import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
+import com.example.pequenoexploradorapp.domain.repository.remote.RemoteRepositoryImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

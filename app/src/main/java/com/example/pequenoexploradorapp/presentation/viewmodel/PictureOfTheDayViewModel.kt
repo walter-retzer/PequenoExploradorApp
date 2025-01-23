@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
-import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
+import com.example.pequenoexploradorapp.domain.repository.remote.RemoteRepositoryImpl
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
