@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.ImageToLoad
 import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
@@ -83,7 +84,6 @@ fun LoadFavouriteImageScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-
 
 
     Scaffold(
@@ -191,13 +191,12 @@ fun LoadFavouriteImageScreen(
 
 @Composable
 fun LoadFavouriteImageOnCard(
-    images: List<NasaImageData>?,
+    images: List<ImageToLoad>?,
     numberOfImage: Int,
     viewModel: LoadFavouriteImageViewModel
 ) {
-    val imageToLoad = images?.get(numberOfImage)?.title
-    val dateToLoad =
-        "Data: ${images?.get(numberOfImage)?.dateCreated?.formattedDate()}"
+    val imageToLoad = images?.get(numberOfImage)?.link
+    val dateToLoad = images?.get(numberOfImage)?.dateCreated
 
     Column(
         modifier = Modifier
@@ -255,7 +254,7 @@ fun LoadFavouriteImageOnCard(
                 .background(surfaceDark),
         ) {
             Text(
-                text = dateToLoad,
+                text = dateToLoad!!,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)

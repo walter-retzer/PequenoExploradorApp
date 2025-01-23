@@ -1,7 +1,6 @@
 package com.example.pequenoexploradorapp.domain.repository.local
 
 import com.example.pequenoexploradorapp.data.ImageToLoad
-import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageDao
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageEntity
 import kotlinx.coroutines.Dispatchers.IO
@@ -11,43 +10,29 @@ class FavouriteImageRepositoryImpl(
     private val dao: FavouriteImageDao
 ): FavouriteImageRepository {
 
-    override suspend fun getFavouriteImage(): List<NasaImageData> {
-        val response = dao.findAll().map { it.toNasaImage() }
+    override suspend fun getFavouriteImage(): List<ImageToLoad> {
+        val response = dao.findAll().map { it.toFavouriteImage() }
         return response
     }
 
-    override suspend fun save(images: NasaImageData) = withContext(IO) {
-        dao.save(images.toNasaImageEntity())
+    override suspend fun save(images: ImageToLoad) = withContext(IO) {
+        dao.save(images.toFavouriteImageEntity())
     }
 }
 
-fun NasaImageData.toNasaImageEntity() = FavouriteImageEntity(
-    title = this.title,
-    dateCreated = this.dateCreated,
-    creators = this.creators,
-    link = this.title,
-    isFavourite = this.isFavourite
-)
-
-fun FavouriteImageEntity.toNasaImage() = NasaImageData(
-    title = this.title,
-    dateCreated = this.dateCreated,
-    creators = this.creators,
-    isFavourite = this.isFavourite
-)
 
 fun ImageToLoad.toFavouriteImageEntity() = FavouriteImageEntity(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
-    link = this.title,
+    link = this.link,
     isFavourite = this.isFavourite
 )
 
-fun NasaImageData.toFavouriteImage() = ImageToLoad(
+fun FavouriteImageEntity.toFavouriteImage() = ImageToLoad(
     title = this.title,
     dateCreated = this.dateCreated,
-    link = this.title,
+    link = this.link,
     creators = this.creators,
     keywords = null,
     isFavourite = this.isFavourite

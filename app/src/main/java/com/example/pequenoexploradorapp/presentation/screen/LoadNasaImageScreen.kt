@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.ImageToLoad
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
@@ -306,9 +307,11 @@ fun LoadImageOnCard(
     numberOfImage: Int,
     viewModel: LoadNasaImageViewModel
 ) {
-    val imageToLoad = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
-    val dateToLoad =
-        "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val title = images?.get(numberOfImage)?.data?.first()?.title
+    val date = "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val imageUrl = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
+    val creators = images?.get(numberOfImage)?.data?.first()?.creators
+    val keywords = images?.get(numberOfImage)?.data?.first()?.keywords?.first()
 
     Column(
         modifier = Modifier
@@ -322,7 +325,7 @@ fun LoadImageOnCard(
     ) {
         Box {
             SubcomposeAsyncImage(
-                model = imageToLoad,
+                model = imageUrl,
                 loading = {
                     Box(contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(
@@ -341,9 +344,14 @@ fun LoadImageOnCard(
             )
             IconButton(
                 onClick = {
-                    viewModel.onSaveFavourite(
-                        images?.get(numberOfImage)?.data?.first()!!
+                    val favourite = ImageToLoad(
+                        title = title,
+                        dateCreated = date,
+                        link = imageUrl,
+                        creators = creators,
+                        keywords = null
                     )
+                    viewModel.onSaveFavourite(favourite)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -368,7 +376,7 @@ fun LoadImageOnCard(
                 .background(surfaceDark),
         ) {
             Text(
-                text = dateToLoad,
+                text = date,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)

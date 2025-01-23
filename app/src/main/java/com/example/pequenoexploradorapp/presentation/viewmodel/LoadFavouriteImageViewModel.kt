@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pequenoexploradorapp.data.ImageToLoad
 import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepositoryImpl
@@ -49,6 +50,6 @@ class LoadFavouriteImageViewModel(
 sealed interface LoadFavouriteImageViewState {
     data object Loading : LoadFavouriteImageViewState
     data object Init : LoadFavouriteImageViewState
-    data class Success(val images: List<NasaImageData>) : LoadFavouriteImageViewState
+    data class Success(val images: List<ImageToLoad>) : LoadFavouriteImageViewState
     data class Error(val message: String) : LoadFavouriteImageViewState
 }
