@@ -4,13 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NasaImageDao {
 
     @Query("SELECT * FROM NasaImageEntity")
-    fun findAll(): Flow<List<NasaImageEntity>>
+    suspend fun findAll(): List<NasaImageEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(task: NasaImageEntity)
