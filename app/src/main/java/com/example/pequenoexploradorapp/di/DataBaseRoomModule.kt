@@ -13,7 +13,8 @@ val dataBaseRoomModules = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            NasaImagesDatabase::class.java, "nasa-images.db"
+            NasaImagesDatabase::class.java,
+            "nasa-images.db"
         ).build()
     }
     single {
