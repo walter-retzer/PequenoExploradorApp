@@ -3,7 +3,6 @@ package com.example.pequenoexploradorapp.presentation.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,11 +21,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -52,23 +54,25 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.primaryLight
+import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
+import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -86,8 +90,7 @@ fun LoadNasaImageScreen(
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -304,54 +307,72 @@ fun LoadImageOnCard(
     numberOfImage: Int,
     viewModel: LoadNasaImageViewModel
 ) {
+    val imageToLoad = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
+    val dateToLoad = "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = contentColor,
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Black)
-                .border(
-                    width = 1.dp,
-                    color = contentColor,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .clickable { },
-            elevation = CardDefaults.cardElevation(8.dp)
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(images?.get(numberOfImage)?.links?.first()?.href)
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(R.drawable.simple_background),
-                contentDescription = "",
+        Box {
+            SubcomposeAsyncImage(
+                model = imageToLoad,
+                loading = {
+                    Box(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .align(Alignment.Center),
+                            color = mainColor
+                        )
+                    }
+                },
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(220.dp)
             )
+            IconButton(
+                onClick = { viewModel.onSaveFavourite() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = primaryLight,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite Nasa Image",
+                    tint = mainColor
+                )
+            }
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(surfaceDark),
+        ) {
             Text(
+                text = dateToLoad,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 6.dp),
-                text = "Imagem: ${numberOfImage + 1}",
+                    .align(Alignment.Center)
+                    .padding(8.dp),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Justify,
+                textAlign = TextAlign.Center,
                 color = contentColor
-            )
-
-            Image(
-                painter = painterResource(R.drawable.icon_favorite),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clickable {
-                         viewModel.onSaveFavourite()
-                    }
             )
         }
     }
