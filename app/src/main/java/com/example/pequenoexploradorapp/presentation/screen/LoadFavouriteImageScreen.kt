@@ -21,8 +21,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -105,7 +107,7 @@ fun LoadFavouriteImageScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagens",
+                title = "Favoritos",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -157,6 +159,7 @@ fun LoadFavouriteImageScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .padding(paddingValues)
                         .paint(
                             painterResource(id = R.drawable.simple_background),
@@ -165,16 +168,18 @@ fun LoadFavouriteImageScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = state.images.toString(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        color = contentColor
-                    )
+                    Row{
+                        Text(
+                            text = state.images.toString(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center,
+                            color = contentColor
+                        )
+                    }
                 }
             }
         }

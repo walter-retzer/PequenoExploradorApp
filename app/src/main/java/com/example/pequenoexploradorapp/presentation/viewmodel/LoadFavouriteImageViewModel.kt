@@ -6,6 +6,7 @@ import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.repository.NasaImageRepository
 import com.example.pequenoexploradorapp.domain.repository.RemoteRepositoryImpl
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,13 +37,13 @@ class LoadFavouriteImageViewModel(
         )
 
     fun onLoadListFavouriteImage() {
-        LoadFavouriteImageViewState.Loading
+        _uiState.value = LoadFavouriteImageViewState.Loading
         viewModelScope.launch {
             delay(3000L)
             val response = dbImageNasaRepository.getFavouriteImage()
             println(response)
-            if(response.isNotEmpty()) LoadFavouriteImageViewState.Success(response)
-            else  LoadFavouriteImageViewState.Error("Erro DB")
+            if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
+            else  _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.DEFAULT_ERROR_DB)
         }
     }
 }
