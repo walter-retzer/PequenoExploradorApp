@@ -308,7 +308,8 @@ fun LoadImageOnCard(
     viewModel: LoadNasaImageViewModel
 ) {
     val imageToLoad = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
-    val dateToLoad = "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val dateToLoad =
+        "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
 
     Column(
         modifier = Modifier
@@ -340,7 +341,11 @@ fun LoadImageOnCard(
                     .height(220.dp)
             )
             IconButton(
-                onClick = { viewModel.onSaveFavourite() },
+                onClick = {
+                    viewModel.onSaveFavourite(
+                        images?.get(numberOfImage)?.data?.first()!!
+                    )
+                },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
