@@ -1,11 +1,7 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,13 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,13 +35,11 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,12 +55,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.data.NasaImageItems
+import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
-import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.theme.primaryLight
@@ -77,11 +66,6 @@ import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
-import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
-import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
@@ -93,8 +77,7 @@ fun LoadFavouriteImageScreen(
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -119,7 +102,7 @@ fun LoadFavouriteImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadFavouriteImageViewState.Init -> {
-                viewModel.onLoadListFavouriteImage()
+                viewModel.onGetFavouriteImageList()
             }
 
             is LoadFavouriteImageViewState.Loading -> {
@@ -159,7 +142,6 @@ fun LoadFavouriteImageScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
                         .padding(paddingValues)
                         .paint(
                             painterResource(id = R.drawable.simple_background),
@@ -168,22 +150,29 @@ fun LoadFavouriteImageScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row{
-                        Text(
-                            text = state.images.toString(),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            color = contentColor
-                        )
+                    Row {
+                        LazyVerticalGrid(
+                            state = scrollState,
+                            contentPadding = PaddingValues(all = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.clipToBounds(),
+                        ) {
+                            state.images.let { imagesToLoad ->
+                                items(imagesToLoad.size) { numberOfImage ->
+                                    LoadFavouriteImageOnCard(
+                                        images = imagesToLoad,
+                                        numberOfImage = numberOfImage,
+                                        viewModel = viewModel
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-
         if (isConnected?.not() == true) {
             snackBarIsActivated = true
             LaunchedEffect(snackBarIsActivated) {
@@ -195,6 +184,87 @@ fun LoadFavouriteImageScreen(
                 )
                 snackBarIsActivated = false
             }
+        }
+    }
+}
+
+
+@Composable
+fun LoadFavouriteImageOnCard(
+    images: List<NasaImageData>?,
+    numberOfImage: Int,
+    viewModel: LoadFavouriteImageViewModel
+) {
+    val imageToLoad = images?.get(numberOfImage)?.title
+    val dateToLoad =
+        "Data: ${images?.get(numberOfImage)?.dateCreated?.formattedDate()}"
+
+    Column(
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = contentColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+    ) {
+        Box {
+            SubcomposeAsyncImage(
+                model = imageToLoad,
+                loading = {
+                    Box(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .align(Alignment.Center),
+                            color = mainColor
+                        )
+                    }
+                },
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+            )
+            IconButton(
+                onClick = {
+
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = primaryLight,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite Nasa Image",
+                    tint = mainColor
+                )
+            }
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(surfaceDark),
+        ) {
+            Text(
+                text = dateToLoad,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(8.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = contentColor
+            )
         }
     }
 }

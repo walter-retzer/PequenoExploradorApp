@@ -48,3 +48,13 @@ data class NasaImageNextPage(
 data class NasaImageMetaData(
     @SerialName("total_hits") val totalHits: Int = 0
 )
+
+@Serializable
+data class ImageToLoad(
+    val title: String? = null,
+    val dateCreated: String? = null,
+    val link: String? = null,
+    val creators: String? = null,
+    val keywords: List<String>? = null,
+    var isFavourite: Boolean = false
+)

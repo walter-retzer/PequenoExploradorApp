@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepositoryImpl
-import com.example.pequenoexploradorapp.domain.repository.remote.RemoteRepositoryImpl
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 
 class LoadFavouriteImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
-    private val remoteRepositoryImpl: RemoteRepositoryImpl,
     private val dbImageNasaRepository: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
 
@@ -36,7 +34,7 @@ class LoadFavouriteImageViewModel(
             null
         )
 
-    fun onLoadListFavouriteImage() {
+    fun onGetFavouriteImageList() {
         _uiState.value = LoadFavouriteImageViewState.Loading
         viewModelScope.launch {
             delay(3000L)

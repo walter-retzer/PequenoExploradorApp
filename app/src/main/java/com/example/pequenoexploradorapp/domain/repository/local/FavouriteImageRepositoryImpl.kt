@@ -1,5 +1,6 @@
 package com.example.pequenoexploradorapp.domain.repository.local
 
+import com.example.pequenoexploradorapp.data.ImageToLoad
 import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageDao
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageEntity
@@ -24,6 +25,7 @@ fun NasaImageData.toNasaImageEntity() = FavouriteImageEntity(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
+    link = this.title,
     isFavourite = this.isFavourite
 )
 
@@ -31,5 +33,22 @@ fun FavouriteImageEntity.toNasaImage() = NasaImageData(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
+    isFavourite = this.isFavourite
+)
+
+fun ImageToLoad.toFavouriteImageEntity() = FavouriteImageEntity(
+    title = this.title,
+    dateCreated = this.dateCreated,
+    creators = this.creators,
+    link = this.title,
+    isFavourite = this.isFavourite
+)
+
+fun NasaImageData.toFavouriteImage() = ImageToLoad(
+    title = this.title,
+    dateCreated = this.dateCreated,
+    link = this.title,
+    creators = this.creators,
+    keywords = null,
     isFavourite = this.isFavourite
 )

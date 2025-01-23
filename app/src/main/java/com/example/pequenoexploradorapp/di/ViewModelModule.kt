@@ -58,7 +58,6 @@ val viewModelModules = module {
     factory<LoadFavouriteImageViewModel> {
         LoadFavouriteImageViewModel(
             provideConnectivityStatus(androidApplication()),
-            get(),
             get()
         )
     }

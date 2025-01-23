@@ -10,5 +10,6 @@ data class FavouriteImageEntity(
     var title: String?,
     val dateCreated: String?,
     val creators: String? = null,
+    val link: String?,
     val isFavourite: Boolean = false
 )
