@@ -1,4 +1,4 @@
-package com.example.pequenoexploradorapp.domain.repository
+package com.example.pequenoexploradorapp.domain.repository.local
 
 import com.example.pequenoexploradorapp.data.NasaImageData
 import com.example.pequenoexploradorapp.domain.database.NasaImageDao
@@ -6,16 +6,16 @@ import com.example.pequenoexploradorapp.domain.database.NasaImageEntity
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
-class NasaImageRepository(
+class FavouriteImageRepositoryImpl(
     private val dao: NasaImageDao
-) {
+): FavouriteImageRepository {
 
-    suspend fun getFavouriteImage(): List<NasaImageData> {
+    override suspend fun getFavouriteImage(): List<NasaImageData> {
         val response = dao.findAll().map { it.toNasaImage() }
         return response
     }
 
-    suspend fun save(images: NasaImageData) = withContext(IO) {
+    override suspend fun save(images: NasaImageData) = withContext(IO) {
         dao.save(images.toNasaImageEntity())
     }
 }
