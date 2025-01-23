@@ -44,16 +44,9 @@ class LoadNasaImageViewModel(
 
     private var image = ""
 
-    fun onSaveFavourite(){
-        val image = NasaImageData(
-            title = "test",
-            dateCreated = "11/05/198",
-            creators = "ey",
-            keywords = null,
-            isFavourite = true
-        )
+    fun onSaveFavourite(imageNasa: NasaImageData ){
         viewModelScope.launch {
-            dbImageNasaRepository.save(image)
+            dbImageNasaRepository.save(imageNasa.copy(isFavourite = true))
         }
     }
 
