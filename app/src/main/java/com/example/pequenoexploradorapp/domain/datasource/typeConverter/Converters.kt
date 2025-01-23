@@ -1,4 +1,4 @@
-package com.example.pequenoexploradorapp.domain.database.typeConverter
+package com.example.pequenoexploradorapp.domain.datasource.typeConverter
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter

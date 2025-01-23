@@ -1,13 +1,13 @@
 package com.example.pequenoexploradorapp.domain.repository.local
 
 import com.example.pequenoexploradorapp.data.NasaImageData
-import com.example.pequenoexploradorapp.domain.database.NasaImageDao
-import com.example.pequenoexploradorapp.domain.database.NasaImageEntity
+import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageDao
+import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageEntity
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 class FavouriteImageRepositoryImpl(
-    private val dao: NasaImageDao
+    private val dao: FavouriteImageDao
 ): FavouriteImageRepository {
 
     override suspend fun getFavouriteImage(): List<NasaImageData> {
@@ -20,14 +20,14 @@ class FavouriteImageRepositoryImpl(
     }
 }
 
-fun NasaImageData.toNasaImageEntity() = NasaImageEntity(
+fun NasaImageData.toNasaImageEntity() = FavouriteImageEntity(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
     isFavourite = this.isFavourite
 )
 
-fun NasaImageEntity.toNasaImage() = NasaImageData(
+fun FavouriteImageEntity.toNasaImage() = NasaImageData(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,

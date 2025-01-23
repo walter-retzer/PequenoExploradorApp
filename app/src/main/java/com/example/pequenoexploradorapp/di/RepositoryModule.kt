@@ -1,6 +1,6 @@
 package com.example.pequenoexploradorapp.di
 
-import com.example.pequenoexploradorapp.domain.database.NasaImageDao
+import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageDao
 import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepositoryImpl
 import com.example.pequenoexploradorapp.domain.repository.remote.RemoteRepositoryImpl
 import io.ktor.client.HttpClient
@@ -15,6 +15,6 @@ fun provideRemoteRepository(client: HttpClient): RemoteRepositoryImpl {
     return RemoteRepositoryImpl(client)
 }
 
-fun provideLocalFavouriteImageRepository(dao: NasaImageDao): FavouriteImageRepositoryImpl {
+fun provideLocalFavouriteImageRepository(dao: FavouriteImageDao): FavouriteImageRepositoryImpl {
     return FavouriteImageRepositoryImpl(dao)
 }
