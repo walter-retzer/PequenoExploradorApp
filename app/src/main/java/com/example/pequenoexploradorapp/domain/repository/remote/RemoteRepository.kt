@@ -1,4 +1,4 @@
-package com.example.pequenoexploradorapp.domain.repository
+package com.example.pequenoexploradorapp.domain.repository.remote
 
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
