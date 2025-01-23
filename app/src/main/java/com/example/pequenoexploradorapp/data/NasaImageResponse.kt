@@ -31,7 +31,7 @@ data class NasaImageData(
     @SerialName("date_created") val dateCreated: String?,
     @SerialName("secondary_creator") val creators: String? = null,
     @SerialName("keywords") val keywords: List<String>? = null,
-    @SerialName("isFavourite") val isFavourite: Boolean = false
+    @SerialName("isFavourite") var isFavourite: Boolean = false
 )
 
 @Serializable
