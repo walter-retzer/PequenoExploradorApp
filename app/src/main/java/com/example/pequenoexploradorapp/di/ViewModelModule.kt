@@ -3,6 +3,7 @@ package com.example.pequenoexploradorapp.di
 import android.content.Context
 import com.example.pequenoexploradorapp.domain.connectivity.AndroidConnectivityObserver
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
+import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
@@ -51,6 +52,13 @@ val viewModelModules = module {
     factory<LoadRoverImageViewModel> {
         LoadRoverImageViewModel(
             provideConnectivityStatus(androidApplication()),
+            get()
+        )
+    }
+    factory<LoadFavouriteImageViewModel> {
+        LoadFavouriteImageViewModel(
+            provideConnectivityStatus(androidApplication()),
+            get(),
             get()
         )
     }
