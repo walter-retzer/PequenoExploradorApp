@@ -26,7 +26,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Hd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,14 +40,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -57,7 +54,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -81,6 +77,7 @@ import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -99,13 +96,11 @@ fun LoadNasaImageScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val listImages by viewModel.imageListFlow.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    //var listOfNasaImages = listOf<NasaImageItems>()
-    var listOfNasaImages by remember { mutableStateOf(mutableListOf<NasaImageItems>()) }
-    var page by remember { mutableStateOf(1) }
-
+    var totalHits by remember { mutableStateOf(0) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -145,6 +140,18 @@ fun LoadNasaImageScreen(
                 }
             }
 
+            is LoadNasaImageViewState.LoadingFavourite -> {
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfNasaImages = listImages,
+                    viewModel = viewModel,
+                    isLoading = state.isLoading,
+                    totalHits = totalHits
+                )
+            }
+
             is LoadNasaImageViewState.Error -> {
                 progressButtonIsActivated = false
                 snackBarIsActivated = true
@@ -160,148 +167,28 @@ fun LoadNasaImageScreen(
             }
 
             is LoadNasaImageViewState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        ),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (state.images.collection.metadata?.totalHits == 0) {
-                        Box {
-                            AnimatedLottieFile(
-                                modifier = Modifier
-                                    .padding(top = 20.dp)
-                                    .size(300.dp)
-                                    .align(Alignment.TopCenter),
-                                file = R.raw.animation_telescopy
-                            )
-                        }
-                        Row {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = Color.White
-                            )
-                        }
-                    } else {
-                        Row {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clickable {
-                                        scope.launch {
-                                            scrollState.animateScrollToItem(0)
-                                        }
-                                    },
-                                text = "Foram encontradas ${state.images.collection.metadata?.totalHits} imagens",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Row {
-                        LazyVerticalGrid(
-                            state = scrollState,
-                            contentPadding = PaddingValues(all = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.clipToBounds(),
-                        ) {
-                            state.images.collection.items?.let { imagesToLoad ->
-                                listOfNasaImages += imagesToLoad
-
-                                items(listOfNasaImages.size) { numberOfImage ->
-                                    LoadImageOnCard(
-                                        images = listOfNasaImages,
-                                        numberOfImage = numberOfImage,
-                                        viewModel = viewModel,
-                                        onFavouriteImage = {
-                                            println(listOfNasaImages)
-                                            listOfNasaImages[it].data.first()?.isFavourite = true
-                                            println(listOfNasaImages)
-                                            viewModel.onSaveItemIconFavourite(listOfNasaImages, numberOfImage)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                        // Handle infinite scrolling
-                        InfiniteListHandler(
-                            listState = scrollState,
-                            onLoadMore = {
-                                page++
-                                viewModel.loadNextItems(
-                                    page = page
-                                )
-                            }
-                        )
-                    }
-                }
-                AnimatedVisibility(
-                    visible = isLoading,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Transparent)
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .width(64.dp)
-                                .align(Alignment.Center),
-                            color = mainColor
-                        )
-                    }
-                }
+                totalHits = state.images.collection.metadata?.totalHits ?: 0
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfNasaImages = listImages,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                    totalHits = totalHits
+                )
             }
 
             is LoadNasaImageViewState.SuccessFavourite -> {
-
-                LazyVerticalGrid(
-                    state = scrollState,
-                    contentPadding = PaddingValues(all = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.clipToBounds(),
-                ) {
-                    state.list.let { imagesToLoad ->
-                        listOfNasaImages += imagesToLoad
-
-                        items(listOfNasaImages.size) {
-                            LoadImageOnCard(
-                                images = listOfNasaImages,
-                                numberOfImage = state.numberOfImage,
-                                viewModel = viewModel,
-                                onFavouriteImage = {
-                                    println(listOfNasaImages)
-                                    listOfNasaImages[it].data.first()?.isFavourite = true
-                                    println(listOfNasaImages)
-                                    viewModel.onSaveItemIconFavourite(
-                                        listOfNasaImages,
-                                        state.numberOfImage
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfNasaImages = state.list,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                    totalHits = totalHits
+                )
             }
         }
     }
@@ -320,6 +207,117 @@ fun LoadNasaImageScreen(
     }
 }
 
+@Composable
+fun RenderSuccess(
+    paddingValues: PaddingValues,
+    scrollState: LazyGridState,
+    scope: CoroutineScope,
+    listOfNasaImages: List<NasaImageItems>,
+    viewModel: LoadNasaImageViewModel,
+    isLoading: Boolean,
+    totalHits: Int
+) {
+    var page by remember { mutableStateOf(1) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            ),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (totalHits == 0) {
+            Box {
+                AnimatedLottieFile(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(300.dp)
+                        .align(Alignment.TopCenter),
+                    file = R.raw.animation_telescopy
+                )
+            }
+            Row {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Justify,
+                    color = Color.White
+                )
+            }
+        } else {
+            Row {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable {
+                            scope.launch {
+                                scrollState.animateScrollToItem(0)
+                            }
+                        },
+                    text = "Foram encontradas $totalHits imagens",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Justify,
+                    color = Color.White
+                )
+            }
+        }
+        Row {
+            LazyVerticalGrid(
+                state = scrollState,
+                contentPadding = PaddingValues(all = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.clipToBounds(),
+            ) {
+                items(listOfNasaImages.size) { numberOfImage ->
+                    LoadImageOnCard(
+                        listOfImages = listOfNasaImages,
+                        numberOfImage = numberOfImage,
+                        viewModel = viewModel
+                    )
+                }
+            }
+        }
+        // Handle infinite scrolling
+        InfiniteListHandler(
+            listState = scrollState,
+            onLoadMore = {
+                page++
+                viewModel.loadNextItems(
+                    page = page
+                )
+            }
+        )
+    }
+    AnimatedVisibility(
+        visible = isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = mainColor
+            )
+        }
+    }
+}
 
 @Composable
 fun InfiniteListHandler(
@@ -348,17 +346,16 @@ fun InfiniteListHandler(
 
 @Composable
 fun LoadImageOnCard(
-    images: List<NasaImageItems>?,
+    listOfImages: List<NasaImageItems>?,
     numberOfImage: Int,
-    viewModel: LoadNasaImageViewModel,
-    onFavouriteImage: (numberOfImage: Int) -> Unit
+    viewModel: LoadNasaImageViewModel
 ) {
-    val title = images?.get(numberOfImage)?.data?.first()?.title
-    val date = "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
-    val imageUrl = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
-    val creators = images?.get(numberOfImage)?.data?.first()?.creators
-    val keywords = images?.get(numberOfImage)?.data?.first()?.keywords?.first()
-    val isFavourite = images?.get(numberOfImage)?.data?.first()?.isFavourite ?: false
+    val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
+    val date = "Data: ${listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
+    val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
+    val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()
+    val isFavourite = listOfImages?.get(numberOfImage)?.data?.first()?.isFavourite ?: false
 
     Column(
         modifier = Modifier
@@ -391,9 +388,6 @@ fun LoadImageOnCard(
             )
             IconButton(
                 onClick = {
-
-                    onFavouriteImage(numberOfImage)
-
                     val favourite = ImageToLoad(
                         title = title,
                         dateCreated = date,
@@ -402,7 +396,16 @@ fun LoadImageOnCard(
                         keywords = null,
                         isFavourite = true
                     )
-                    viewModel.onSaveFavourite(favourite, numberOfImage)
+
+                    listOfImages?.get(numberOfImage)?.data?.first()?.isFavourite = true
+
+                    if (listOfImages != null) {
+                        viewModel.onSaveFavourite(
+                            favourite,
+                            listOfImages,
+                            numberOfImage
+                        )
+                    }
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -415,7 +418,7 @@ fun LoadImageOnCard(
                     )
             ) {
                 Icon(
-                    imageVector = if(isFavourite)Icons.Default.Favorite else Icons.Default.Hd,
+                    imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Nasa Image",
                     tint = mainColor
                 )
@@ -427,7 +430,7 @@ fun LoadImageOnCard(
                 .background(surfaceDark),
         ) {
             Text(
-                text = date,
+                text = numberOfImage.toString(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
