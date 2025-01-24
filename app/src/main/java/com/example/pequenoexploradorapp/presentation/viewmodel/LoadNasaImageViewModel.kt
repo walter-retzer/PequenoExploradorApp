@@ -51,7 +51,7 @@ class LoadNasaImageViewModel(
     fun onSaveFavourite(imageFavouriteToSave: FavouriteImageToSave, listOfImage: List<NasaImageItems>) {
         _uiState.value = LoadNasaImageViewState.LoadingFavourite(true)
         viewModelScope.launch {
-            dbImageNasaRepository.save(imageFavouriteToSave)
+            dbImageNasaRepository.saveImage(imageFavouriteToSave)
             delay(800L)
             _listFlow.value = listOfImage
             _uiState.value = LoadNasaImageViewState.LoadingFavourite(false)

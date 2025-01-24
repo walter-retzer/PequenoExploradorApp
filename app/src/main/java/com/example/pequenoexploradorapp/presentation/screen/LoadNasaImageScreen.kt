@@ -83,6 +83,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -385,6 +386,7 @@ fun LoadImageOnCard(
             IconButton(
                 onClick = {
                     val favourite = FavouriteImageToSave(
+                        id = UUID.randomUUID().toString(),
                         title = title,
                         dateCreated = date,
                         link = imageUrl,
