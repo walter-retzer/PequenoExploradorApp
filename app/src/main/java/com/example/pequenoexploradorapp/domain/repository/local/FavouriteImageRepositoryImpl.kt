@@ -15,13 +15,26 @@ class FavouriteImageRepositoryImpl(
         return response
     }
 
-    override suspend fun save(images: FavouriteImageToSave) = withContext(IO) {
-        dao.save(images.toFavouriteImageEntity())
+    override suspend fun saveImage(image: FavouriteImageToSave) = withContext(IO) {
+        dao.save(image.toFavouriteImageEntity())
+    }
+
+    override suspend fun findById(id: String): Unit = withContext(IO) {
+        dao.findById(id)
+    }
+
+    override suspend fun deleteImage(image: FavouriteImageToSave) = withContext(IO) {
+        dao.deleteImageFavourite(image.toFavouriteImageEntity())
+    }
+
+    override suspend fun deleteAll() = withContext(IO) {
+        dao.deleteAll()
     }
 }
 
 
 fun FavouriteImageToSave.toFavouriteImageEntity() = FavouriteImageEntity(
+    id = this.id,
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
@@ -30,6 +43,7 @@ fun FavouriteImageToSave.toFavouriteImageEntity() = FavouriteImageEntity(
 )
 
 fun FavouriteImageEntity.toFavouriteImage() = FavouriteImageToSave(
+    id = this.id,
     title = this.title,
     dateCreated = this.dateCreated,
     link = this.link,

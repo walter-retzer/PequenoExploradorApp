@@ -1,5 +1,8 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -57,7 +61,9 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.theme.primaryLight
@@ -79,6 +85,7 @@ fun LoadFavouriteImageScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val listOfFavouriteImage by viewModel.listOfFavoriteImage.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -137,37 +144,23 @@ fun LoadFavouriteImageScreen(
             }
 
             is LoadFavouriteImageViewState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        ),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row {
-                        LazyVerticalGrid(
-                            state = scrollState,
-                            contentPadding = PaddingValues(all = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.clipToBounds(),
-                        ) {
-                            state.images.let { imagesToLoad ->
-                                items(imagesToLoad.size) { numberOfImage ->
-                                    LoadFavouriteImageOnCard(
-                                        images = imagesToLoad,
-                                        numberOfImage = numberOfImage
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                RenderImageFavouriteSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    listOfImagesFromDb = state.images,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                )
+            }
+
+            LoadFavouriteImageViewState.SuccessRemoveFavourite -> {
+                RenderImageFavouriteSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    listOfImagesFromDb = listOfFavouriteImage,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                )
             }
         }
         if (isConnected?.not() == true) {
@@ -187,12 +180,78 @@ fun LoadFavouriteImageScreen(
 
 
 @Composable
-fun LoadFavouriteImageOnCard(
-    images: List<FavouriteImageToSave>?,
-    numberOfImage: Int
+fun RenderImageFavouriteSuccess(
+    paddingValues: PaddingValues,
+    scrollState: LazyGridState,
+    listOfImagesFromDb: List<FavouriteImageToSave>,
+    viewModel: LoadFavouriteImageViewModel,
+    isLoading: Boolean,
 ) {
-    val imageToLoad = images?.get(numberOfImage)?.link
-    val dateToLoad = images?.get(numberOfImage)?.dateCreated
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            ),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row {
+            LazyVerticalGrid(
+                state = scrollState,
+                contentPadding = PaddingValues(all = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.clipToBounds(),
+            ) {
+                listOfImagesFromDb.let { imagesToLoad ->
+                    items(imagesToLoad.size) { numberOfImage ->
+                        LoadFavouriteImageOnCard(
+                            listOfImages = imagesToLoad,
+                            numberOfImage = numberOfImage,
+                            viewModel = viewModel
+                        )
+                    }
+                }
+            }
+        }
+    }
+    AnimatedVisibility(
+        visible = isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = mainColor
+            )
+        }
+    }
+}
+
+@Composable
+fun LoadFavouriteImageOnCard(
+    listOfImages: List<FavouriteImageToSave>?,
+    numberOfImage: Int,
+    viewModel: LoadFavouriteImageViewModel
+) {
+    val id = listOfImages?.get(numberOfImage)?.id
+    val title = listOfImages?.get(numberOfImage)?.title
+    val date = listOfImages?.get(numberOfImage)?.dateCreated
+    val imageUrl = listOfImages?.get(numberOfImage)?.link
+    val creators = listOfImages?.get(numberOfImage)?.creators
+    val keywords = listOfImages?.get(numberOfImage)?.keywords?.first()
+    val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
 
     Column(
         modifier = Modifier
@@ -206,7 +265,7 @@ fun LoadFavouriteImageOnCard(
     ) {
         Box {
             SubcomposeAsyncImage(
-                model = imageToLoad,
+                model = imageUrl,
                 loading = {
                     Box(contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(
@@ -225,7 +284,16 @@ fun LoadFavouriteImageOnCard(
             )
             IconButton(
                 onClick = {
-
+                    val favourite = FavouriteImageToSave(
+                        id = id!!,
+                        title = title,
+                        dateCreated = date,
+                        link = imageUrl,
+                        creators = creators,
+                        keywords = null,
+                        isFavourite = isFavourite
+                    )
+                    viewModel.onRemoveFavouriteImageList(favourite)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -238,7 +306,7 @@ fun LoadFavouriteImageOnCard(
                     )
             ) {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
+                    imageVector = Icons.Default.Delete,
                     contentDescription = "Favorite Nasa Image",
                     tint = mainColor
                 )
@@ -249,17 +317,19 @@ fun LoadFavouriteImageOnCard(
                 .fillMaxWidth()
                 .background(surfaceDark),
         ) {
-            Text(
-                text = dateToLoad!!,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-                    .padding(8.dp),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                color = contentColor
-            )
+            if (date != null) {
+                Text(
+                    text = date,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .padding(8.dp),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    color = contentColor
+                )
+            }
         }
     }
 }

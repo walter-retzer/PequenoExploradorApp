@@ -20,6 +20,10 @@ class LoadFavouriteImageViewModel(
     private val dbImageNasaRepository: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
 
+    private var list = emptyList<FavouriteImageToSave>()
+    private val _listFlow = MutableStateFlow(list)
+    val listOfFavoriteImage: StateFlow<List<FavouriteImageToSave>> get() = _listFlow
+
     private val _uiState = MutableStateFlow<LoadFavouriteImageViewState>(LoadFavouriteImageViewState.Init)
     val uiState: StateFlow<LoadFavouriteImageViewState> = _uiState.asStateFlow()
 
@@ -39,16 +43,30 @@ class LoadFavouriteImageViewModel(
         viewModelScope.launch {
             delay(3000L)
             val response = dbImageNasaRepository.getFavouriteImage()
+            _listFlow.value = response
             println(response)
             if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
             else  _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.DEFAULT_ERROR_DB)
         }
+    }
+
+    fun onRemoveFavouriteImageList(image: FavouriteImageToSave) {
+        _uiState.value = LoadFavouriteImageViewState.Loading
+        viewModelScope.launch {
+            println(image)
+            delay(3000L)
+            val response = dbImageNasaRepository.deleteImage(image)
+            println("Delete: $response")
+            _uiState.value = LoadFavouriteImageViewState.SuccessRemoveFavourite
+        }
+        onGetFavouriteImageList()
     }
 }
 
 sealed interface LoadFavouriteImageViewState {
     data object Loading : LoadFavouriteImageViewState
     data object Init : LoadFavouriteImageViewState
+    data object SuccessRemoveFavourite : LoadFavouriteImageViewState
     data class Success(val images: List<FavouriteImageToSave>) : LoadFavouriteImageViewState
     data class Error(val message: String) : LoadFavouriteImageViewState
 }
