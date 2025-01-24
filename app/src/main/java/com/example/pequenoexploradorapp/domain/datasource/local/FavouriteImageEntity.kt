@@ -2,11 +2,12 @@ package com.example.pequenoexploradorapp.domain.datasource.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.UUID
 
-@Entity
+@Entity(tableName = "favourites")
 data class FavouriteImageEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
     var title: String?,
     val dateCreated: String?,
     val creators: String? = null,
