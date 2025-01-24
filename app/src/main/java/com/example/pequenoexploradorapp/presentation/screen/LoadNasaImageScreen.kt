@@ -355,7 +355,7 @@ fun LoadImageOnCard(
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
     val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
     val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()
-    val isFavourite = listOfImages?.get(numberOfImage)?.data?.first()?.isFavourite ?: false
+    val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
 
     Column(
         modifier = Modifier
@@ -397,7 +397,7 @@ fun LoadImageOnCard(
                         isFavourite = true
                     )
 
-                    listOfImages?.get(numberOfImage)?.data?.first()?.isFavourite = true
+                    listOfImages?.get(numberOfImage)?.isFavourite = true
 
                     if (listOfImages != null) {
                         viewModel.onSaveFavourite(

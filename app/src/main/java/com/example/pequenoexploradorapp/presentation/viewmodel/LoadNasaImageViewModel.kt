@@ -63,25 +63,11 @@ class LoadNasaImageViewModel(
         }
     }
 
-
     suspend fun updateFavouriteStatus(listOfImagesFromApi: List<NasaImageItems>): List<NasaImageItems> {
         val favouriteImages = dbImageNasaRepository.getFavouriteImage()
         return listOfImagesFromApi.map { image ->
             val isFavourite = favouriteImages.any { it.link == image.links.firstOrNull()?.href }
             image.copy(isFavourite = isFavourite)
-        }
-    }
-
-    fun itemFav(item: List<NasaImageItems>) {
-        viewModelScope.launch {
-            _responseFavourite.value =  dbImageNasaRepository.getFavouriteImage()
-        }
-        val list = item.map { imagesFromApi ->
-            if (responseFavourite.filter {
-                    it.link == imagesFromApi.links.first()?.href
-                }.getOrNull(0) != null)
-                imagesFromApi.copy(isFavourite = true)
-            else imagesFromApi
         }
     }
 
@@ -113,7 +99,7 @@ class LoadNasaImageViewModel(
 
                         is ApiResponse.Success -> {
                             responseApi.data.collection.items?.let { imagesToLoad ->
-                                _listFlow.value = imagesToLoad
+                                _listFlow.value = updateFavouriteStatus(imagesToLoad)
                             }
                             _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
                         }
