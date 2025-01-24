@@ -202,14 +202,6 @@ private fun NavGraphBuilder.homeNavGraph() {
         popExitTransition = NavAnimations.popExitRightAnimation
     ) {
         val navController = rememberNavController()
-        val items = remember {
-            listOf(
-                NavItem.Home,
-                NavItem.IMAGES,
-                NavItem.PROFILE,
-            )
-        }
-
         Column(Modifier.fillMaxSize()) {
             NavHost(
                 navController = navController,
@@ -425,7 +417,13 @@ private fun NavGraphBuilder.homeNavGraph() {
                     LoadFavouriteImageScreen()
                 }
             }
-
+            val items = remember {
+                listOf(
+                    NavItem.Home,
+                    NavItem.IMAGES,
+                    NavItem.FAVOURITE,
+                )
+            }
             AppBottomNavigationBar(
                 navItems = items,
                 navController = navController

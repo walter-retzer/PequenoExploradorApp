@@ -22,17 +22,15 @@ sealed class NavItem {
             title = NavTitle.HOME,
             icon = R.drawable.icon_home
         )
-
     object IMAGES :
         Item(
             pathRoute = Route.SearchImageScreenRoute.route,
             title = NavTitle.IMAGES,
             icon = R.drawable.icon_search
         )
-
-    object PROFILE :
+    object FAVOURITE :
         Item(
-            pathRoute = Route.FavouriteImageScreenRoute.route,
+            pathRoute = Route.LoadFavouriteImageScreenRoute.route,
             title = NavTitle.FAVOURITE,
             icon = R.drawable.icon_favorite
         )

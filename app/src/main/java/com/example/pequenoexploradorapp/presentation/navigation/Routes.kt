@@ -28,9 +28,6 @@ sealed class Route(
     object LoadNasaImageScreenRoute : Route(route = "LoadNasaImageScreen")
 
     @Serializable
-    object FavouriteImageScreenRoute : Route(route = "FavouriteNasaImageScreen")
-
-    @Serializable
     object PictureOfTheDayScreenRoute : Route(route = "PictureOfTheDayScreen")
 
     @Serializable
@@ -46,7 +43,7 @@ sealed class Route(
     object LoadRoverImageScreenRoute : Route(route = "LoadRoverImageScreen")
 
     @Serializable
-    object LoadFavouriteImageScreenRoute : Route(route = "LLoadFavouriteImageScreen")
+    object LoadFavouriteImageScreenRoute : Route(route = "LoadFavouriteImageScreen")
 
     // Routes from Graph Navigation:
     @Serializable
