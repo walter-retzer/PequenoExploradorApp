@@ -25,14 +25,14 @@ import kotlinx.coroutines.launch
 class LoadNasaImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
-    private val dbImageNasaRepository: FavouriteImageRepositoryImpl,
+    private val localRepositoryImpl: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
     private var image = ""
     private var page = 2
 
-    private var list = emptyList<NasaImageItems>()
-    private val _listFlow = MutableStateFlow(list)
-    val imageListFlow: StateFlow<List<NasaImageItems>> get() = _listFlow
+    private var listOfImageFromApi = emptyList<NasaImageItems>()
+    private val _listOfImageFromApi = MutableStateFlow(listOfImageFromApi)
+    val listOfImageToLoad: StateFlow<List<NasaImageItems>> get() = _listOfImageFromApi
 
     private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)
     val uiState: StateFlow<LoadNasaImageViewState> = _uiState.asStateFlow()
@@ -48,19 +48,28 @@ class LoadNasaImageViewModel(
             null
         )
 
-    fun onSaveFavourite(imageFavouriteToSave: FavouriteImageToSave, listOfImage: List<NasaImageItems>) {
-        _uiState.value = LoadNasaImageViewState.LoadingFavourite(true)
+    fun onSaveFavourite(
+        imageFavouriteToSave: FavouriteImageToSave,
+        listOfImage: List<NasaImageItems>
+    ) {
         viewModelScope.launch {
-            dbImageNasaRepository.saveImage(imageFavouriteToSave)
+            if(checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
+            _uiState.value = LoadNasaImageViewState.LoadingFavourite(true)
+            localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
-            _listFlow.value = listOfImage
+            _listOfImageFromApi.value = listOfImage
             _uiState.value = LoadNasaImageViewState.LoadingFavourite(false)
             _uiState.value = LoadNasaImageViewState.SuccessFavourite(listOfImage)
         }
     }
 
+    private suspend fun checkIfFavouriteExist(listOfImagesFavourite: FavouriteImageToSave): Boolean {
+        val favouriteImages = localRepositoryImpl.getFavouriteImage()
+        return favouriteImages.any { it.link == listOfImagesFavourite.link }
+    }
+
     private suspend fun updateFavouriteStatus(listOfImagesFromApi: List<NasaImageItems>): List<NasaImageItems> {
-        val favouriteImages = dbImageNasaRepository.getFavouriteImage()
+        val favouriteImages = localRepositoryImpl.getFavouriteImage()
         return listOfImagesFromApi.map { image ->
             val isFavourite = favouriteImages.any { it.link == image.links.firstOrNull()?.href }
             image.copy(isFavourite = isFavourite)
@@ -95,7 +104,7 @@ class LoadNasaImageViewModel(
 
                         is ApiResponse.Success -> {
                             responseApi.data.collection.items?.let { imagesToLoad ->
-                                _listFlow.value = updateFavouriteStatus(imagesToLoad)
+                                _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
                             }
                             _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
                         }
@@ -107,7 +116,7 @@ class LoadNasaImageViewModel(
             }
     }
 
-    fun loadNextItems() {
+    fun loadNextImage() {
         viewModelScope.launch {
             _isLoading.value = true
             delay(3000L)
@@ -117,7 +126,7 @@ class LoadNasaImageViewModel(
 
                 is ApiResponse.Success -> {
                     responseApi.data.collection.items?.let { imagesToLoad ->
-                        _listFlow.value = imageListFlow.value + updateFavouriteStatus(imagesToLoad)
+                        _listOfImageFromApi.value = listOfImageToLoad.value + updateFavouriteStatus(imagesToLoad)
                     }
                     _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
                 }
@@ -132,7 +141,7 @@ sealed interface LoadNasaImageViewState {
     data object Init : LoadNasaImageViewState
     data object Loading : LoadNasaImageViewState
     data class LoadingFavourite(val isLoading: Boolean) : LoadNasaImageViewState
-    data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
     data class SuccessFavourite(val updateListOfImageFavourite: List<NasaImageItems>) : LoadNasaImageViewState
+    data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
     data class Error(val message: String) : LoadNasaImageViewState
 }

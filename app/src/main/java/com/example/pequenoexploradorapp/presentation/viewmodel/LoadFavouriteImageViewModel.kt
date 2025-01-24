@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class LoadFavouriteImageViewModel(
     private val connectivityObserver: ConnectivityObserver,
-    private val dbImageNasaRepository: FavouriteImageRepositoryImpl,
+    private val localRepositoryImpl: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
 
     private var listOfFavourites = emptyList<FavouriteImageToSave>()
@@ -42,21 +42,19 @@ class LoadFavouriteImageViewModel(
         _uiState.value = LoadFavouriteImageViewState.Loading
         viewModelScope.launch {
             delay(3000L)
-
-            val response = dbImageNasaRepository.getFavouriteImage()
+            val response = localRepositoryImpl.getFavouriteImage()
             _listOfFavourites.value = response
-
             if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
             else _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.EMPTY_FAVOURITE_DB)
         }
     }
 
-    fun onRemoveFavouriteImageList(image: FavouriteImageToSave) {
+    fun onRemoveFavouriteImage(image: FavouriteImageToSave) {
         _uiState.value = LoadFavouriteImageViewState.LoadingRemoveFavourite(true)
         viewModelScope.launch {
-            dbImageNasaRepository.deleteImage(image)
+            localRepositoryImpl.deleteImage(image)
             delay(600L)
-            val response = dbImageNasaRepository.getFavouriteImage()
+            val response = localRepositoryImpl.getFavouriteImage()
             if(response == _listOfFavourites.value) {
                 _uiState.value = LoadFavouriteImageViewState.LoadingRemoveFavourite(false)
                 _uiState.value =LoadFavouriteImageViewState.Error(ConstantsApp.DEFAULT_ERROR_REMOVE_DB)

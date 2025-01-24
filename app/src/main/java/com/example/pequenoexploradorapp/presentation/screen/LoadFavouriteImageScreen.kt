@@ -299,7 +299,7 @@ fun LoadFavouriteImageOnCard(
                         keywords = null,
                         isFavourite = isFavourite
                     )
-                    viewModel.onRemoveFavouriteImageList(favourite)
+                    viewModel.onRemoveFavouriteImage(favourite)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
