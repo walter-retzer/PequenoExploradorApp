@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.presentation.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,12 +69,14 @@ fun SearchImageScreen(
     viewModel: SearchImageViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
+    val stateScroll = rememberScrollState()
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val textSearchImage by viewModel.searchImageState.collectAsState()
     val isVisible by remember { derivedStateOf { textSearchImage.textInput.isNotBlank() } }
     var snackBarIsActivated by remember { mutableStateOf(false) }
+    var isScrollActive by remember { mutableStateOf(false) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -109,7 +112,8 @@ fun SearchImageScreen(
                     contentScale = ContentScale.FillBounds
                 )
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                .clickable { isScrollActive = true }
+                .verticalScroll(stateScroll),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -155,7 +159,7 @@ fun SearchImageScreen(
                 text = "Encontre as imagens mais fascinantes do Universo",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Justify,
+                textAlign = TextAlign.Center,
                 color = Color.White
             )
             OutlinedTextField(
@@ -211,6 +215,10 @@ fun SearchImageScreen(
                     onNavigateToLoadNasaImage(textSearchImage.textInput.trimEnd())
                 }
             )
+            LaunchedEffect(isScrollActive) {
+                stateScroll.animateScrollTo(1000)
+                isScrollActive = false
+            }
         }
     }
 }
