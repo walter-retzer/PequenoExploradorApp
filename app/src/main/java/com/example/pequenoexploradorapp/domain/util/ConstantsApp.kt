@@ -21,6 +21,8 @@ class ConstantsApp {
             const val SUCCESS_RESET_PASSWORD = "Em breve receberá um email para cadastrar uma nova senha."
             const val ERROR_RESET_PASSWORD = "Verifique o email digitado."
             const val DEFAULT_NOTIFICATION = "Você receberá novas notificações em breve."
-            const val DEFAULT_ERROR_DB = "Não foi possível adicionar a imagem aos favoritos"
+            const val DEFAULT_ERROR_REMOVE_DB = "Não foi possível remover a imagem aos favoritos"
+            const val DEFAULT_ERROR_ADD_DB = "Não foi possível adicionar a imagem aos favoritos"
+            const val EMPTY_FAVOURITE_DB = "Não há imagens adicionadas dos favoritos"
         }
 }

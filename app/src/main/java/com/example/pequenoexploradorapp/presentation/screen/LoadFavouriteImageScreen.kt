@@ -61,9 +61,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.theme.primaryLight
@@ -130,6 +128,14 @@ fun LoadFavouriteImageScreen(
             }
 
             is LoadFavouriteImageViewState.Error -> {
+                RenderImageFavouriteSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    listOfImagesFromDb = listOfFavouriteImage,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                )
+
                 progressButtonIsActivated = false
                 snackBarIsActivated = true
                 LaunchedEffect(snackBarIsActivated) {
@@ -153,13 +159,13 @@ fun LoadFavouriteImageScreen(
                 )
             }
 
-            LoadFavouriteImageViewState.SuccessRemoveFavourite -> {
+            is LoadFavouriteImageViewState.LoadingRemoveFavourite -> {
                 RenderImageFavouriteSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     listOfImagesFromDb = listOfFavouriteImage,
                     viewModel = viewModel,
-                    isLoading = isLoading,
+                    isLoading = state.isLoading,
                 )
             }
         }
@@ -245,9 +251,9 @@ fun LoadFavouriteImageOnCard(
     numberOfImage: Int,
     viewModel: LoadFavouriteImageViewModel
 ) {
-    val id = listOfImages?.get(numberOfImage)?.id
+    val id = listOfImages?.get(numberOfImage)?.id ?: ""
     val title = listOfImages?.get(numberOfImage)?.title
-    val date = listOfImages?.get(numberOfImage)?.dateCreated
+    val date = listOfImages?.get(numberOfImage)?.dateCreated ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.link
     val creators = listOfImages?.get(numberOfImage)?.creators
     val keywords = listOfImages?.get(numberOfImage)?.keywords?.first()
@@ -285,7 +291,7 @@ fun LoadFavouriteImageOnCard(
             IconButton(
                 onClick = {
                     val favourite = FavouriteImageToSave(
-                        id = id!!,
+                        id = id,
                         title = title,
                         dateCreated = date,
                         link = imageUrl,
@@ -317,19 +323,17 @@ fun LoadFavouriteImageOnCard(
                 .fillMaxWidth()
                 .background(surfaceDark),
         ) {
-            if (date != null) {
-                Text(
-                    text = date,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .padding(8.dp),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center,
-                    color = contentColor
-                )
-            }
+            Text(
+                text = date,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(8.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = contentColor
+            )
         }
     }
 }
