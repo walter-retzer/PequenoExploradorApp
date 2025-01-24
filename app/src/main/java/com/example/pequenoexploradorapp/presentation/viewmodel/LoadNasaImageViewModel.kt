@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,10 @@ class LoadNasaImageViewModel(
     private var list = emptyList<NasaImageItems>()
     private val _listFlow = MutableStateFlow(list)
     val imageListFlow: StateFlow<List<NasaImageItems>> get() = _listFlow
+
+    private var responseFavourite = emptyList<ImageToLoad>()
+    private val _responseFavourite = MutableStateFlow(responseFavourite)
+
 
     private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)
     val uiState: StateFlow<LoadNasaImageViewState> = _uiState.asStateFlow()
@@ -55,6 +60,28 @@ class LoadNasaImageViewModel(
             _listFlow.value = image
             _uiState.value = LoadNasaImageViewState.LoadingFavourite(false)
             _uiState.value = LoadNasaImageViewState.SuccessFavourite(image, numberOfImage)
+        }
+    }
+
+
+    suspend fun updateFavouriteStatus(listOfImagesFromApi: List<NasaImageItems>): List<NasaImageItems> {
+        val favouriteImages = dbImageNasaRepository.getFavouriteImage()
+        return listOfImagesFromApi.map { image ->
+            val isFavourite = favouriteImages.any { it.link == image.links.firstOrNull()?.href }
+            image.copy(isFavourite = isFavourite)
+        }
+    }
+
+    fun itemFav(item: List<NasaImageItems>) {
+        viewModelScope.launch {
+            _responseFavourite.value =  dbImageNasaRepository.getFavouriteImage()
+        }
+        val list = item.map { imagesFromApi ->
+            if (responseFavourite.filter {
+                    it.link == imagesFromApi.links.first()?.href
+                }.getOrNull(0) != null)
+                imagesFromApi.copy(isFavourite = true)
+            else imagesFromApi
         }
     }
 
