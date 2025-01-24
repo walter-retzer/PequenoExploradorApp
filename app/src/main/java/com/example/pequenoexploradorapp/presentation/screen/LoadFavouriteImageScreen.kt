@@ -55,10 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.data.ImageToLoad
-import com.example.pequenoexploradorapp.data.NasaImageData
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -163,8 +161,7 @@ fun LoadFavouriteImageScreen(
                                 items(imagesToLoad.size) { numberOfImage ->
                                     LoadFavouriteImageOnCard(
                                         images = imagesToLoad,
-                                        numberOfImage = numberOfImage,
-                                        viewModel = viewModel
+                                        numberOfImage = numberOfImage
                                     )
                                 }
                             }
@@ -191,9 +188,8 @@ fun LoadFavouriteImageScreen(
 
 @Composable
 fun LoadFavouriteImageOnCard(
-    images: List<ImageToLoad>?,
-    numberOfImage: Int,
-    viewModel: LoadFavouriteImageViewModel
+    images: List<FavouriteImageToSave>?,
+    numberOfImage: Int
 ) {
     val imageToLoad = images?.get(numberOfImage)?.link
     val dateToLoad = images?.get(numberOfImage)?.dateCreated

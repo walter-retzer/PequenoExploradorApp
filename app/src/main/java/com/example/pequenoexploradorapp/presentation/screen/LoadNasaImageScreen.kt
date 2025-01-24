@@ -43,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,7 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.data.ImageToLoad
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
@@ -100,7 +101,7 @@ fun LoadNasaImageScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    var totalHits by remember { mutableStateOf(0) }
+    var totalHits by remember { mutableIntStateOf(0) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -145,7 +146,7 @@ fun LoadNasaImageScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfNasaImages = listImages,
+                    listOfImagesFromApi = listImages,
                     viewModel = viewModel,
                     isLoading = state.isLoading,
                     totalHits = totalHits
@@ -172,7 +173,7 @@ fun LoadNasaImageScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfNasaImages = listImages,
+                    listOfImagesFromApi = listImages,
                     viewModel = viewModel,
                     isLoading = isLoading,
                     totalHits = totalHits
@@ -184,7 +185,7 @@ fun LoadNasaImageScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfNasaImages = state.list,
+                    listOfImagesFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
                     isLoading = isLoading,
                     totalHits = totalHits
@@ -212,12 +213,11 @@ fun RenderSuccess(
     paddingValues: PaddingValues,
     scrollState: LazyGridState,
     scope: CoroutineScope,
-    listOfNasaImages: List<NasaImageItems>,
+    listOfImagesFromApi: List<NasaImageItems>,
     viewModel: LoadNasaImageViewModel,
     isLoading: Boolean,
     totalHits: Int
 ) {
-    var page by remember { mutableStateOf(1) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -279,9 +279,9 @@ fun RenderSuccess(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.clipToBounds(),
             ) {
-                items(listOfNasaImages.size) { numberOfImage ->
+                items(listOfImagesFromApi.size) { numberOfImage ->
                     LoadImageOnCard(
-                        listOfImages = listOfNasaImages,
+                        listOfImages = listOfImagesFromApi,
                         numberOfImage = numberOfImage,
                         viewModel = viewModel
                     )
@@ -292,10 +292,7 @@ fun RenderSuccess(
         InfiniteListHandler(
             listState = scrollState,
             onLoadMore = {
-                page++
-                viewModel.loadNextItems(
-                    page = page
-                )
+                viewModel.loadNextItems()
             }
         )
     }
@@ -322,14 +319,13 @@ fun RenderSuccess(
 @Composable
 fun InfiniteListHandler(
     listState: LazyGridState,
-    buffer: Int = 10,
+    buffer: Int = 20,
     onLoadMore: () -> Unit
 ) {
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex =
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer)
         }
     }
@@ -388,7 +384,7 @@ fun LoadImageOnCard(
             )
             IconButton(
                 onClick = {
-                    val favourite = ImageToLoad(
+                    val favourite = FavouriteImageToSave(
                         title = title,
                         dateCreated = date,
                         link = imageUrl,
@@ -402,10 +398,10 @@ fun LoadImageOnCard(
                     if (listOfImages != null) {
                         viewModel.onSaveFavourite(
                             favourite,
-                            listOfImages,
-                            numberOfImage
+                            listOfImages
                         )
                     }
+
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)

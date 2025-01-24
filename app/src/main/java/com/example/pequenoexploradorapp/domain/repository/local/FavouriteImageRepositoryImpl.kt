@@ -1,6 +1,6 @@
 package com.example.pequenoexploradorapp.domain.repository.local
 
-import com.example.pequenoexploradorapp.data.ImageToLoad
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageDao
 import com.example.pequenoexploradorapp.domain.datasource.local.FavouriteImageEntity
 import kotlinx.coroutines.Dispatchers.IO
@@ -10,18 +10,18 @@ class FavouriteImageRepositoryImpl(
     private val dao: FavouriteImageDao
 ): FavouriteImageRepository {
 
-    override suspend fun getFavouriteImage(): List<ImageToLoad> {
+    override suspend fun getFavouriteImage(): List<FavouriteImageToSave> {
         val response = dao.findAll().map { it.toFavouriteImage() }
         return response
     }
 
-    override suspend fun save(images: ImageToLoad) = withContext(IO) {
+    override suspend fun save(images: FavouriteImageToSave) = withContext(IO) {
         dao.save(images.toFavouriteImageEntity())
     }
 }
 
 
-fun ImageToLoad.toFavouriteImageEntity() = FavouriteImageEntity(
+fun FavouriteImageToSave.toFavouriteImageEntity() = FavouriteImageEntity(
     title = this.title,
     dateCreated = this.dateCreated,
     creators = this.creators,
@@ -29,7 +29,7 @@ fun ImageToLoad.toFavouriteImageEntity() = FavouriteImageEntity(
     isFavourite = this.isFavourite
 )
 
-fun FavouriteImageEntity.toFavouriteImage() = ImageToLoad(
+fun FavouriteImageEntity.toFavouriteImage() = FavouriteImageToSave(
     title = this.title,
     dateCreated = this.dateCreated,
     link = this.link,
