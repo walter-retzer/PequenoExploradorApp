@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -326,7 +327,8 @@ fun InfiniteListHandler(
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer)
         }
     }
@@ -348,11 +350,13 @@ fun LoadImageOnCard(
     viewModel: LoadNasaImageViewModel
 ) {
     val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
-    val date = "Data: ${listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val date =
+        "Data: ${listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
     val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
     val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()
     val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
+    val index = numberOfImage + 1
 
     Column(
         modifier = Modifier
@@ -383,6 +387,18 @@ fun LoadImageOnCard(
                     .fillMaxWidth()
                     .height(220.dp)
             )
+            Text(
+                text = index.toString(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(6.dp)
+                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .wrapContentSize(),
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = contentColor
+            )
             IconButton(
                 onClick = {
                     val favourite = FavouriteImageToSave(
@@ -407,7 +423,7 @@ fun LoadImageOnCard(
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(8.dp)
+                    .padding(6.dp)
                     .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
@@ -428,7 +444,7 @@ fun LoadImageOnCard(
                 .background(surfaceDark),
         ) {
             Text(
-                text = numberOfImage.toString(),
+                text = date,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
