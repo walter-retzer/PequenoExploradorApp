@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface FavouriteImageDao {
 
-    @Query("SELECT * FROM FavouriteImageEntity")
+    @Query("SELECT * FROM FavouriteImageEntity ORDER BY id DESC")
     suspend fun findAll(): List<FavouriteImageEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

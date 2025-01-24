@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.ImageToLoad
 import com.example.pequenoexploradorapp.data.NasaImageData
+import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
@@ -45,10 +46,20 @@ class LoadNasaImageViewModel(
         )
 
     private var image = ""
+    var nasaImageResponse: NasaImageResponse? = null
 
-    fun onSaveFavourite(imageNasa: ImageToLoad ){
+    fun onSaveFavourite(imageNasa: ImageToLoad, numberOfImage: Int ){
         viewModelScope.launch {
             dbImageNasaRepository.save(imageNasa.copy(isFavourite = true))
+//            nasaImageResponse?.collection?.items?.first()?.data?.get(numberOfImage)!!.copy(isFavourite = true)
+//            _uiState.value = LoadNasaImageViewState.Success(nasaImageResponse!!)
+        }
+    }
+
+    fun onSaveItemIconFavourite(image: MutableList<NasaImageItems>, numberOfImage: Int){
+        viewModelScope.launch {
+//            nasaImageResponse?.collection?.items?.first()?.data?.get(numberOfImage)!!.copy(isFavourite = true)
+           _uiState.value = LoadNasaImageViewState.SuccessFavourite(image, numberOfImage)
         }
     }
 
@@ -78,8 +89,10 @@ class LoadNasaImageViewModel(
                         is ApiResponse.Failure -> _uiState.value =
                             LoadNasaImageViewState.Error(responseApi.messageError)
 
-                        is ApiResponse.Success -> _uiState.value =
-                            LoadNasaImageViewState.Success(responseApi.data)
+                        is ApiResponse.Success -> {
+                            nasaImageResponse = responseApi.data
+                            _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
+                        }
                     }
                 }
             }
@@ -98,8 +111,10 @@ class LoadNasaImageViewModel(
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaImageViewState.Error(responseApi.messageError)
 
-                is ApiResponse.Success -> _uiState.value =
-                    LoadNasaImageViewState.Success(responseApi.data)
+                is ApiResponse.Success -> {
+                    nasaImageResponse = responseApi.data
+                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
+                }
             }
             _isLoading.value = false
         }
@@ -111,5 +126,6 @@ sealed interface LoadNasaImageViewState {
     data object Loading : LoadNasaImageViewState
     data object Init : LoadNasaImageViewState
     data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
+    data class SuccessFavourite(val list: MutableList<NasaImageItems>, val numberOfImage: Int) : LoadNasaImageViewState
     data class Error(val message: String) : LoadNasaImageViewState
 }

@@ -24,7 +24,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Hd
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,12 +41,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -53,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource.Companion.SideEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -97,7 +102,8 @@ fun LoadNasaImageScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    var listOfNasaImages = listOf<NasaImageItems>()
+    //var listOfNasaImages = listOf<NasaImageItems>()
+    var listOfNasaImages by remember { mutableStateOf(mutableListOf<NasaImageItems>()) }
     var page by remember { mutableStateOf(1) }
 
 
@@ -216,13 +222,19 @@ fun LoadNasaImageScreen(
                             modifier = Modifier.clipToBounds(),
                         ) {
                             state.images.collection.items?.let { imagesToLoad ->
-                                listOfNasaImages = listOfNasaImages + imagesToLoad
+                                listOfNasaImages += imagesToLoad
 
                                 items(listOfNasaImages.size) { numberOfImage ->
                                     LoadImageOnCard(
                                         images = listOfNasaImages,
                                         numberOfImage = numberOfImage,
-                                        viewModel = viewModel
+                                        viewModel = viewModel,
+                                        onFavouriteImage = {
+                                            println(listOfNasaImages)
+                                            listOfNasaImages[it].data.first()?.isFavourite = true
+                                            println(listOfNasaImages)
+                                            viewModel.onSaveItemIconFavourite(listOfNasaImages, numberOfImage)
+                                        }
                                     )
                                 }
                             }
@@ -255,6 +267,39 @@ fun LoadNasaImageScreen(
                                 .align(Alignment.Center),
                             color = mainColor
                         )
+                    }
+                }
+            }
+
+            is LoadNasaImageViewState.SuccessFavourite -> {
+
+                LazyVerticalGrid(
+                    state = scrollState,
+                    contentPadding = PaddingValues(all = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.clipToBounds(),
+                ) {
+                    state.list.let { imagesToLoad ->
+                        listOfNasaImages += imagesToLoad
+
+                        items(listOfNasaImages.size) {
+                            LoadImageOnCard(
+                                images = listOfNasaImages,
+                                numberOfImage = state.numberOfImage,
+                                viewModel = viewModel,
+                                onFavouriteImage = {
+                                    println(listOfNasaImages)
+                                    listOfNasaImages[it].data.first()?.isFavourite = true
+                                    println(listOfNasaImages)
+                                    viewModel.onSaveItemIconFavourite(
+                                        listOfNasaImages,
+                                        state.numberOfImage
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -305,13 +350,15 @@ fun InfiniteListHandler(
 fun LoadImageOnCard(
     images: List<NasaImageItems>?,
     numberOfImage: Int,
-    viewModel: LoadNasaImageViewModel
+    viewModel: LoadNasaImageViewModel,
+    onFavouriteImage: (numberOfImage: Int) -> Unit
 ) {
     val title = images?.get(numberOfImage)?.data?.first()?.title
     val date = "Data: ${images?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
     val imageUrl = images?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
     val creators = images?.get(numberOfImage)?.data?.first()?.creators
     val keywords = images?.get(numberOfImage)?.data?.first()?.keywords?.first()
+    val isFavourite = images?.get(numberOfImage)?.data?.first()?.isFavourite ?: false
 
     Column(
         modifier = Modifier
@@ -344,14 +391,18 @@ fun LoadImageOnCard(
             )
             IconButton(
                 onClick = {
+
+                    onFavouriteImage(numberOfImage)
+
                     val favourite = ImageToLoad(
                         title = title,
                         dateCreated = date,
                         link = imageUrl,
                         creators = creators,
-                        keywords = null
+                        keywords = null,
+                        isFavourite = true
                     )
-                    viewModel.onSaveFavourite(favourite)
+                    viewModel.onSaveFavourite(favourite, numberOfImage)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -364,7 +415,7 @@ fun LoadImageOnCard(
                     )
             ) {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
+                    imageVector = if(isFavourite)Icons.Default.Favorite else Icons.Default.Hd,
                     contentDescription = "Favorite Nasa Image",
                     tint = mainColor
                 )
@@ -389,3 +440,4 @@ fun LoadImageOnCard(
         }
     }
 }
+
