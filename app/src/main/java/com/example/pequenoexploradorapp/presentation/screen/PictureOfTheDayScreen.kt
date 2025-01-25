@@ -1,5 +1,12 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import android.annotation.SuppressLint
+import android.net.Uri
+import android.view.ViewGroup
+import android.webkit.ConsoleMessage
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,15 +15,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -26,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,12 +60,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
@@ -65,7 +84,8 @@ fun PictureOfTheDayScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
@@ -102,7 +122,11 @@ fun PictureOfTheDayScreen(
             }
 
             is PictureOfTheDayViewState.Init -> {
-                viewModel.onPictureOfTheDayRequest()
+                //viewModel.onPictureOfTheDayRequest()
+                WebView(
+                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
+                    explanation = "What would it look like to land on Saturn's moon Titan? The European Space Agency's Huygens probe set down on the Solar System's cloudiest moon in 2005, and a time-lapse video of its descent images was created. Huygens separated from the robotic Cassini spacecraft soon after it achieved orbit around Saturn in late 2004 and began approaching Titan. For two hours after arriving, Huygens plummeted toward Titan's surface, recording at first only the shrouded moon's opaque atmosphere. The computerized truck-tire sized probe soon deployed a parachute to slow its descent, pierced the thick clouds, and began transmitting images of a strange surface far below never before seen in visible light. Landing in a dried sea and surviving for 90 minutes, Huygen's returned unique images of a strange plain of dark sandy soil strewn with smooth, bright, fist-sized rocks of ice."
+                )
             }
 
             is PictureOfTheDayViewState.Loading -> {
@@ -125,6 +149,10 @@ fun PictureOfTheDayScreen(
             }
 
             is PictureOfTheDayViewState.Success -> {
+//                VideoPlayer(
+//                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
+//                    onClose = { }
+//                )
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -155,16 +183,23 @@ fun PictureOfTheDayScreen(
                                 .clickable { },
                             elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(state.image.hdUrl)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(R.drawable.simple_background),
-                                contentDescription = "",
+                            SubcomposeAsyncImage(
+                                model = state.image.hdUrl?.toHttpsPrefix(),
+                                loading = {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier
+                                                .size(24.dp)
+                                                .align(Alignment.Center),
+                                            color = mainColor
+                                        )
+                                    }
+                                },
+                                contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .height(350.dp)
                             )
                             Text(
                                 modifier = Modifier
@@ -180,6 +215,13 @@ fun PictureOfTheDayScreen(
                     }
                 }
             }
+
+            is PictureOfTheDayViewState.SuccessVideoUrl -> {
+                WebView(
+                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
+                    explanation = "What would it look like to land on Saturn's moon Titan? The European Space Agency's Huygens probe set down on the Solar System's cloudiest moon in 2005, and a time-lapse video of its descent images was created. Huygens separated from the robotic Cassini spacecraft soon after it achieved orbit around Saturn in late 2004 and began approaching Titan. For two hours after arriving, Huygens plummeted toward Titan's surface, recording at first only the shrouded moon's opaque atmosphere. The computerized truck-tire sized probe soon deployed a parachute to slow its descent, pierced the thick clouds, and began transmitting images of a strange surface far below never before seen in visible light. Landing in a dried sea and surviving for 90 minutes, Huygen's returned unique images of a strange plain of dark sandy soil strewn with smooth, bright, fist-sized rocks of ice."
+                )
+            }
         }
 
         if (isConnected?.not() == true) {
@@ -194,5 +236,110 @@ fun PictureOfTheDayScreen(
                 snackBarIsActivated = false
             }
         }
+    }
+}
+
+@Composable
+fun VideoPlayer(videoUrl: String, onClose: () -> Unit) {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(Uri.parse(videoUrl)))
+            prepare()
+            play()
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.8f))
+    ) {
+        AndroidView(
+            factory = { context ->
+                PlayerView(context).apply {
+                    player = exoPlayer
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+        IconButton(
+            onClick = { onClose() },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Close",
+                tint = Color.White
+            )
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebView(videoUrl: String, explanation: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            )
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .height(450.dp)
+                .background(Color.Black.copy(alpha = 0.8f))
+        ) {
+            AndroidView(
+                factory = { context ->
+                    WebView(context).apply {
+                        settings.domStorageEnabled = true
+                        settings.javaScriptEnabled = true
+                        webChromeClient = WebChromeClient()
+                        webViewClient = WebViewClient()
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                    }
+                },
+                update = {
+                    it.loadUrl(videoUrl)
+                    it.setBackgroundColor(Color.Black.copy(alpha = 0.8f).toArgb())
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = 0.8f))
+            )
+        }
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            text = "Imagem: $explanation",
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Normal,
+            textAlign = TextAlign.Justify,
+            color = ListItemDefaults.contentColor
+        )
+    }
+}
+
+class CustomWebChromeClient : WebChromeClient() {
+    override fun onCloseWindow(window: WebView?) {}
+
+    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+        return false
     }
 }
