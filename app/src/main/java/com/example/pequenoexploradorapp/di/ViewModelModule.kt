@@ -40,6 +40,7 @@ val viewModelModules = module {
     factory<PictureOfTheDayViewModel> {
         PictureOfTheDayViewModel(
             provideConnectivityStatus(androidApplication()),
+            get(),
             get()
         )
     }

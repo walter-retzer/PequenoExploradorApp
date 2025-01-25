@@ -7,12 +7,16 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,10 +24,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,14 +74,20 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
+import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.primaryLight
+import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewState
 import org.koin.compose.koinInject
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,9 +97,9 @@ fun PictureOfTheDayScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -122,11 +135,7 @@ fun PictureOfTheDayScreen(
             }
 
             is PictureOfTheDayViewState.Init -> {
-                //viewModel.onPictureOfTheDayRequest()
-                WebView(
-                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
-                    explanation = "What would it look like to land on Saturn's moon Titan? The European Space Agency's Huygens probe set down on the Solar System's cloudiest moon in 2005, and a time-lapse video of its descent images was created. Huygens separated from the robotic Cassini spacecraft soon after it achieved orbit around Saturn in late 2004 and began approaching Titan. For two hours after arriving, Huygens plummeted toward Titan's surface, recording at first only the shrouded moon's opaque atmosphere. The computerized truck-tire sized probe soon deployed a parachute to slow its descent, pierced the thick clouds, and began transmitting images of a strange surface far below never before seen in visible light. Landing in a dried sea and surviving for 90 minutes, Huygen's returned unique images of a strange plain of dark sandy soil strewn with smooth, bright, fist-sized rocks of ice."
-                )
+                viewModel.onPictureOfTheDayRequest()
             }
 
             is PictureOfTheDayViewState.Loading -> {
@@ -149,77 +158,18 @@ fun PictureOfTheDayScreen(
             }
 
             is PictureOfTheDayViewState.Success -> {
-//                VideoPlayer(
-//                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
-//                    onClose = { }
-//                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(Color.Black)
-                                .border(
-                                    width = 1.dp,
-                                    color = ListItemDefaults.contentColor,
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                                .clickable { },
-                            elevation = CardDefaults.cardElevation(8.dp)
-                        ) {
-                            SubcomposeAsyncImage(
-                                model = state.image.hdUrl?.toHttpsPrefix(),
-                                loading = {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .size(24.dp)
-                                                .align(Alignment.Center),
-                                            color = mainColor
-                                        )
-                                    }
-                                },
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(350.dp)
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(6.dp),
-                                text = "Imagem: ${state.image.explanation}",
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = ListItemDefaults.contentColor
-                            )
-                        }
-                    }
-                }
+                RenderSuccessLoadImage(
+                    paddingValues = paddingValues,
+                    viewModel = viewModel,
+                    image = state.image,
+                    isLoading = isLoading
+                )
             }
 
             is PictureOfTheDayViewState.SuccessVideoUrl -> {
                 WebView(
-                    videoUrl = "https://www.youtube.com/embed/msiLWxDayuA?rel=0",
-                    explanation = "What would it look like to land on Saturn's moon Titan? The European Space Agency's Huygens probe set down on the Solar System's cloudiest moon in 2005, and a time-lapse video of its descent images was created. Huygens separated from the robotic Cassini spacecraft soon after it achieved orbit around Saturn in late 2004 and began approaching Titan. For two hours after arriving, Huygens plummeted toward Titan's surface, recording at first only the shrouded moon's opaque atmosphere. The computerized truck-tire sized probe soon deployed a parachute to slow its descent, pierced the thick clouds, and began transmitting images of a strange surface far below never before seen in visible light. Landing in a dried sea and surviving for 90 minutes, Huygen's returned unique images of a strange plain of dark sandy soil strewn with smooth, bright, fist-sized rocks of ice."
+                    videoUrl = state.videoUrl.url.toString(),
+                    explanation = state.videoUrl.explanation.toString()
                 )
             }
         }
@@ -238,6 +188,130 @@ fun PictureOfTheDayScreen(
         }
     }
 }
+
+@Composable
+fun RenderSuccessLoadImage(
+    paddingValues: PaddingValues,
+    viewModel: PictureOfTheDayViewModel,
+    image: PictureOfTheDay,
+    isLoading: Boolean,
+){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.Black)
+                    .border(
+                        width = 1.dp,
+                        color = ListItemDefaults.contentColor,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .clickable { },
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Box {
+                    SubcomposeAsyncImage(
+                        model = image.hdUrl?.toHttpsPrefix(),
+                        loading = {
+                            Box(contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .align(Alignment.Center),
+                                    color = mainColor
+                                )
+                            }
+                        },
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            val favourite = FavouriteImageToSave(
+                                id = UUID.randomUUID().toString(),
+                                title = image.title,
+                                dateCreated = image.date?.formattedDate(),
+                                link = image.url,
+                                creators = null,
+                                keywords = null,
+                                isFavourite = true
+                            )
+                            viewModel.onSaveFavourite(
+                                favourite,
+                                image
+                            )
+
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(6.dp)
+                            .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = primaryLight,
+                                shape = CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = if (image.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite Nasa Image",
+                            tint = mainColor
+                        )
+                    }
+                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp),
+                    text = "Imagem: ${image.explanation}",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Justify,
+                    color = ListItemDefaults.contentColor
+                )
+            }
+        }
+    }
+    AnimatedVisibility(
+        visible = isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = mainColor
+            )
+        }
+    }
+}
+
 
 @Composable
 fun VideoPlayer(videoUrl: String, onClose: () -> Unit) {
@@ -323,16 +397,31 @@ fun WebView(videoUrl: String, explanation: String) {
                     .background(Color.Black.copy(alpha = 0.8f))
             )
         }
-        Text(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            text = "Imagem: $explanation",
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Normal,
-            textAlign = TextAlign.Justify,
-            color = ListItemDefaults.contentColor
-        )
+                .padding(6.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.Black)
+                .border(
+                    width = 1.dp,
+                    color = ListItemDefaults.contentColor,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable { },
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
+                text = "Imagem: $explanation",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Justify,
+                color = ListItemDefaults.contentColor
+            )
+        }
     }
 }
 

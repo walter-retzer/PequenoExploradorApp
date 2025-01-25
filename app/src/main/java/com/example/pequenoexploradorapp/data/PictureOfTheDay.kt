@@ -12,5 +12,6 @@ data class PictureOfTheDay(
     @SerialName("media_type") val mediaType: String? = null,
     @SerialName("service_version") val serviceVersion: String? = null,
     @SerialName("title") val title: String? = null,
-    @SerialName("url") val url: String? = null
+    @SerialName("url") val url: String? = null,
+    @SerialName("isFavourite") var isFavourite: Boolean = false
 )
