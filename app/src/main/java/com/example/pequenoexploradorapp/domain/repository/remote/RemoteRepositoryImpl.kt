@@ -107,6 +107,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
         doRequest {
             client.get {
                 url(BASE_URL_PICTURE_OF_THE_DAY)
+                //parameter("date", "1995-06-16")
                 parameter("api_key", BuildConfig.API_KEY_DEMO)
             }
         }
