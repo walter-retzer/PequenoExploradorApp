@@ -47,12 +47,12 @@ class PictureOfTheDayViewModel(
         image: PictureOfTheDay
     ) {
         viewModelScope.launch {
-            if(checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
+            if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
             _isLoading.value = true
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
             _isLoading.value = false
-            _uiState.value = PictureOfTheDayViewState.Success(image)
+            _uiState.value = PictureOfTheDayViewState.Success(image.copy(isFavourite = true))
         }
     }
 
@@ -61,17 +61,10 @@ class PictureOfTheDayViewModel(
         return favouriteImages.any { it.link == listOfImagesFavourite.link }
     }
 
-    private suspend fun updateFavouriteStatus(listOfImagesFromApi: List<NasaImageItems>): List<NasaImageItems> {
-        val favouriteImages = localRepositoryImpl.getFavouriteImage()
-        return listOfImagesFromApi.map { image ->
-            val isFavourite = favouriteImages.any { it.link == image.links.firstOrNull()?.href }
-            image.copy(isFavourite = isFavourite)
-        }
-    }
-
     fun onPictureOfTheDayRequest() {
         _uiState.value = PictureOfTheDayViewState.Loading
         viewModelScope.launch {
+            val favouriteImages = localRepositoryImpl.getFavouriteImage()
             delay(3000L)
             when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
                 is ApiResponse.Failure -> _uiState.value =
@@ -104,9 +97,17 @@ class PictureOfTheDayViewModel(
                                             explanation = translatedText
                                         )
                                     )
-                                else _uiState.value = PictureOfTheDayViewState.Success(
-                                    responseApi.data.copy(explanation = translatedText)
-                                )
+                                else {
+                                    val isFavourite  = favouriteImages.any { favourite ->
+                                            favourite.link == responseApi.data.url }
+
+                                    _uiState.value = PictureOfTheDayViewState.Success(
+                                        responseApi.data.copy(
+                                            explanation = translatedText,
+                                            isFavourite = isFavourite
+                                        )
+                                    )
+                                }
                             }
                             .addOnFailureListener { exception ->
                                 println("Error Text Translation: ${exception.printStackTrace()}")
