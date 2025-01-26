@@ -109,7 +109,7 @@ fun PictureOfTheDayScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagem do Dia",
+                title = "Destaque do dia",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },

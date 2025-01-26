@@ -6,7 +6,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.PermIdentity
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -23,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 
 
@@ -69,14 +74,14 @@ fun MenuToolbar(
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.icon_home),
-                    contentDescription = null
+                    imageVector = Icons.Default.NotificationsNone,
+                    contentDescription = "Notification"
                 )
             }
             IconButton(onClick = { onNavigationToProfile() }) {
                 Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Localized description"
+                    imageVector = Icons.Default.PermIdentity,
+                    contentDescription = "Profile"
                 )
             }
         },

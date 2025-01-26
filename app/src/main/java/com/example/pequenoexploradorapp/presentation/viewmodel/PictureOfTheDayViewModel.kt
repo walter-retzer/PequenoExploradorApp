@@ -3,7 +3,6 @@ package com.example.pequenoexploradorapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
-import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
@@ -65,7 +64,7 @@ class PictureOfTheDayViewModel(
         _uiState.value = PictureOfTheDayViewState.Loading
         viewModelScope.launch {
             val favouriteImages = localRepositoryImpl.getFavouriteImage()
-            delay(3000L)
+            delay(1000L)
             when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
                 is ApiResponse.Failure -> _uiState.value =
                     PictureOfTheDayViewState.Error(responseApi.messageError)
@@ -93,16 +92,17 @@ class PictureOfTheDayViewModel(
 
                                 if (responseApi.data.mediaType == "video") _uiState.value =
                                     PictureOfTheDayViewState.SuccessVideoUrl(
-                                        responseApi.data.copy(
+                                        videoUrl = responseApi.data.copy(
                                             explanation = translatedText
                                         )
                                     )
                                 else {
-                                    val isFavourite  = favouriteImages.any { favourite ->
-                                            favourite.link == responseApi.data.url }
+                                    val isFavourite = favouriteImages.any { favourite ->
+                                        favourite.link == responseApi.data.url
+                                    }
 
                                     _uiState.value = PictureOfTheDayViewState.Success(
-                                        responseApi.data.copy(
+                                        image = responseApi.data.copy(
                                             explanation = translatedText,
                                             isFavourite = isFavourite
                                         )
