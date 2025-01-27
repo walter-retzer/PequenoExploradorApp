@@ -79,7 +79,6 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageVie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -368,7 +367,7 @@ fun LoadRoverImageOnCard(
                     ),
                 onClick = {
                     val favourite = FavouriteImageToSave(
-                        id = UUID.randomUUID().toString(),
+                        id = System.currentTimeMillis(),
                         title = null,
                         dateCreated = date,
                         link = imageToLoad,

@@ -51,7 +51,7 @@ data class NasaImageMetaData(
 
 @Serializable
 data class FavouriteImageToSave(
-    val id: String,
+    val id: Long,
     val title: String? = null,
     val dateCreated: String? = null,
     val link: String? = null,

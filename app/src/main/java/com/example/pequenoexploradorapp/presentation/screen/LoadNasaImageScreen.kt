@@ -84,7 +84,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -350,8 +349,7 @@ fun LoadImageOnCard(
     viewModel: LoadNasaImageViewModel
 ) {
     val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
-    val date =
-        "Data: ${listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate()}"
+    val date =  listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
     val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
     val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()
@@ -402,7 +400,7 @@ fun LoadImageOnCard(
             IconButton(
                 onClick = {
                     val favourite = FavouriteImageToSave(
-                        id = UUID.randomUUID().toString(),
+                        id = System.currentTimeMillis(),
                         title = title,
                         dateCreated = date,
                         link = imageUrl,

@@ -248,7 +248,7 @@ fun RenderSuccessLoadImage(
                     IconButton(
                         onClick = {
                             val favourite = FavouriteImageToSave(
-                                id = UUID.randomUUID().toString(),
+                                id = System.currentTimeMillis(),
                                 title = image.title,
                                 dateCreated = image.date?.formattedDate(),
                                 link = image.url,

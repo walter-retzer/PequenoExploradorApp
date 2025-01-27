@@ -251,7 +251,6 @@ fun LoadFavouriteImageOnCard(
     numberOfImage: Int,
     viewModel: LoadFavouriteImageViewModel
 ) {
-    val id = listOfImages?.get(numberOfImage)?.id ?: ""
     val title = listOfImages?.get(numberOfImage)?.title
     val date = listOfImages?.get(numberOfImage)?.dateCreated ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.link
@@ -291,7 +290,7 @@ fun LoadFavouriteImageOnCard(
             IconButton(
                 onClick = {
                     val favourite = FavouriteImageToSave(
-                        id = id,
+                        id = System.currentTimeMillis(),
                         title = title,
                         dateCreated = date,
                         link = imageUrl,
