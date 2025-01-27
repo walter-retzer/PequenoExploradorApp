@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favourites")
 data class FavouriteImageEntity(
     @PrimaryKey
-    val id: Long = System.currentTimeMillis(),
+    val id: Long,
     var title: String?,
     val dateCreated: String?,
     val creators: String? = null,
