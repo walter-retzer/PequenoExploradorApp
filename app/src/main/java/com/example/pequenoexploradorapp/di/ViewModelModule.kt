@@ -53,6 +53,7 @@ val viewModelModules = module {
     factory<LoadRoverImageViewModel> {
         LoadRoverImageViewModel(
             provideConnectivityStatus(androidApplication()),
+            get(),
             get()
         )
     }

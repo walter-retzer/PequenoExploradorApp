@@ -14,9 +14,10 @@ data class RoverImageInfo(
     @SerialName("id") val id: String,
     @SerialName("sol") val sol: Int,
     @SerialName("camera") val camera: RoverCamera,
-    @SerialName("img_src") val image: String,
+    @SerialName("img_src") val imageUrl: String,
     @SerialName("earth_date") val date: String,
-    @SerialName("rover") val rover: RoverInfo
+    @SerialName("rover") val rover: RoverInfo,
+    @SerialName("isFavourite") var isFavourite: Boolean = false
 )
 
 @Serializable
@@ -33,5 +34,5 @@ data class RoverInfo(
     @SerialName("name") val name: String,
     @SerialName("landing_date") val landingDate: String,
     @SerialName("launch_date") val launchDate: String,
-    @SerialName("status") val status: String
+    @SerialName("status") val status: String,
 )
