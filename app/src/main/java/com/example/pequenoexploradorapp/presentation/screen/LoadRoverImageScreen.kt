@@ -17,14 +17,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -37,7 +43,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,7 +61,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
+import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
@@ -65,10 +72,15 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.primaryLight
+import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
+import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,13 +93,14 @@ fun LoadRoverImageScreen(
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val listImages by viewModel.listOfImageToLoad.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    var page by remember { mutableIntStateOf(1) }
 
 
     Scaffold(
@@ -106,7 +119,16 @@ fun LoadRoverImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadRoverImageViewState.Init -> {
-                viewModel.onRequestRoverImages(date, nameRover)
+                viewModel.onRequestRoverImages("2025-01-25", BuildConfig.PERSEVERANCE)
+//                RenderSuccess(
+//                    paddingValues = paddingValues,
+//                    scrollState = scrollState,
+//                    scope = scope,
+//                    listOfImagesFromApi = state.images.photos,
+//                    viewModel = viewModel,
+//                    isLoading = isLoading,
+//                )
+
             }
 
             is LoadRoverImageViewState.Loading -> {
@@ -143,99 +165,35 @@ fun LoadRoverImageScreen(
             }
 
             is LoadRoverImageViewState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .paint(
-                            painterResource(id = R.drawable.simple_background),
-                            contentScale = ContentScale.FillBounds
-                        ),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (state.images.photos.isEmpty()) {
-                        Box {
-                            AnimatedLottieFile(
-                                modifier = Modifier
-                                    .padding(top = 20.dp)
-                                    .size(300.dp)
-                                    .align(Alignment.TopCenter),
-                                file = R.raw.animation_telescopy
-                            )
-                        }
-                        Row {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = Color.White
-                            )
-                        }
-                    } else {
-                        Row {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clickable {
-                                        scope.launch {
-                                            scrollState.animateScrollToItem(0)
-                                        }
-                                    },
-                                text = "Foram encontradas ${state.images.photos.size} imagens em ${date.formattedDate()}",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                textAlign = TextAlign.Justify,
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Row {
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfImagesFromApi = state.images,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                )
+            }
 
-                        LazyVerticalGrid(
-                            state = scrollState,
-                            contentPadding = PaddingValues(all = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.clipToBounds(),
-                        ) {
-                            state.images.photos.let { imagesToLoad ->
-
-                                items(imagesToLoad.size) { numberOfImage ->
-                                    LoadRoverImageOnCard(
-                                        images = imagesToLoad,
-                                        numberOfImage = numberOfImage,
-                                    )
-                                }
-                            }
-
-                        }
-                    }
-                }
-                AnimatedVisibility(
-                    visible = isLoading,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Transparent)
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .width(64.dp)
-                                .align(Alignment.Center),
-                            color = mainColor
-                        )
-                    }
-                }
+            is LoadRoverImageViewState.LoadingFavourite -> {
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfImagesFromApi = listImages,
+                    viewModel = viewModel,
+                    isLoading = state.isLoading,
+                )
+            }
+            is LoadRoverImageViewState.SuccessFavourite -> {
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfImagesFromApi = state.updateListOfImageFavourite,
+                    viewModel = viewModel,
+                    isLoading = isLoading,
+                )
             }
         }
     }
@@ -254,28 +212,137 @@ fun LoadRoverImageScreen(
     }
 }
 
+
 @Composable
-fun LoadRoverImageOnCard(images: List<RoverImageInfo>, numberOfImage: Int) {
+fun RenderSuccess(
+    paddingValues: PaddingValues,
+    scrollState: LazyGridState,
+    scope: CoroutineScope,
+    listOfImagesFromApi: List<RoverImageInfo>,
+    viewModel: LoadRoverImageViewModel,
+    isLoading: Boolean,
+) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            ),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val imageToLoad = images[numberOfImage].image.toHttpsPrefix()
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.Black)
-                .border(
-                    width = 1.dp,
-                    color = contentColor,
-                    shape = RoundedCornerShape(16.dp)
+        if (listOfImagesFromApi.isEmpty()) {
+            Box {
+                AnimatedLottieFile(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(300.dp)
+                        .align(Alignment.TopCenter),
+                    file = R.raw.animation_telescopy
                 )
-                .clickable { },
-            elevation = CardDefaults.cardElevation(8.dp)
+            }
+            Row {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Justify,
+                    color = Color.White
+                )
+            }
+        } else {
+            Row {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable {
+                            scope.launch {
+                                scrollState.animateScrollToItem(0)
+                            }
+                        },
+                    text = "Foram encontradas ${listOfImagesFromApi.size}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Justify,
+                    color = Color.White
+                )
+            }
+        }
+        Row {
+
+            LazyVerticalGrid(
+                state = scrollState,
+                contentPadding = PaddingValues(all = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.clipToBounds(),
+            ) {
+                listOfImagesFromApi.let { imagesToLoad ->
+
+                    items(imagesToLoad.size) { numberOfImage ->
+                        LoadRoverImageOnCard(
+                            listOfImages = imagesToLoad,
+                            numberOfImage = numberOfImage,
+                            viewModel = viewModel
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+    AnimatedVisibility(
+        visible = isLoading,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Transparent)
         ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = mainColor
+            )
+        }
+    }
+}
+
+
+@Composable
+fun LoadRoverImageOnCard(
+    viewModel: LoadRoverImageViewModel,
+    listOfImages: List<RoverImageInfo>,
+    numberOfImage: Int
+) {
+    val imageToLoad = listOfImages[numberOfImage].imageUrl
+    val date = listOfImages[numberOfImage].date.formattedDate()
+    val isFavourite = listOfImages[numberOfImage].isFavourite
+    val index = numberOfImage + 1
+
+    Column(
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = contentColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+    ) {
+        Box {
             SubcomposeAsyncImage(
-                model = imageToLoad,
+                model = imageToLoad.toHttpsPrefix(),
                 loading = {
                     Box(contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(
@@ -290,18 +357,123 @@ fun LoadRoverImageOnCard(images: List<RoverImageInfo>, numberOfImage: Int) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(220.dp)
             )
             Text(
+                text = index.toString(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(6.dp)
+                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .wrapContentSize(),
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = contentColor
+            )
+            IconButton(
+                onClick = {
+                    val favourite = FavouriteImageToSave(
+                        id = UUID.randomUUID().toString(),
+                        title = null,
+                        dateCreated = date,
+                        link = imageToLoad,
+                        creators = null,
+                        keywords = null,
+                        isFavourite = true
+                    )
+
+                    listOfImages[numberOfImage].isFavourite = true
+                    viewModel.onSaveFavourite(
+                        favourite,
+                        listOfImages
+                    )
+
+
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .border(
+                        width = 1.dp,
+                        color = primaryLight,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite Nasa Image",
+                    tint = mainColor
+                )
+            }
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(surfaceDark),
+        ) {
+            Text(
+                text = date,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 6.dp),
-                text = "Imagem: ${numberOfImage + 1}",
+                    .align(Alignment.Center)
+                    .padding(8.dp),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Justify,
+                textAlign = TextAlign.Center,
                 color = contentColor
             )
         }
     }
+
+
+//    Column(
+//        modifier = Modifier.fillMaxWidth()
+//    ) {
+//        val imageToLoad = images[numberOfImage].image.toHttpsPrefix()
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(180.dp)
+//                .clip(RoundedCornerShape(16.dp))
+//                .background(Color.Black)
+//                .border(
+//                    width = 1.dp,
+//                    color = contentColor,
+//                    shape = RoundedCornerShape(16.dp)
+//                )
+//                .clickable { },
+//            elevation = CardDefaults.cardElevation(8.dp)
+//        ) {
+//            SubcomposeAsyncImage(
+//                model = imageToLoad,
+//                loading = {
+//                    Box(contentAlignment = Alignment.Center) {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier
+//                                .size(24.dp)
+//                                .align(Alignment.Center),
+//                            color = mainColor
+//                        )
+//                    }
+//                },
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(220.dp)
+//            )
+//            Text(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(start = 6.dp),
+//                text = "Imagem: ${numberOfImage + 1}",
+//                fontSize = 12.sp,
+//                fontWeight = FontWeight.Normal,
+//                textAlign = TextAlign.Justify,
+//                color = contentColor
+//            )
+//        }
+//    }
 }
