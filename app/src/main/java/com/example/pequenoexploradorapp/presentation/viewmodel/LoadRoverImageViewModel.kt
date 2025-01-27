@@ -30,9 +30,6 @@ class LoadRoverImageViewModel(
     private var listOfImageFromApi = emptyList<RoverImageInfo>()
     private val _listOfImageFromApi = MutableStateFlow(listOfImageFromApi)
 
-    private val _isLoading = MutableStateFlow((false))
-    val isLoading = _isLoading.asStateFlow()
-
     val isConnected = connectivityObserver
         .isConnected
         .stateIn(
@@ -48,10 +45,10 @@ class LoadRoverImageViewModel(
     ) {
         viewModelScope.launch {
             if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
-            _isLoading.value = true
+            _uiState.value = LoadRoverImageViewState.LoadingFavourite(listOfImage, true)
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
-            _isLoading.value = false
+            _uiState.value = LoadRoverImageViewState.LoadingFavourite(listOfImage, false)
             _uiState.value = LoadRoverImageViewState.SuccessFavourite(listOfImage)
         }
     }
@@ -145,6 +142,7 @@ class LoadRoverImageViewModel(
 sealed interface LoadRoverImageViewState {
     data object Init : LoadRoverImageViewState
     data object Loading : LoadRoverImageViewState
+    data class LoadingFavourite(val updateListOfImageFavourite: List<RoverImageInfo>, val isLoading: Boolean) : LoadRoverImageViewState
     data class SuccessFavourite(val updateListOfImageFavourite: List<RoverImageInfo>) : LoadRoverImageViewState
     data class Success(val imagesFromApi: List<RoverImageInfo>) : LoadRoverImageViewState
     data class Error(val message: String) : LoadRoverImageViewState

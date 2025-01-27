@@ -94,7 +94,6 @@ fun LoadRoverImageScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -159,7 +158,7 @@ fun LoadRoverImageScreen(
                     scope = scope,
                     listOfImagesFromApi = state.imagesFromApi,
                     viewModel = viewModel,
-                    isLoading = isLoading,
+                    isLoading = false,
                 )
             }
 
@@ -170,7 +169,18 @@ fun LoadRoverImageScreen(
                     scope = scope,
                     listOfImagesFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
-                    isLoading = isLoading,
+                    isLoading = false,
+                )
+            }
+
+            is LoadRoverImageViewState.LoadingFavourite -> {
+                RenderSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    scope = scope,
+                    listOfImagesFromApi = state.updateListOfImageFavourite,
+                    viewModel = viewModel,
+                    isLoading = state.isLoading,
                 )
             }
         }
