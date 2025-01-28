@@ -27,9 +27,6 @@ class LoadFavouriteImageViewModel(
     private val _uiState = MutableStateFlow<LoadFavouriteImageViewState>(LoadFavouriteImageViewState.Init)
     val uiState: StateFlow<LoadFavouriteImageViewState> = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow((false))
-    val isLoading = _isLoading.asStateFlow()
-
     val isConnected = connectivityObserver
         .isConnected
         .stateIn(
