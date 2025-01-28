@@ -4,6 +4,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -58,6 +59,7 @@ fun String.formattedAsPhone(): String {
                 substring(2, 3) + " " +
                 substring(3, 7) + "-" +
                 substring(7, length)
+
         10 -> "(" + substring(0, 2) + ") " +
                 substring(2, 6) + "-" +
                 substring(6, length)
@@ -162,5 +164,11 @@ fun String.formattedToMillis(adjustDataPickerInitialDate: Int = 0): Long {
         set(Calendar.MONTH, month)
         set(Calendar.DAY_OF_MONTH, day)
     }
-   return date.timeInMillis
+    return date.timeInMillis
+}
+
+fun List<FavouriteImageToSave>.formattedHeadText(): String {
+    return if (this.size == 1) "Encontrado 1 imagem favorita"
+    else if (this.isEmpty()) ""
+    else "Encontrado ${this.size} imagens favoritas"
 }
