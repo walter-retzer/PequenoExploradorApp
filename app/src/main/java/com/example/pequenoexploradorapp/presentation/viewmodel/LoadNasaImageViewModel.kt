@@ -89,30 +89,30 @@ class LoadNasaImageViewModel(
         textTranslator.downloadModelIfNeeded(conditions)
             .addOnSuccessListener {
                 println("Success Download Model Translation")
+                textTranslator.translate(imageSearch.toString())
+                    .addOnSuccessListener { translatedText ->
+                        println("Success Text Translation: $translatedText")
+                        image = translatedText
+                        viewModelScope.launch {
+                            when (val responseApi = remoteRepositoryImpl.getNasaImage(translatedText)) {
+                                is ApiResponse.Failure -> _uiState.value =
+                                    LoadNasaImageViewState.Error(responseApi.messageError)
+
+                                is ApiResponse.Success -> {
+                                    responseApi.data.collection.items?.let { imagesToLoad ->
+                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
+                                    }
+                                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        println("Error Text Translation: ${exception.printStackTrace()}")
+                    }
             }
             .addOnFailureListener { exception ->
                 println("Error Download Model Translation: ${exception.printStackTrace()}")
-            }
-        textTranslator.translate(imageSearch.toString())
-            .addOnSuccessListener { translatedText ->
-                println("Success Text Translation: $translatedText")
-                image = translatedText
-                viewModelScope.launch {
-                    when (val responseApi = remoteRepositoryImpl.getNasaImage(translatedText)) {
-                        is ApiResponse.Failure -> _uiState.value =
-                            LoadNasaImageViewState.Error(responseApi.messageError)
-
-                        is ApiResponse.Success -> {
-                            responseApi.data.collection.items?.let { imagesToLoad ->
-                                _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
-                            }
-                            _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-                println("Error Text Translation: ${exception.printStackTrace()}")
             }
     }
 
