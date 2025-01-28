@@ -85,7 +85,6 @@ class LoadNasaImageViewModel(
     }
 
     fun onNasaImageSearch(imageSearch: String?) {
-        _uiState.value = LoadNasaImageViewState.FirstLoading
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.PORTUGUESE)
             .setTargetLanguage(TranslateLanguage.ENGLISH)
@@ -103,7 +102,7 @@ class LoadNasaImageViewModel(
                             when (val responseApi =
                                 remoteRepositoryImpl.getNasaImage(translatedText)) {
                                 is ApiResponse.Failure -> _uiState.value =
-                                    LoadNasaImageViewState.Error(responseApi.messageError)
+                                    LoadNasaImageViewState.Error(responseApi.messageError, true)
 
                                 is ApiResponse.Success -> {
                                     responseApi.data.collection.items?.let { imagesToLoad ->
@@ -139,7 +138,7 @@ class LoadNasaImageViewModel(
             page++
             when (val responseApi = remoteRepositoryImpl.getNasaImage(image, page)) {
                 is ApiResponse.Failure -> _uiState.value =
-                    LoadNasaImageViewState.Error(responseApi.messageError)
+                    LoadNasaImageViewState.Error(responseApi.messageError, true)
 
                 is ApiResponse.Success -> {
                     responseApi.data.collection.items?.let { imagesToLoad ->
@@ -163,7 +162,6 @@ class LoadNasaImageViewModel(
 
 sealed interface LoadNasaImageViewState {
     data object Init : LoadNasaImageViewState
-    data object FirstLoading : LoadNasaImageViewState
     data class Loading(
         val isLoading: Boolean,
         val listOfNasaImage: List<NasaImageItems>,
@@ -180,5 +178,8 @@ sealed interface LoadNasaImageViewState {
         val totalHits: Int
     ) : LoadNasaImageViewState
 
-    data class Error(val message: String) : LoadNasaImageViewState
+    data class Error(
+        val message: String,
+        val isActivated: Boolean
+    ) : LoadNasaImageViewState
 }

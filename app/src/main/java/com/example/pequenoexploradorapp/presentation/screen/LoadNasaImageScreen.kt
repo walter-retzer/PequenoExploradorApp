@@ -77,6 +77,7 @@ import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -87,6 +88,7 @@ import org.koin.compose.koinInject
 @Composable
 fun LoadNasaImageScreen(
     imageSearch: String?,
+    onNavigateToSearchImage: () -> Unit,
     viewModel: LoadNasaImageViewModel = koinInject()
 ) {
     val scrollState = rememberLazyGridState()
@@ -95,7 +97,6 @@ fun LoadNasaImageScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -115,10 +116,6 @@ fun LoadNasaImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadNasaImageViewState.Init -> {
-                viewModel.onNasaImageSearch(imageSearch)
-            }
-
-            is LoadNasaImageViewState.FirstLoading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -135,6 +132,7 @@ fun LoadNasaImageScreen(
                         color = mainColor
                     )
                 }
+                viewModel.onNasaImageSearch(imageSearch)
             }
 
             is LoadNasaImageViewState.Loading -> {
@@ -148,20 +146,6 @@ fun LoadNasaImageScreen(
                     isLoadingNextItems = false,
                     totalHits = state.totalHits
                 )
-            }
-
-            is LoadNasaImageViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
             }
 
             is LoadNasaImageViewState.Success -> {
@@ -188,6 +172,32 @@ fun LoadNasaImageScreen(
                     isLoadingNextItems = true,
                     totalHits = state.totalHits
                 )
+            }
+            is LoadNasaImageViewState.Error -> {
+                snackBarIsActivated = state.isActivated
+                if(snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
+                            )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
+                            onNavigateToSearchImage()
+                        }
+                    }
+                }
             }
         }
     }
