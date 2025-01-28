@@ -87,7 +87,6 @@ import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewState
 import org.koin.compose.koinInject
-import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +98,6 @@ fun PictureOfTheDayScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -162,7 +160,7 @@ fun PictureOfTheDayScreen(
                     paddingValues = paddingValues,
                     viewModel = viewModel,
                     image = state.image,
-                    isLoading = isLoading
+                    isLoading = false
                 )
             }
 
@@ -170,6 +168,15 @@ fun PictureOfTheDayScreen(
                 WebView(
                     videoUrl = state.videoUrl.url.toString(),
                     explanation = state.videoUrl.explanation.toString()
+                )
+            }
+
+            is PictureOfTheDayViewState.LoadingSaveFavourite -> {
+                RenderSuccessLoadImage(
+                    paddingValues = paddingValues,
+                    viewModel = viewModel,
+                    image = state.image,
+                    isLoading = state.isLoading
                 )
             }
         }

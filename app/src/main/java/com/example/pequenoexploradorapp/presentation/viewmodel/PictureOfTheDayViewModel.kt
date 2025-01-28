@@ -26,7 +26,6 @@ class PictureOfTheDayViewModel(
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
     private val localRepositoryImpl: FavouriteImageRepositoryImpl
 ) : ViewModel() {
-
     val isConnected = connectivityObserver
         .isConnected
         .stateIn(
@@ -38,19 +37,16 @@ class PictureOfTheDayViewModel(
     private val _uiState = MutableStateFlow<PictureOfTheDayViewState>(PictureOfTheDayViewState.Init)
     val uiState: StateFlow<PictureOfTheDayViewState> = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow((false))
-    val isLoading = _isLoading.asStateFlow()
-
     fun onSaveFavourite(
         imageFavouriteToSave: FavouriteImageToSave,
         image: PictureOfTheDay
     ) {
         viewModelScope.launch {
             if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
-            _isLoading.value = true
+            _uiState.value = PictureOfTheDayViewState.LoadingSaveFavourite(image, true)
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
-            _isLoading.value = false
+            _uiState.value = PictureOfTheDayViewState.LoadingSaveFavourite(image, true)
             _uiState.value = PictureOfTheDayViewState.Success(image.copy(isFavourite = true))
         }
     }
@@ -62,66 +58,69 @@ class PictureOfTheDayViewModel(
 
     fun onPictureOfTheDayRequest() {
         _uiState.value = PictureOfTheDayViewState.Loading
+        var favouriteImages = emptyList<FavouriteImageToSave>()
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(TranslateLanguage.ENGLISH)
+            .setTargetLanguage(TranslateLanguage.PORTUGUESE)
+            .build()
+        val textTranslator = Translation.getClient(options)
+        val conditions = DownloadConditions.Builder()
+            .requireWifi()
+            .build()
         viewModelScope.launch {
-            val favouriteImages = localRepositoryImpl.getFavouriteImage()
-            delay(1000L)
-            when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
-                is ApiResponse.Failure -> _uiState.value =
-                    PictureOfTheDayViewState.Error(responseApi.messageError)
+            favouriteImages = localRepositoryImpl.getFavouriteImage()
+        }
+        textTranslator.downloadModelIfNeeded(conditions)
+            .addOnSuccessListener {
+                println("Success Download Model Translation")
+                viewModelScope.launch {
+                    when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
+                        is ApiResponse.Failure -> _uiState.value =
+                            PictureOfTheDayViewState.Error(responseApi.messageError)
 
-                is ApiResponse.Success -> {
-                    val options = TranslatorOptions.Builder()
-                        .setSourceLanguage(TranslateLanguage.ENGLISH)
-                        .setTargetLanguage(TranslateLanguage.PORTUGUESE)
-                        .build()
-                    val textTranslator = Translation.getClient(options)
-                    val conditions = DownloadConditions.Builder()
-                        .requireWifi()
-                        .build()
-                    textTranslator.downloadModelIfNeeded(conditions)
-                        .addOnSuccessListener {
-                            println("Success Download Model Translation")
-                        }
-                        .addOnFailureListener { exception ->
-                            println("Error Download Model Translation: ${exception.printStackTrace()}")
-                        }
-                    responseApi.data.explanation?.let {
-                        textTranslator.translate(it)
-                            .addOnSuccessListener { translatedText ->
-                                println("Success Text Translation: $translatedText")
-
-                                if (responseApi.data.mediaType == "video") _uiState.value =
-                                    PictureOfTheDayViewState.SuccessVideoUrl(
-                                        videoUrl = responseApi.data.copy(
-                                            explanation = translatedText
-                                        )
-                                    )
-                                else {
-                                    val isFavourite = favouriteImages.any { favourite ->
-                                        favourite.link == responseApi.data.url
+                        is ApiResponse.Success -> {
+                            responseApi.data.explanation?.let {
+                                textTranslator.translate(it)
+                                    .addOnSuccessListener { translatedText ->
+                                        println("Success Text Translation: $translatedText")
+                                        if (responseApi.data.mediaType == "video") _uiState.value =
+                                            PictureOfTheDayViewState.SuccessVideoUrl(
+                                                videoUrl = responseApi.data.copy(
+                                                    explanation = translatedText
+                                                )
+                                            )
+                                        else {
+                                            val isFavourite = favouriteImages.any { favourite ->
+                                                favourite.link == responseApi.data.url
+                                            }
+                                            _uiState.value = PictureOfTheDayViewState.Success(
+                                                image = responseApi.data.copy(
+                                                    explanation = translatedText,
+                                                    isFavourite = isFavourite
+                                                )
+                                            )
+                                        }
                                     }
-
-                                    _uiState.value = PictureOfTheDayViewState.Success(
-                                        image = responseApi.data.copy(
-                                            explanation = translatedText,
-                                            isFavourite = isFavourite
-                                        )
-                                    )
-                                }
+                                    .addOnFailureListener { exception ->
+                                        println("Error Text Translation: ${exception.printStackTrace()}")
+                                    }
                             }
-                            .addOnFailureListener { exception ->
-                                println("Error Text Translation: ${exception.printStackTrace()}")
-                            }
+                        }
                     }
                 }
             }
-        }
+            .addOnFailureListener { exception ->
+                println("Error Download Model Translation: ${exception.printStackTrace()}")
+            }
+
     }
 }
+
 
 sealed interface PictureOfTheDayViewState {
     data object Init : PictureOfTheDayViewState
     data object Loading : PictureOfTheDayViewState
+    data class LoadingSaveFavourite(val image: PictureOfTheDay, val isLoading: Boolean) : PictureOfTheDayViewState
     data class Success(val image: PictureOfTheDay) : PictureOfTheDayViewState
     data class SuccessVideoUrl(val videoUrl: PictureOfTheDay) : PictureOfTheDayViewState
     data class Error(val message: String) : PictureOfTheDayViewState
