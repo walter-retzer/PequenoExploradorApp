@@ -24,5 +24,7 @@ class ConstantsApp {
             const val DEFAULT_ERROR_REMOVE_DB = "Não foi possível remover a imagem aos favoritos"
             const val DEFAULT_ERROR_ADD_DB = "Não foi possível adicionar a imagem aos favoritos"
             const val EMPTY_FAVOURITE_DB = "Não há imagens adicionadas dos favoritos"
+            const val DELETE_FAVOURITE_IMAGE = "Gostaria realmente de apagar essa imagem?"
+            const val DELETE_FAVOURITE_IMAGE_YES = "Sim"
         }
 }

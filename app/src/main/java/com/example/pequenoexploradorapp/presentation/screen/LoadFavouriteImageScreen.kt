@@ -63,12 +63,14 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.theme.primaryLight
 import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
+import kotlinx.coroutines.CoroutineScope
 import org.koin.compose.koinInject
 
 
@@ -132,6 +134,8 @@ fun LoadFavouriteImageScreen(
                     scrollState = scrollState,
                     listOfImagesFromDb = listOfFavouriteImage,
                     viewModel = viewModel,
+                    scope = scope,
+                    snackBarHostState = snackBarHostState,
                     isLoading = false,
                 )
 
@@ -154,6 +158,8 @@ fun LoadFavouriteImageScreen(
                     scrollState = scrollState,
                     listOfImagesFromDb = state.images,
                     viewModel = viewModel,
+                    scope = scope,
+                    snackBarHostState = snackBarHostState,
                     isLoading = false,
                 )
             }
@@ -164,6 +170,8 @@ fun LoadFavouriteImageScreen(
                     scrollState = scrollState,
                     listOfImagesFromDb = listOfFavouriteImage,
                     viewModel = viewModel,
+                    scope = scope,
+                    snackBarHostState = snackBarHostState,
                     isLoading = state.isLoading,
                 )
             }
@@ -190,6 +198,8 @@ fun RenderImageFavouriteSuccess(
     scrollState: LazyGridState,
     listOfImagesFromDb: List<FavouriteImageToSave>,
     viewModel: LoadFavouriteImageViewModel,
+    scope: CoroutineScope,
+    snackBarHostState: SnackbarHostState,
     isLoading: Boolean,
 ) {
     Column(
@@ -217,7 +227,9 @@ fun RenderImageFavouriteSuccess(
                         LoadFavouriteImageOnCard(
                             listOfImages = imagesToLoad,
                             numberOfImage = numberOfImage,
-                            viewModel = viewModel
+                            viewModel = viewModel,
+                            scope = scope,
+                            snackBarHostState = snackBarHostState
                         )
                     }
                 }
@@ -248,7 +260,9 @@ fun RenderImageFavouriteSuccess(
 fun LoadFavouriteImageOnCard(
     listOfImages: List<FavouriteImageToSave>?,
     numberOfImage: Int,
-    viewModel: LoadFavouriteImageViewModel
+    viewModel: LoadFavouriteImageViewModel,
+    scope: CoroutineScope,
+    snackBarHostState: SnackbarHostState
 ) {
     val id = listOfImages?.get(numberOfImage)?.id ?: System.currentTimeMillis()
     val title = listOfImages?.get(numberOfImage)?.title
@@ -288,18 +302,6 @@ fun LoadFavouriteImageOnCard(
                     .height(220.dp)
             )
             IconButton(
-                onClick = {
-                    val favourite = FavouriteImageToSave(
-                        id = id,
-                        title = title,
-                        dateCreated = date,
-                        link = imageUrl,
-                        creators = creators,
-                        keywords = null,
-                        isFavourite = isFavourite
-                    )
-                    viewModel.onRemoveFavouriteImage(favourite)
-                },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
@@ -308,7 +310,28 @@ fun LoadFavouriteImageOnCard(
                         width = 1.dp,
                         color = primaryLight,
                         shape = CircleShape
+                    ),
+                onClick = {
+                    snackBarWithActionButton(
+                        coroutineScope = scope,
+                        snackBarHostState = snackBarHostState,
+                        actionLabel = ConstantsApp.DELETE_FAVOURITE_IMAGE_YES,
+                        message = ConstantsApp.DELETE_FAVOURITE_IMAGE,
+                        onAction = {
+                            val favourite = FavouriteImageToSave(
+                                id = id,
+                                title = title,
+                                dateCreated = date,
+                                link = imageUrl,
+                                creators = creators,
+                                keywords = null,
+                                isFavourite = isFavourite
+                            )
+                            viewModel.onRemoveFavouriteImage(favourite)
+                        },
+                        onDismiss = { }
                     )
+                }
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,

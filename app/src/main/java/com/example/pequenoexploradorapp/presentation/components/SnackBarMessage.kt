@@ -26,18 +26,27 @@ fun snackBarWithActionButton(
     snackBarHostState: SnackbarHostState,
     message: String,
     actionLabel: String,
-    onAction:() -> Unit
+    onAction: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     coroutineScope.launch {
-        val snackBarResult = snackBarHostState.showSnackbar(
+        snackBarHostState.showSnackbar(
             message = message,
             withDismissAction = true,
             duration = SnackbarDuration.Indefinite,
             actionLabel = actionLabel
-        )
-        when(snackBarResult){
-            SnackbarResult.Dismissed -> {}
-            SnackbarResult.ActionPerformed -> { onAction() }
+        ).run {
+        when (this) {
+            SnackbarResult.Dismissed -> {
+                println("Dismissed Clicked")
+                onDismiss.invoke()
+            }
+
+            SnackbarResult.ActionPerformed -> {
+                println("Action Clicked")
+                onAction.invoke()
+            }
         }
+    }
     }
 }
