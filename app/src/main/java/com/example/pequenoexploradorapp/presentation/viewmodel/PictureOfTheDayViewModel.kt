@@ -64,9 +64,7 @@ class PictureOfTheDayViewModel(
             .setTargetLanguage(TranslateLanguage.PORTUGUESE)
             .build()
         val textTranslator = Translation.getClient(options)
-        val conditions = DownloadConditions.Builder()
-            .requireWifi()
-            .build()
+        val conditions = DownloadConditions.Builder().build()
         viewModelScope.launch {
             favouriteImages = localRepositoryImpl.getFavouriteImage()
         }

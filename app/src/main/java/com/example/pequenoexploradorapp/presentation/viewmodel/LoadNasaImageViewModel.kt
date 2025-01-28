@@ -91,9 +91,7 @@ class LoadNasaImageViewModel(
             .setTargetLanguage(TranslateLanguage.ENGLISH)
             .build()
         val textTranslator = Translation.getClient(options)
-        val conditions = DownloadConditions.Builder()
-            .requireWifi()
-            .build()
+        val conditions = DownloadConditions.Builder().build()
         textTranslator.downloadModelIfNeeded(conditions)
             .addOnSuccessListener {
                 println("Success Download Model Translation")
