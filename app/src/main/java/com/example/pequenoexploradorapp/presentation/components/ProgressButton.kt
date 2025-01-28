@@ -27,12 +27,17 @@ fun ProgressButton(
     modifier: Modifier = Modifier,
     text: String = "",
     isLoading: Boolean = false,
+    enable: Boolean = true,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(20.dp)
 
     if (isLoading) {
-        Box(modifier = modifier.height(64.dp), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = modifier
+                .height(64.dp),
+            contentAlignment = Alignment.Center
+        ) {
             MyAppCircularProgressIndicator()
         }
     }
@@ -51,6 +56,7 @@ fun ProgressButton(
             shape = shape,
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             onClick = { onClick() },
+            enabled = enable
         ) {
             Text(
                 text = text,

@@ -213,7 +213,8 @@ fun SearchImageScreen(
                 isLoading = false,
                 onClick = {
                     onNavigateToLoadNasaImage(textSearchImage.textInput.trimEnd())
-                }
+                },
+                enable = textSearchImage.textInput.isNotEmpty()
             )
             LaunchedEffect(isScrollActive) {
                 stateScroll.animateScrollTo(1000)
