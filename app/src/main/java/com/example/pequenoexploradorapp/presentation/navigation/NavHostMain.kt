@@ -32,6 +32,7 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DAT
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
@@ -42,6 +43,7 @@ import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.ShareFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.screen.WelcomeScreen
@@ -49,6 +51,8 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewMode
 import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -417,7 +421,35 @@ private fun NavGraphBuilder.homeNavGraph() {
                     LoadFavouriteImageScreen(
                         onNavigateToHomeMenu = {
                             navController.navigate(Route.HomeScreenRoute.route)
+                        },
+                        onNavigateToShareImage = {image->
+                            val encodeImagedUrl = URLEncoder.encode(image, StandardCharsets.UTF_8.toString())
+                            navController.navigate(
+                                route = "${Route.ShareFavouriteImageScreenRoute.route}/${encodeImagedUrl}"
+                            )
                         }
+                    )
+                }
+
+                composable(
+                    route = "${Route.ShareFavouriteImageScreenRoute.route}/{$IMAGE_TO_SHARE}",
+                    arguments = listOf(
+                        navArgument(IMAGE_TO_SHARE) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    ),
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val imageUrl = arguments.getString(IMAGE_TO_SHARE).toString()
+
+                    ShareFavouriteImageScreen(
+                        image = imageUrl
                     )
                 }
             }
@@ -442,4 +474,5 @@ object ArgumentsKey {
     const val DATE_KEY = "DATE_KEY"
     const val DATE_INITIAL_KEY = "DATE_INITIAL_KEY"
     const val DATE_FINAL_KEY = "DATE_FINAL_KEY"
+    const val IMAGE_TO_SHARE = "IMAGE_TO_SHARE"
 }
