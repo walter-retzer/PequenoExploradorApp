@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,7 +84,8 @@ import org.koin.compose.koinInject
 @Composable
 fun LoadFavouriteImageScreen(
     viewModel: LoadFavouriteImageViewModel = koinInject(),
-    onNavigateToHomeMenu: () -> Unit
+    onNavigateToHomeMenu: () -> Unit,
+    onNavigateToShareImage: (imageSearch: String) -> Unit,
 ) {
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -156,6 +158,7 @@ fun LoadFavouriteImageScreen(
                     viewModel = viewModel,
                     scope = scope,
                     snackBarHostState = snackBarHostState,
+                    onNavigateToShareImage = { onNavigateToShareImage(it) },
                     isLoading = false,
                 )
 
@@ -182,6 +185,7 @@ fun LoadFavouriteImageScreen(
                     viewModel = viewModel,
                     scope = scope,
                     snackBarHostState = snackBarHostState,
+                    onNavigateToShareImage = { onNavigateToShareImage(it) },
                     isLoading = false,
                 )
             }
@@ -194,6 +198,7 @@ fun LoadFavouriteImageScreen(
                     viewModel = viewModel,
                     scope = scope,
                     snackBarHostState = snackBarHostState,
+                    onNavigateToShareImage = { onNavigateToShareImage(it) },
                     isLoading = state.isLoading,
                 )
             }
@@ -222,6 +227,7 @@ fun RenderImageFavouriteSuccess(
     viewModel: LoadFavouriteImageViewModel,
     scope: CoroutineScope,
     snackBarHostState: SnackbarHostState,
+    onNavigateToShareImage: (imageSearch: String) -> Unit,
     isLoading: Boolean,
 ) {
     Column(
@@ -263,7 +269,8 @@ fun RenderImageFavouriteSuccess(
                             numberOfImage = numberOfImage,
                             viewModel = viewModel,
                             scope = scope,
-                            snackBarHostState = snackBarHostState
+                            snackBarHostState = snackBarHostState,
+                            onNavigateToShareImage = { onNavigateToShareImage(it) }
                         )
                     }
                 }
@@ -296,12 +303,13 @@ fun LoadFavouriteImageOnCard(
     numberOfImage: Int,
     viewModel: LoadFavouriteImageViewModel,
     scope: CoroutineScope,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    onNavigateToShareImage: (imageSearch: String) -> Unit,
 ) {
     val id = listOfImages?.get(numberOfImage)?.id ?: System.currentTimeMillis()
     val title = listOfImages?.get(numberOfImage)?.title
     val date = listOfImages?.get(numberOfImage)?.dateCreated ?: ""
-    val imageUrl = listOfImages?.get(numberOfImage)?.link
+    val imageUrl = listOfImages?.get(numberOfImage)?.link ?: ""
     val creators = listOfImages?.get(numberOfImage)?.creators
     val keywords = listOfImages?.get(numberOfImage)?.keywords?.first()
     val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
@@ -312,7 +320,7 @@ fun LoadFavouriteImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = contentColor,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -334,15 +342,16 @@ fun LoadFavouriteImageOnCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(220.dp)
+                    .clickable { onNavigateToShareImage(imageUrl) }
             )
             IconButton(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
-                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
-                        color = primaryLight,
+                        color = mainColor,
                         shape = CircleShape
                     ),
                 onClick = {

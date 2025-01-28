@@ -363,7 +363,7 @@ fun LoadImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = contentColor,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -423,10 +423,10 @@ fun LoadImageOnCard(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
-                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
-                        color = primaryLight,
+                        color = mainColor,
                         shape = CircleShape
                     )
             ) {
