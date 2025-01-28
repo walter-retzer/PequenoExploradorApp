@@ -188,7 +188,7 @@ fun LoadNasaImageScreen(
                     listOfImagesFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
                     isLoading = false,
-                    isLoadingNextItems = false,
+                    isLoadingNextItems = true,
                     totalHits = state.totalHits
                 )
             }
@@ -340,7 +340,6 @@ fun InfiniteListHandler(
             .filter { it }
             .collect {
                 onLoadMore()
-                delay(3000L)
             }
     }
 }
