@@ -1,4 +1,4 @@
-package com.example.pequenoexploradorapp.domain.util
+package com.example.pequenoexploradorapp.presentation.components
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState

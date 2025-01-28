@@ -59,7 +59,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.domain.util.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewState
 import kotlinx.coroutines.delay
