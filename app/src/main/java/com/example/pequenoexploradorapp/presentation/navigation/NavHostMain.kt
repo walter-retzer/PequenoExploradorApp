@@ -414,7 +414,11 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-                    LoadFavouriteImageScreen()
+                    LoadFavouriteImageScreen(
+                        onNavigateToHomeMenu = {
+                            navController.navigate(Route.HomeScreenRoute.route)
+                        }
+                    )
                 }
             }
             val items = remember {

@@ -36,17 +36,10 @@ fun snackBarWithActionButton(
             duration = SnackbarDuration.Indefinite,
             actionLabel = actionLabel
         ).run {
-        when (this) {
-            SnackbarResult.Dismissed -> {
-                println("Dismissed Clicked")
-                onDismiss.invoke()
-            }
-
-            SnackbarResult.ActionPerformed -> {
-                println("Action Clicked")
-                onAction.invoke()
+            when (this) {
+                SnackbarResult.Dismissed -> { onDismiss.invoke() }
+                SnackbarResult.ActionPerformed -> { onAction.invoke() }
             }
         }
-    }
     }
 }

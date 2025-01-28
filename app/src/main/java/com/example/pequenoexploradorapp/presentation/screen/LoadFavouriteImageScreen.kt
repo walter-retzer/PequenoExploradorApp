@@ -20,8 +20,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
@@ -61,6 +63,8 @@ import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedHeadText
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
@@ -71,18 +75,21 @@ import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoadFavouriteImageScreen(
-    viewModel: LoadFavouriteImageViewModel = koinInject()
+    viewModel: LoadFavouriteImageViewModel = koinInject(),
+    onNavigateToHomeMenu: () -> Unit
 ) {
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val listOfFavouriteImage by viewModel.listOfFavoriteImage.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -119,11 +126,23 @@ fun LoadFavouriteImageScreen(
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    CircularProgressIndicator(
+                    Text(
                         modifier = Modifier
-                            .width(64.dp)
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .align(Alignment.TopCenter),
+                        text = "Carregando suas imagens favoritas",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                    AnimatedLottieFile(
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .size(350.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        file = R.raw.heart_fav
                     )
                 }
             }
@@ -149,6 +168,8 @@ fun LoadFavouriteImageScreen(
                         duration = SnackbarDuration.Long
                     )
                     snackBarIsActivated = false
+                    delay(5000L)
+                    onNavigateToHomeMenu()
                 }
             }
 
@@ -213,6 +234,18 @@ fun RenderImageFavouriteSuccess(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                text = listOfImagesFromDb.formattedHeadText(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Justify,
+                color = Color.White
+            )
+        }
         Row {
             LazyVerticalGrid(
                 state = scrollState,
