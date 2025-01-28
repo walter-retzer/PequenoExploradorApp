@@ -26,5 +26,9 @@ class ConstantsApp {
             const val EMPTY_FAVOURITE_DB = "Não há imagens adicionadas dos favoritos"
             const val DELETE_FAVOURITE_IMAGE = "Gostaria realmente de apagar essa imagem?"
             const val DELETE_FAVOURITE_IMAGE_YES = "Sim"
+            const val SHARE_IMAGE = "Imagem compartilhada pelo aplicativo Pequeno Explorador"
+            const val SAVE_IMAGE_OK = "A imagem foi salva na galeria do seu celular"
+            const val SAVE_IMAGE_ERROR = "Não foi possível salvar a imagem na galeria do celular"
+            const val SAVE_IMAGE_ERROR_DECODE = "Arquivo da imagem não compatível"
         }
 }

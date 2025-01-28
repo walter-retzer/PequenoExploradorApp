@@ -25,14 +25,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -47,7 +52,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,8 +73,11 @@ fun ShareFavouriteImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val context = LocalContext.current
+    var snackBarIsActivated by remember { mutableStateOf(false) }
+    var snackBarMessage by remember { mutableStateOf("") }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -83,6 +93,18 @@ fun ShareFavouriteImageScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
+        if(snackBarIsActivated){
+            LaunchedEffect(Unit) {
+                snackBarOnlyMessage(
+                    snackBarHostState = snackBarHostState,
+                    coroutineScope = scope,
+                    message = snackBarMessage,
+                    duration = SnackbarDuration.Short
+                )
+                snackBarIsActivated = false
+            }
+        }
+
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -157,11 +179,12 @@ fun ShareFavouriteImageScreen(
                         ),
                     onClick = {
                         scope.launch {
-                            saveImageToGallery(
+                            snackBarMessage = saveImageToGallery(
                                 context,
                                 image,
                                 "image_fav_${System.currentTimeMillis()}"
                             )
+                            snackBarIsActivated = true
                         }
                     }
                 ) {
@@ -229,7 +252,7 @@ private fun shareImageViaWhatsApp(context: Context, imageFile: File) {
         )
         val intent = Intent(Intent.ACTION_SEND).apply {
             setDataAndType(imageUri, "image/jpeg")
-            putExtra(Intent.EXTRA_SUBJECT,  "Enter your title here")
+            putExtra(Intent.EXTRA_TEXT, ConstantsApp.SHARE_IMAGE)
             putExtra(Intent.EXTRA_STREAM, imageUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
@@ -242,20 +265,18 @@ private fun shareImageViaWhatsApp(context: Context, imageFile: File) {
 }
 
 
-suspend fun saveImageToGallery(context: Context, imageUrl: String, fileName: String) {
-    try {
+suspend fun saveImageToGallery(context: Context, imageUrl: String, fileName: String): String {
+    return try {
         val bitmap = withContext(Dispatchers.IO) {
             val url = URL(imageUrl)
             BitmapFactory.decodeStream(url.openStream())
         }
         val savedUri = saveBitmapToGallery(context, bitmap, fileName)
-        if (savedUri != null) {
-            println("Imagem salva com sucesso!")
-        } else {
-            println("Imagem com erro!")
-        }
+        if (savedUri != null) ConstantsApp.SAVE_IMAGE_OK
+        else ConstantsApp.SAVE_IMAGE_ERROR
     } catch (e: Exception) {
         e.printStackTrace()
+        ConstantsApp.SAVE_IMAGE_ERROR_DECODE
     }
 }
 
