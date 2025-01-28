@@ -217,11 +217,8 @@ suspend fun shareImageToWhatsApp(context: Context, imageUrl: String) {
             BitmapFactory.decodeStream(url.openStream())
         }
         val imageFile = saveBitmapToCache(context, bitmap)
-        if (imageFile != null) {
-            shareImageViaWhatsApp(context, imageFile)
-        } else {
-            throw IOException("Erro ao salvar a imagem.")
-        }
+        if (imageFile != null) shareImageViaWhatsApp(context, imageFile)
+        else throw IOException(ConstantsApp.SAVE_IMAGE_ERROR_DECODE)
     } catch (e: Exception) {
         e.printStackTrace()
     }
