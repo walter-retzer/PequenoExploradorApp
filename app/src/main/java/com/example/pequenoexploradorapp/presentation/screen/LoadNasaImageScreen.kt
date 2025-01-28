@@ -44,7 +44,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -80,6 +79,7 @@ import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -97,12 +97,10 @@ fun LoadNasaImageScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val listImages by viewModel.listOfImageToLoad.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
-    var totalHits by remember { mutableIntStateOf(0) }
+
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -123,7 +121,7 @@ fun LoadNasaImageScreen(
                 viewModel.onNasaImageSearch(imageSearch)
             }
 
-            is LoadNasaImageViewState.Loading -> {
+            is LoadNasaImageViewState.FirstLoading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -142,15 +140,16 @@ fun LoadNasaImageScreen(
                 }
             }
 
-            is LoadNasaImageViewState.LoadingFavourite -> {
+            is LoadNasaImageViewState.Loading -> {
                 RenderSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfImagesFromApi = listImages,
+                    listOfImagesFromApi = state.listOfNasaImage,
                     viewModel = viewModel,
                     isLoading = state.isLoading,
-                    totalHits = totalHits
+                    isLoadingNextItems = false,
+                    totalHits = state.totalHits
                 )
             }
 
@@ -169,27 +168,28 @@ fun LoadNasaImageScreen(
             }
 
             is LoadNasaImageViewState.Success -> {
-                totalHits = state.images.collection.metadata?.totalHits ?: 0
                 RenderSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfImagesFromApi = listImages,
+                    listOfImagesFromApi = state.images,
                     viewModel = viewModel,
-                    isLoading = isLoading,
-                    totalHits = totalHits
+                    isLoading = false,
+                    isLoadingNextItems = true,
+                    totalHits = state.totalHits
                 )
             }
 
-            is LoadNasaImageViewState.SuccessFavourite -> {
+            is LoadNasaImageViewState.SuccessAddFavourite -> {
                 RenderSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
                     listOfImagesFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
-                    isLoading = isLoading,
-                    totalHits = totalHits
+                    isLoading = false,
+                    isLoadingNextItems = false,
+                    totalHits = state.totalHits
                 )
             }
         }
@@ -217,6 +217,7 @@ fun RenderSuccess(
     listOfImagesFromApi: List<NasaImageItems>,
     viewModel: LoadNasaImageViewModel,
     isLoading: Boolean,
+    isLoadingNextItems: Boolean,
     totalHits: Int
 ) {
     Column(
@@ -292,6 +293,7 @@ fun RenderSuccess(
         // Handle infinite scrolling
         InfiniteListHandler(
             listState = scrollState,
+            isLoadingNextItems = isLoadingNextItems,
             onLoadMore = {
                 viewModel.loadNextImage()
             }
@@ -320,15 +322,15 @@ fun RenderSuccess(
 @Composable
 fun InfiniteListHandler(
     listState: LazyGridState,
+    isLoadingNextItems: Boolean,
     buffer: Int = 20,
     onLoadMore: () -> Unit
 ) {
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex =
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= (totalItemsCount - buffer)
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItemIndex >= (totalItemsCount - buffer) && isLoadingNextItems
         }
     }
 
@@ -338,6 +340,7 @@ fun InfiniteListHandler(
             .filter { it }
             .collect {
                 onLoadMore()
+                delay(3000L)
             }
     }
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
-import com.example.pequenoexploradorapp.data.NasaImageResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.repository.local.FavouriteImageRepositoryImpl
@@ -28,17 +27,14 @@ class LoadNasaImageViewModel(
     private val localRepositoryImpl: FavouriteImageRepositoryImpl,
 ) : ViewModel() {
     private var image = ""
-    private var page = 2
+    private var page = 1
+    private var totalHits = 0
 
     private var listOfImageFromApi = emptyList<NasaImageItems>()
     private val _listOfImageFromApi = MutableStateFlow(listOfImageFromApi)
-    val listOfImageToLoad: StateFlow<List<NasaImageItems>> get() = _listOfImageFromApi
 
     private val _uiState = MutableStateFlow<LoadNasaImageViewState>(LoadNasaImageViewState.Init)
     val uiState: StateFlow<LoadNasaImageViewState> = _uiState.asStateFlow()
-
-    private val _isLoading = MutableStateFlow((false))
-    val isLoading = _isLoading.asStateFlow()
 
     val isConnected = connectivityObserver
         .isConnected
@@ -52,14 +48,26 @@ class LoadNasaImageViewModel(
         imageFavouriteToSave: FavouriteImageToSave,
         listOfImage: List<NasaImageItems>
     ) {
+        println(listOfImage)
         viewModelScope.launch {
-            if(checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
-            _uiState.value = LoadNasaImageViewState.LoadingFavourite(true)
+            if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
+            _uiState.value = LoadNasaImageViewState.Loading(
+                true,
+                listOfImage,
+                totalHits
+            )
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
             _listOfImageFromApi.value = listOfImage
-            _uiState.value = LoadNasaImageViewState.LoadingFavourite(false)
-            _uiState.value = LoadNasaImageViewState.SuccessFavourite(listOfImage)
+            _uiState.value = LoadNasaImageViewState.Loading(
+                false,
+                listOfImage,
+                totalHits
+            )
+            _uiState.value = LoadNasaImageViewState.SuccessAddFavourite(
+                listOfImage,
+                totalHits
+            )
         }
     }
 
@@ -77,7 +85,7 @@ class LoadNasaImageViewModel(
     }
 
     fun onNasaImageSearch(imageSearch: String?) {
-        _uiState.value = LoadNasaImageViewState.Loading
+        _uiState.value = LoadNasaImageViewState.FirstLoading
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.PORTUGUESE)
             .setTargetLanguage(TranslateLanguage.ENGLISH)
@@ -94,15 +102,21 @@ class LoadNasaImageViewModel(
                         println("Success Text Translation: $translatedText")
                         image = translatedText
                         viewModelScope.launch {
-                            when (val responseApi = remoteRepositoryImpl.getNasaImage(translatedText)) {
+                            when (val responseApi =
+                                remoteRepositoryImpl.getNasaImage(translatedText)) {
                                 is ApiResponse.Failure -> _uiState.value =
                                     LoadNasaImageViewState.Error(responseApi.messageError)
 
                                 is ApiResponse.Success -> {
                                     responseApi.data.collection.items?.let { imagesToLoad ->
-                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
+                                        _listOfImageFromApi.value =
+                                            updateFavouriteStatus(imagesToLoad)
                                     }
-                                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
+                                    totalHits = responseApi.data.collection.metadata?.totalHits ?: 0
+                                    _uiState.value = LoadNasaImageViewState.Success(
+                                        _listOfImageFromApi.value,
+                                        totalHits
+                                    )
                                 }
                             }
                         }
@@ -118,20 +132,32 @@ class LoadNasaImageViewModel(
 
     fun loadNextImage() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _uiState.value = LoadNasaImageViewState.Loading(
+                true,
+                _listOfImageFromApi.value,
+                totalHits
+            )
             delay(3000L)
-            when (val responseApi = remoteRepositoryImpl.getNasaImage(image, page++)) {
+            page++
+            when (val responseApi = remoteRepositoryImpl.getNasaImage(image, page)) {
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaImageViewState.Error(responseApi.messageError)
 
                 is ApiResponse.Success -> {
                     responseApi.data.collection.items?.let { imagesToLoad ->
-                        _listOfImageFromApi.value = listOfImageToLoad.value + updateFavouriteStatus(imagesToLoad)
+                        _listOfImageFromApi.value += updateFavouriteStatus(imagesToLoad)
                     }
-                    _uiState.value = LoadNasaImageViewState.Success(responseApi.data)
+                    _uiState.value = LoadNasaImageViewState.Loading(
+                        false,
+                        _listOfImageFromApi.value,
+                        totalHits
+                    )
+                    _uiState.value = LoadNasaImageViewState.Success(
+                        _listOfImageFromApi.value,
+                        totalHits
+                    )
                 }
             }
-            _isLoading.value = false
         }
     }
 }
@@ -139,9 +165,22 @@ class LoadNasaImageViewModel(
 
 sealed interface LoadNasaImageViewState {
     data object Init : LoadNasaImageViewState
-    data object Loading : LoadNasaImageViewState
-    data class LoadingFavourite(val isLoading: Boolean) : LoadNasaImageViewState
-    data class SuccessFavourite(val updateListOfImageFavourite: List<NasaImageItems>) : LoadNasaImageViewState
-    data class Success(val images: NasaImageResponse) : LoadNasaImageViewState
+    data object FirstLoading : LoadNasaImageViewState
+    data class Loading(
+        val isLoading: Boolean,
+        val listOfNasaImage: List<NasaImageItems>,
+        val totalHits: Int
+    ) : LoadNasaImageViewState
+
+    data class SuccessAddFavourite(
+        val updateListOfImageFavourite: List<NasaImageItems>,
+        val totalHits: Int
+    ) : LoadNasaImageViewState
+
+    data class Success(
+        val images: List<NasaImageItems>,
+        val totalHits: Int
+    ) : LoadNasaImageViewState
+
     data class Error(val message: String) : LoadNasaImageViewState
 }
