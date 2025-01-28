@@ -142,7 +142,8 @@ fun LoadFavouriteImageScreen(
                             .padding(top = 20.dp)
                             .size(350.dp)
                             .align(Alignment.Center),
-                        file = R.raw.heart_fav
+                        file = R.raw.heart_fav,
+                        speed = 2f
                     )
                 }
             }

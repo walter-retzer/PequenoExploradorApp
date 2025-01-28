@@ -38,7 +38,7 @@ class LoadFavouriteImageViewModel(
     fun onGetFavouriteImageList() {
         _uiState.value = LoadFavouriteImageViewState.Loading
         viewModelScope.launch {
-            delay(3000L)
+            delay(5000L)
             val response = localRepositoryImpl.getFavouriteImage()
             _listOfFavourites.value = response
             if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
