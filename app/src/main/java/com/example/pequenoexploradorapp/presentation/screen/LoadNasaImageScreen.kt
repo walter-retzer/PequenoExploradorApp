@@ -68,13 +68,11 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryLight
-import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
@@ -293,6 +291,8 @@ fun RenderSuccess(
         InfiniteListHandler(
             listState = scrollState,
             isLoadingNextItems = isLoadingNextItems,
+            listOfImagesFromApi = listOfImagesFromApi,
+            totalHits = totalHits,
             onLoadMore = {
                 viewModel.loadNextImage()
             }
@@ -322,6 +322,8 @@ fun RenderSuccess(
 fun InfiniteListHandler(
     listState: LazyGridState,
     isLoadingNextItems: Boolean,
+    listOfImagesFromApi: List<NasaImageItems>,
+    totalHits: Int,
     buffer: Int = 20,
     onLoadMore: () -> Unit
 ) {
@@ -329,7 +331,8 @@ fun InfiniteListHandler(
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
             val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= (totalItemsCount - buffer) && isLoadingNextItems
+            lastVisibleItemIndex >= (totalItemsCount - buffer) && isLoadingNextItems &&
+            totalHits != listOfImagesFromApi.size
         }
     }
 
@@ -350,7 +353,7 @@ fun LoadImageOnCard(
     viewModel: LoadNasaImageViewModel
 ) {
     val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
-    val date =  listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
+    val date = listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
     val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
     val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()

@@ -73,11 +73,11 @@ fun ShareFavouriteImageScreen(
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val context = LocalContext.current
     var snackBarIsActivated by remember { mutableStateOf(false) }
     var snackBarMessage by remember { mutableStateOf("") }
+
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -104,7 +104,6 @@ fun ShareFavouriteImageScreen(
                 snackBarIsActivated = false
             }
         }
-
         Column(
             modifier = Modifier
                 .padding(paddingValues)
