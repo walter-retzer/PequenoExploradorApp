@@ -269,7 +269,10 @@ private fun NavGraphBuilder.homeNavGraph() {
                     val imageSearch = arguments.getString(IMAGE_SEARCH_KEY)
 
                     LoadNasaImageScreen(
-                        imageSearch = imageSearch
+                        imageSearch = imageSearch,
+                        onNavigateToSearchImage = {
+                            navController.navigate(Route.SearchImageScreenRoute.route)
+                        }
                     )
                 }
 

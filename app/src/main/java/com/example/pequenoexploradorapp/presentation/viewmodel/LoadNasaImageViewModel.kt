@@ -106,8 +106,7 @@ class LoadNasaImageViewModel(
 
                                 is ApiResponse.Success -> {
                                     responseApi.data.collection.items?.let { imagesToLoad ->
-                                        _listOfImageFromApi.value =
-                                            updateFavouriteStatus(imagesToLoad)
+                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
                                     }
                                     totalHits = responseApi.data.collection.metadata?.totalHits ?: 0
                                     _uiState.value = LoadNasaImageViewState.Success(

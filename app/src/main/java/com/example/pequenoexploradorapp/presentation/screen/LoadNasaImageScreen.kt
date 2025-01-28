@@ -173,6 +173,7 @@ fun LoadNasaImageScreen(
                     totalHits = state.totalHits
                 )
             }
+
             is LoadNasaImageViewState.Error -> {
                 snackBarIsActivated = state.isActivated
                 if(snackBarIsActivated) {
