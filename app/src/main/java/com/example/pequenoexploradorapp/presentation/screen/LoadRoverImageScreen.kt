@@ -77,6 +77,7 @@ import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -86,6 +87,7 @@ import org.koin.compose.koinInject
 fun LoadRoverImageScreen(
     date: String,
     nameRover: String,
+    onNavigateToHomeMenu: () -> Unit,
     viewModel: LoadRoverImageViewModel = koinInject()
 ) {
     val scrollState = rememberLazyGridState()
@@ -94,7 +96,6 @@ fun LoadRoverImageScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -114,10 +115,6 @@ fun LoadRoverImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadRoverImageViewState.Init -> {
-                viewModel.onRequestRoverImages(date, nameRover)
-            }
-
-            is LoadRoverImageViewState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -134,30 +131,17 @@ fun LoadRoverImageScreen(
                         color = mainColor
                     )
                 }
+                viewModel.onRequestRoverImages(date, nameRover)
             }
 
-            is LoadRoverImageViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-
-            is LoadRoverImageViewState.Success -> {
+            is LoadRoverImageViewState.LoadingFavourite -> {
                 RenderSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfImagesFromApi = state.imagesFromApi,
+                    listOfImagesFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
-                    isLoading = false,
+                    isLoading = state.isLoading,
                 )
             }
 
@@ -172,22 +156,48 @@ fun LoadRoverImageScreen(
                 )
             }
 
-            is LoadRoverImageViewState.LoadingFavourite -> {
+            is LoadRoverImageViewState.Success -> {
                 RenderSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfImagesFromApi = state.updateListOfImageFavourite,
+                    listOfImagesFromApi = state.imagesFromApi,
                     viewModel = viewModel,
-                    isLoading = state.isLoading,
+                    isLoading = false,
                 )
+            }
+
+            is LoadRoverImageViewState.Error -> {
+                snackBarIsActivated = state.isActivated
+                if(snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
+                            )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
+                            onNavigateToHomeMenu()
+                        }
+                    }
+                }
             }
         }
     }
 
-    if (isConnected?.not() == true) {
-        snackBarIsActivated = true
-        LaunchedEffect(snackBarIsActivated) {
+    if (isConnected == false && !snackBarIsActivated) {
+        LaunchedEffect(Unit) {
             snackBarOnlyMessage(
                 snackBarHostState = snackBarHostState,
                 coroutineScope = scope,

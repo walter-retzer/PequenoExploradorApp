@@ -67,14 +67,13 @@ class LoadRoverImageViewModel(
     }
 
     fun onRequestRoverImages(date: String, nameRover: String) {
-        _uiState.value = LoadRoverImageViewState.Loading
         viewModelScope.launch {
             delay(3000L)
             if (nameRover == BuildConfig.SPIRIT) {
                 when (val responseApi =
                     remoteRepositoryImpl.getRoverSpiritImages(date)) {
                     is ApiResponse.Failure -> _uiState.value =
-                        LoadRoverImageViewState.Error(responseApi.messageError)
+                        LoadRoverImageViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> {
                         responseApi.data.photos.let { listOfImagesFromApi ->
@@ -90,7 +89,7 @@ class LoadRoverImageViewModel(
                 when (val responseApi =
                     remoteRepositoryImpl.getRoverOpportunityImages(date)) {
                     is ApiResponse.Failure -> _uiState.value =
-                        LoadRoverImageViewState.Error(responseApi.messageError)
+                        LoadRoverImageViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> {
                         responseApi.data.photos.let { listOfImagesFromApi ->
@@ -106,7 +105,7 @@ class LoadRoverImageViewModel(
                 when (val responseApi =
                     remoteRepositoryImpl.getRoverPerseveranceImages(date)) {
                     is ApiResponse.Failure -> _uiState.value =
-                        LoadRoverImageViewState.Error(responseApi.messageError)
+                        LoadRoverImageViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> {
                         responseApi.data.photos.let { listOfImagesFromApi ->
@@ -122,7 +121,7 @@ class LoadRoverImageViewModel(
                 when (val responseApi =
                     remoteRepositoryImpl.getRoverCuriosityImages(date)) {
                     is ApiResponse.Failure -> _uiState.value =
-                        LoadRoverImageViewState.Error(responseApi.messageError)
+                        LoadRoverImageViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> {
                         responseApi.data.photos.let { listOfImagesFromApi ->
@@ -141,9 +140,8 @@ class LoadRoverImageViewModel(
 
 sealed interface LoadRoverImageViewState {
     data object Init : LoadRoverImageViewState
-    data object Loading : LoadRoverImageViewState
     data class LoadingFavourite(val updateListOfImageFavourite: List<RoverImageInfo>, val isLoading: Boolean) : LoadRoverImageViewState
     data class SuccessFavourite(val updateListOfImageFavourite: List<RoverImageInfo>) : LoadRoverImageViewState
     data class Success(val imagesFromApi: List<RoverImageInfo>) : LoadRoverImageViewState
-    data class Error(val message: String) : LoadRoverImageViewState
+    data class Error(val message: String, val isActivated: Boolean) : LoadRoverImageViewState
 }
