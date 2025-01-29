@@ -10,6 +10,7 @@ class ConstantsApp {
             const val ERROR_SERVER = "Não foi possível se connectar ao servidor, tente mais tarde"
             const val ERROR_EXCEPTION = "Houve um erro inesperado, tente mais tarde"
             const val ERROR_SERIALIZATION = "Não foi possível exibir os dados, por favor, tente mais tarde"
+            const val ERROR_REMOTE_CONFIG = "Erro de conexão, tente novamente mais tarde"
             const val ERROR_WITHOUT_NETWORK = "Não há internet disponível, verifique seu WIFI ou Dados conectado."
             const val ERROR_WITHOUT_INTERNET = "Seu dispositivo está sem acesso a internet"
             const val ERROR_SIGN_IN = "Não foi possível acessar a sua conta, por favor, tente mais tarde."
