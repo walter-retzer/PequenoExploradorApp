@@ -269,9 +269,8 @@ fun RoverMissionDetailScreen(
             }
         }
 
-        if (isConnected?.not() == true) {
-            snackBarIsActivated = true
-            LaunchedEffect(snackBarIsActivated) {
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
                     snackBarHostState = snackBarHostState,
                     coroutineScope = scope,

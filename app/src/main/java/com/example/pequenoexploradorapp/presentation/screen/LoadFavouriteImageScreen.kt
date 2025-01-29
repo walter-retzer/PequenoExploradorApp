@@ -90,8 +90,7 @@ fun LoadFavouriteImageScreen(
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val listOfFavouriteImage by viewModel.listOfFavoriteImage.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
@@ -203,9 +202,8 @@ fun LoadFavouriteImageScreen(
                 )
             }
         }
-        if (isConnected?.not() == true) {
-            snackBarIsActivated = true
-            LaunchedEffect(snackBarIsActivated) {
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
                     snackBarHostState = snackBarHostState,
                     coroutineScope = scope,
