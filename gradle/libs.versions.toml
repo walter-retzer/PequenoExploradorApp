@@ -11,8 +11,8 @@ lifecycleRuntimeKtx = "2.8.7"
 logbackClassic = "1.2.11"
 lottie = "6.6.1"
 activityCompose = "1.10.0"
-composeBom = "2025.01.00"
-composeNavigation = "2.8.5"
+composeBom = "2025.01.01"
+composeNavigation = "2.8.6"
 serialization = "1.7.3"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
@@ -23,9 +23,10 @@ playServiceAuth = "21.3.0"
 translate = "17.0.3"
 devtoolsKsp = "2.1.0-1.0.29"
 room = "2.6.1"
-material-icons-extended = "1.7.6"
+material-icons-extended = "1.7.7"
 media3Ui = "1.5.1"
 media3Exoplayer = "1.5.1"
+firebaseConfig = "22.1.0"
 
 [libraries]
 #Media 3
@@ -87,6 +88,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
