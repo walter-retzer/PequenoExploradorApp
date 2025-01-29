@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +30,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.domain.firebase.FirebaseRemoteConfigManager
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import kotlinx.coroutines.delay
 
 
@@ -34,6 +40,8 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     onNavigateToWelcomeScreen: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
     val scale = remember { Animatable(0f) }
     val animationDelay = 900
     val circles = listOf(
@@ -44,7 +52,15 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = true) {
         delay(5000L)
-        onNavigateToWelcomeScreen()
+        FirebaseRemoteConfigManager.fetchRemoteConfig {isSuccess ->
+            if(isSuccess) onNavigateToWelcomeScreen()
+            else snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = ConstantsApp.ERROR_REMOTE_CONFIG,
+                duration = SnackbarDuration.Long
+            )
+        }
     }
 
     circles.forEach { animatable ->
