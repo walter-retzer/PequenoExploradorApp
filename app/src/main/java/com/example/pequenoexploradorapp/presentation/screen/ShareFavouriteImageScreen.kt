@@ -9,8 +9,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,7 +25,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -93,7 +94,7 @@ fun ShareFavouriteImageScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        if(snackBarIsActivated){
+        if (snackBarIsActivated) {
             LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
                     snackBarHostState = snackBarHostState,
@@ -130,84 +131,96 @@ fun ShareFavouriteImageScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 )
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp)
-                        .background(Color.Black, shape = CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = mainColor,
-                            shape = CircleShape
-                        ),
-                    onClick = {
-                        scope.launch {
-                            shareImageToWhatsApp(
-                                context,
-                                image
-                            )
-                        }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = "Share Favorite Image",
-                        tint = mainColor
-                    )
-                }
-                Text(
-                    text = "Compartilhar",
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 10.dp),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center,
-                    color = ListItemDefaults.contentColor
-                )
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 32.dp, end = 50.dp)
-                        .background(Color.Black, shape = CircleShape)
-                        .border(
-                            width = 1.dp,
-                            color = mainColor,
-                            shape = CircleShape
-                        ),
-                    onClick = {
-                        scope.launch {
-                            snackBarMessage = saveImageToGallery(
-                                context,
-                                image,
-                                "image_fav_${System.currentTimeMillis()}"
-                            )
-                            snackBarIsActivated = true
-                        }
-                    }
+                        .padding(bottom = 24.dp)
+                        .align(Alignment.BottomCenter),
+                    horizontalArrangement = Arrangement.SpaceAround,
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Save,
-                        contentDescription = "Save Favorite Image",
-                        tint = mainColor
-                    )
+                    IconButton(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .background(Color.Black.copy(alpha = 0.85f), shape = CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = mainColor,
+                                shape = CircleShape
+                            ),
+                        onClick = {
+                            scope.launch {
+                                snackBarMessage = saveImageToGallery(
+                                    context,
+                                    image,
+                                    "image_fav_${System.currentTimeMillis()}"
+                                )
+                                snackBarIsActivated = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = "Save Favorite Image",
+                            tint = mainColor
+                        )
+                    }
+                    IconButton(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .background(Color.Black.copy(alpha = 0.85f), shape = CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = mainColor,
+                                shape = CircleShape
+                            ),
+                        onClick = {
+                            scope.launch {
+                                shareImageToWhatsApp(
+                                    context,
+                                    image
+                                )
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share Favorite Image",
+                            tint = mainColor
+                        )
+                    }
                 }
-                Text(
-                    text = "Salvar",
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 56.dp, bottom = 10.dp),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.End,
-                    color = ListItemDefaults.contentColor
-                )
+                        .align(Alignment.BottomCenter),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Text(
+                        text = "Salvar",
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Compartilhar",
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
 }
+
 
 suspend fun shareImageToWhatsApp(context: Context, imageUrl: String) {
     try {
