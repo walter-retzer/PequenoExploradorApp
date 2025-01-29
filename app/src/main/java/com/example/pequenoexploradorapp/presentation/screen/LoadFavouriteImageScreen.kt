@@ -117,24 +117,11 @@ fun LoadFavouriteImageScreen(
                             contentScale = ContentScale.FillBounds
                         )
                 ) {
-                    Text(
+                    CircularProgressIndicator(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .align(Alignment.TopCenter),
-                        text = "Carregando suas imagens favoritas",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-                    AnimatedLottieFile(
-                        modifier = Modifier
-                            .padding(top = 20.dp)
-                            .size(350.dp)
+                            .width(64.dp)
                             .align(Alignment.Center),
-                        file = R.raw.heart_fav,
-                        speed = 2f
+                        color = mainColor
                     )
                 }
                 viewModel.onGetFavouriteImageList()
@@ -242,14 +229,22 @@ fun RenderImageFavouriteSuccess(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
+            AnimatedLottieFile(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(70.dp),
+                file = R.raw.heart_fav,
+                speed = 2f
+            )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .align(Alignment.CenterVertically)
+                    .padding(6.dp),
                 text = listOfImagesFromDb.formattedHeadText(),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Justify,
+                textAlign = TextAlign.Start,
                 color = Color.White
             )
         }
