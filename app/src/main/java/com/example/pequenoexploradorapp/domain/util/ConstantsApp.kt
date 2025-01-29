@@ -5,8 +5,11 @@ class ConstantsApp {
             const val PASSWORD_MAX_NUMBER = 6
             const val PHONE_MAX_NUMBER = 11
             const val NAME_MAX_NUMBER = 25
-            const val ERROR_API = "Não foi possível exibir os dados, por favor, tente mais tarde."
-            const val ERROR_SERVER = "Não foi possível se connectar ao Servidor de Imagens da Nasa."
+            const val ERROR_API = "Não foi encontrado dados para esta requisição"
+            const val ERROR_RESPONSE = "Não foi possível receber os dados, tente mais tarde"
+            const val ERROR_SERVER = "Não foi possível se connectar ao servidor, tente mais tarde"
+            const val ERROR_EXCEPTION = "Houve um erro inesperado, tente mais tarde"
+            const val ERROR_SERIALIZATION = "Não foi possível exibir os dados, por favor, tente mais tarde"
             const val ERROR_WITHOUT_NETWORK = "Não há internet disponível, verifique seu WIFI ou Dados conectado."
             const val ERROR_WITHOUT_INTERNET = "Seu dispositivo está sem acesso a internet"
             const val ERROR_SIGN_IN = "Não foi possível acessar a sua conta, por favor, tente mais tarde."
