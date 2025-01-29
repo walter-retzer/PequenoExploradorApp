@@ -18,7 +18,7 @@ class SignInViewModel(
 
     private val authService: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.DrawScreen)
+    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.Loading)
     val uiState: StateFlow<SignInViewState> = _uiState.asStateFlow()
 
     private val _newUserSignInState = MutableStateFlow(NewUserSignInContact())
@@ -37,7 +37,6 @@ class SignInViewModel(
     val phoneNumberError = _phoneNumberError.asStateFlow()
 
     fun onSignInUser(name: String, email: String, password: String, phoneNumber: String) {
-        _uiState.value = SignInViewState.Loading
         authService.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -118,7 +117,6 @@ class SignInViewModel(
 
 sealed interface SignInViewState {
     data object Loading : SignInViewState
-    data object DrawScreen : SignInViewState
     data class Success(val message: String) : SignInViewState
     data class Error(val message: String) : SignInViewState
 }

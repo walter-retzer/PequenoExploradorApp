@@ -83,23 +83,6 @@ fun SignInScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { paddingValues ->
         when (val state = uiState) {
-            is SignInViewState.DrawScreen -> {}
-
-            is SignInViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-
-                LaunchedEffect(key1 = snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-
             is SignInViewState.Loading -> {
                 progressButtonIsActivated = true
             }
@@ -116,6 +99,20 @@ fun SignInScreen(
                 }
             }
 
+            is SignInViewState.Error -> {
+                progressButtonIsActivated = false
+                snackBarIsActivated = true
+
+                LaunchedEffect(key1 = snackBarIsActivated) {
+                    snackBarOnlyMessage(
+                        snackBarHostState = snackBarHostState,
+                        coroutineScope = scope,
+                        message = state.message,
+                        duration = SnackbarDuration.Long
+                    )
+                    snackBarIsActivated = false
+                }
+            }
         }
 
         Box(
