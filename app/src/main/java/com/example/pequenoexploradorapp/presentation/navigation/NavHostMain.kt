@@ -24,7 +24,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_FINAL_KEY
@@ -410,7 +409,10 @@ private fun NavGraphBuilder.homeNavGraph() {
 
                     LoadRoverImageScreen(
                         date = date,
-                        nameRover = nameRover
+                        nameRover = nameRover,
+                        onNavigateToHomeMenu = {
+                            navController.navigate(Route.HomeScreenRoute.route)
+                        }
                     )
                 }
 
