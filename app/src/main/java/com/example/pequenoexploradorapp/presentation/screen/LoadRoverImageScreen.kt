@@ -66,13 +66,12 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryLight
-import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
+import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewState
@@ -330,7 +329,7 @@ fun LoadRoverImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = contentColor,
+                color = Color.DarkGray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -351,7 +350,7 @@ fun LoadRoverImageOnCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(180.dp)
             )
             Text(
                 text = index.toString(),
@@ -369,10 +368,10 @@ fun LoadRoverImageOnCard(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
-                    .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
+                    .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
-                        color = primaryLight,
+                        color = primaryDark,
                         shape = CircleShape
                     ),
                 onClick = {
@@ -402,18 +401,18 @@ fun LoadRoverImageOnCard(
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(surfaceDark),
+                .background(primaryDark),
         ) {
             Text(
                 text = date,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(8.dp),
+                    .padding(4.dp),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = contentColor
+                color = Color.DarkGray
             )
         }
     }

@@ -24,12 +24,11 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -64,11 +63,11 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedHeadText
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
+import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
 import kotlinx.coroutines.CoroutineScope
@@ -321,7 +320,7 @@ fun LoadFavouriteImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                color = Color.DarkGray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -342,7 +341,7 @@ fun LoadFavouriteImageOnCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(180.dp)
                     .clickable { onNavigateToShareImage(imageUrl) }
             )
             IconButton(
@@ -352,7 +351,7 @@ fun LoadFavouriteImageOnCard(
                     .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
-                        color = mainColor,
+                        color = primaryDark,
                         shape = CircleShape
                     ),
                 onClick = {
@@ -378,7 +377,7 @@ fun LoadFavouriteImageOnCard(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Delete,
+                    imageVector = Icons.Default.Favorite,
                     contentDescription = "Favorite Nasa Image",
                     tint = mainColor
                 )
@@ -387,18 +386,18 @@ fun LoadFavouriteImageOnCard(
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(surfaceDark),
+                .background(primaryDark),
         ) {
             Text(
                 text = date,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(8.dp),
+                    .padding(4.dp),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = contentColor
+                color = Color.DarkGray
             )
         }
     }

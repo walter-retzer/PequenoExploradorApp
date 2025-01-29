@@ -73,6 +73,7 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
@@ -376,7 +377,7 @@ fun LoadImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                color = Color.DarkGray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -397,7 +398,7 @@ fun LoadImageOnCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(180.dp)
             )
             Text(
                 text = index.toString(),
@@ -439,7 +440,7 @@ fun LoadImageOnCard(
                     .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
                     .border(
                         width = 1.dp,
-                        color = mainColor,
+                        color = primaryDark,
                         shape = CircleShape
                     )
             ) {
@@ -453,18 +454,18 @@ fun LoadImageOnCard(
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(surfaceDark),
+                .background(primaryDark),
         ) {
             Text(
                 text = date,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(8.dp),
+                    .padding(4.dp),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = contentColor
+                color = Color.DarkGray
             )
         }
     }
