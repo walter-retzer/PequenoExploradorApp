@@ -54,6 +54,7 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewState
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
@@ -62,6 +63,7 @@ import org.koin.compose.koinInject
 fun RoverMissionDetailScreen(
     roverName: String,
     onNavigateToSearchImage: (firstDate: String, lastDate: String, nameRover: String) -> Unit,
+    onNavigateToHomeMenu: () -> Unit,
     viewModel: RoverMissionDetailViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -69,7 +71,6 @@ fun RoverMissionDetailScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -88,25 +89,7 @@ fun RoverMissionDetailScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         when (val state = uiState) {
-            is RoverMissionDetailViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-
             is RoverMissionDetailViewState.Init -> {
-                viewModel.onRoverMissionDetailRequest(roverName)
-            }
-
-            is RoverMissionDetailViewState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -123,6 +106,7 @@ fun RoverMissionDetailScreen(
                         color = mainColor
                     )
                 }
+                viewModel.onRoverMissionDetailRequest(roverName)
             }
 
             is RoverMissionDetailViewState.Success -> {
@@ -263,6 +247,33 @@ fun RoverMissionDetailScreen(
                                     )
                                 }
                             )
+                        }
+                    }
+                }
+            }
+
+            is RoverMissionDetailViewState.Error -> {
+                snackBarIsActivated = state.isActivated
+                if(snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
+                            )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
+                            onNavigateToHomeMenu()
                         }
                     }
                 }

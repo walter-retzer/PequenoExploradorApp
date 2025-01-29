@@ -343,6 +343,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                             navController.navigate(
                                 route = "${Route.RoverSearchImageScreenRoute.route}/${initialDate}/${finalDate}/${nameRover}"
                             )
+                        },
+                        onNavigateToHomeMenu = {
+                            navController.navigate(Route.HomeScreenRoute.route)
                         }
                     )
                 }

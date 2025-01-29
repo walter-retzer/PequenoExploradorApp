@@ -33,13 +33,12 @@ class RoverMissionDetailViewModel(
 
 
     fun onRoverMissionDetailRequest(nameRover: String?) {
-        _uiState.value = RoverMissionDetailViewState.Loading
         viewModelScope.launch {
             delay(3000L)
             if(nameRover == BuildConfig.SPIRIT) {
                 when (val responseApi = remoteRepositoryImpl.getRoverSpiritMission()) {
                     is ApiResponse.Failure -> _uiState.value =
-                        RoverMissionDetailViewState.Error(responseApi.messageError)
+                        RoverMissionDetailViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> _uiState.value =
                         RoverMissionDetailViewState.Success(responseApi.data)
@@ -48,7 +47,7 @@ class RoverMissionDetailViewModel(
             if(nameRover == BuildConfig.OPPORTUNITY) {
                 when (val responseApi = remoteRepositoryImpl.getRoverOpportunityMission()) {
                     is ApiResponse.Failure -> _uiState.value =
-                        RoverMissionDetailViewState.Error(responseApi.messageError)
+                        RoverMissionDetailViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> _uiState.value =
                         RoverMissionDetailViewState.Success(responseApi.data)
@@ -57,7 +56,7 @@ class RoverMissionDetailViewModel(
             if(nameRover == BuildConfig.PERSEVERANCE) {
                 when (val responseApi = remoteRepositoryImpl.getRoverPerseveranceMission()) {
                     is ApiResponse.Failure -> _uiState.value =
-                        RoverMissionDetailViewState.Error(responseApi.messageError)
+                        RoverMissionDetailViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> _uiState.value =
                         RoverMissionDetailViewState.Success(responseApi.data)
@@ -66,7 +65,7 @@ class RoverMissionDetailViewModel(
             if(nameRover == BuildConfig.CURIOSITY) {
                 when (val responseApi = remoteRepositoryImpl.getRoverCuriosityMission()) {
                     is ApiResponse.Failure -> _uiState.value =
-                        RoverMissionDetailViewState.Error(responseApi.messageError)
+                        RoverMissionDetailViewState.Error(responseApi.messageError, true)
 
                     is ApiResponse.Success -> _uiState.value =
                         RoverMissionDetailViewState.Success(responseApi.data)
@@ -77,8 +76,7 @@ class RoverMissionDetailViewModel(
 }
 
 sealed interface RoverMissionDetailViewState {
-    data object Loading : RoverMissionDetailViewState
     data object Init : RoverMissionDetailViewState
     data class Success(val mission: RoverMission) : RoverMissionDetailViewState
-    data class Error(val message: String) : RoverMissionDetailViewState
+    data class Error(val message: String, val isActivated: Boolean) : RoverMissionDetailViewState
 }
