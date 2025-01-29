@@ -36,39 +36,37 @@ class LoadFavouriteImageViewModel(
         )
 
     fun onGetFavouriteImageList() {
-        _uiState.value = LoadFavouriteImageViewState.Loading
         viewModelScope.launch {
             delay(5000L)
             val response = localRepositoryImpl.getFavouriteImage()
             _listOfFavourites.value = response
             if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
-            else _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.EMPTY_FAVOURITE_DB)
+            else _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.EMPTY_FAVOURITE_DB, true)
         }
     }
 
     fun onRemoveFavouriteImage(image: FavouriteImageToSave) {
-        _uiState.value = LoadFavouriteImageViewState.LoadingRemoveFavourite(true)
+        _uiState.value = LoadFavouriteImageViewState.RemoveFavourite(true)
         viewModelScope.launch {
             localRepositoryImpl.deleteImage(image)
             delay(600L)
             val response = localRepositoryImpl.getFavouriteImage()
             if(response == _listOfFavourites.value) {
-                _uiState.value = LoadFavouriteImageViewState.LoadingRemoveFavourite(false)
-                _uiState.value =LoadFavouriteImageViewState.Error(ConstantsApp.DEFAULT_ERROR_REMOVE_DB)
+                _uiState.value = LoadFavouriteImageViewState.RemoveFavourite(false)
+                _uiState.value =LoadFavouriteImageViewState.Error(ConstantsApp.DEFAULT_ERROR_REMOVE_DB, true)
                 (return@launch)
             }
             _listOfFavourites.value = response
-            _uiState.value = LoadFavouriteImageViewState.LoadingRemoveFavourite(false)
+            _uiState.value = LoadFavouriteImageViewState.RemoveFavourite(false)
             if(response.isNotEmpty()) _uiState.value = LoadFavouriteImageViewState.Success(response)
-            else  _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.EMPTY_FAVOURITE_DB)
+            else  _uiState.value = LoadFavouriteImageViewState.Error(ConstantsApp.EMPTY_FAVOURITE_DB, true)
         }
     }
 }
 
 sealed interface LoadFavouriteImageViewState {
     data object Init : LoadFavouriteImageViewState
-    data object Loading : LoadFavouriteImageViewState
-    data class LoadingRemoveFavourite(val isLoading: Boolean) : LoadFavouriteImageViewState
+    data class RemoveFavourite(val isLoading: Boolean) : LoadFavouriteImageViewState
     data class Success(val images: List<FavouriteImageToSave>) : LoadFavouriteImageViewState
-    data class Error(val message: String) : LoadFavouriteImageViewState
+    data class Error(val message: String, val isActivated: Boolean) : LoadFavouriteImageViewState
 }

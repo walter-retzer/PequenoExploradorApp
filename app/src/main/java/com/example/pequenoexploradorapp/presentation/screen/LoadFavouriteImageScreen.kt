@@ -21,10 +21,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
@@ -70,8 +68,6 @@ import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMess
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryLight
-import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
@@ -94,7 +90,6 @@ fun LoadFavouriteImageScreen(
     val uiState by viewModel.uiState.collectAsState()
     val listOfFavouriteImage by viewModel.listOfFavoriteImage.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -114,10 +109,6 @@ fun LoadFavouriteImageScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoadFavouriteImageViewState.Init -> {
-                viewModel.onGetFavouriteImageList()
-            }
-
-            is LoadFavouriteImageViewState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -147,33 +138,7 @@ fun LoadFavouriteImageScreen(
                         speed = 2f
                     )
                 }
-            }
-
-            is LoadFavouriteImageViewState.Error -> {
-                RenderImageFavouriteSuccess(
-                    paddingValues = paddingValues,
-                    scrollState = scrollState,
-                    listOfImagesFromDb = listOfFavouriteImage,
-                    viewModel = viewModel,
-                    scope = scope,
-                    snackBarHostState = snackBarHostState,
-                    onNavigateToShareImage = { onNavigateToShareImage(it) },
-                    isLoading = false,
-                )
-
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                    delay(5000L)
-                    onNavigateToHomeMenu()
-                }
+                viewModel.onGetFavouriteImageList()
             }
 
             is LoadFavouriteImageViewState.Success -> {
@@ -189,7 +154,7 @@ fun LoadFavouriteImageScreen(
                 )
             }
 
-            is LoadFavouriteImageViewState.LoadingRemoveFavourite -> {
+            is LoadFavouriteImageViewState.RemoveFavourite -> {
                 RenderImageFavouriteSuccess(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
@@ -201,7 +166,45 @@ fun LoadFavouriteImageScreen(
                     isLoading = state.isLoading,
                 )
             }
+
+            is LoadFavouriteImageViewState.Error -> {
+                RenderImageFavouriteSuccess(
+                    paddingValues = paddingValues,
+                    scrollState = scrollState,
+                    listOfImagesFromDb = listOfFavouriteImage,
+                    viewModel = viewModel,
+                    scope = scope,
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToShareImage = { onNavigateToShareImage(it) },
+                    isLoading = false,
+                )
+                snackBarIsActivated = state.isActivated
+                if(snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
+                            )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
+                            onNavigateToHomeMenu()
+                        }
+                    }
+                }
+            }
         }
+
         if (isConnected == false && !snackBarIsActivated) {
             LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
