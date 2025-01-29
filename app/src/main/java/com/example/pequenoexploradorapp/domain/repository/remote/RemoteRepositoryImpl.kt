@@ -11,6 +11,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.RedirectResponseException
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -115,51 +116,61 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
     private suspend inline fun <reified T> doRequest(crossinline request: suspend () -> HttpResponse): ApiResponse<T> {
         return try {
             val response: HttpResponse = request()
-            ApiResponse.success(data = response.body(), statusCode = response.status.value)
+            when (response.status.value) {
+                in 200..299 -> ApiResponse.success(data = response.body(), statusCode = response.status.value)
+                in 300..399 -> throw RedirectResponseException(response.body(), response.status.description)
+                in 400..499 -> throw ClientRequestException(response.body(), response.status.description)
+                in 500..599 -> throw ServerResponseException(response.body(), response.status.description)
+                else -> throw ResponseException(response.body(), response.status.description)
+            }
         } catch (e: RedirectResponseException) {
-            // 3xx - response
-            println("Error 3XX: ${e.response.status.description}")
+            println("SERVER REDIRECTION => Status: ${e.response.status.value}, Error: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
                 messageError = ConstantsApp.ERROR_SERVER
             )
         } catch (e: ClientRequestException) {
-            // 4xx - response
-            println("Error 4XXX: ${e.response.status.description}")
+            println("SERVER CLIENT ERROR => Status: ${e.response.status.value}, Error: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
-                messageError = e.message
+                messageError = ConstantsApp.ERROR_RESPONSE
             )
         } catch (e: ServerResponseException) {
-            // 5xx - response
-            println("Error 5XX: ${e.response.status.description}")
+            println("SERVER ERROR RESPONSE => Status: ${e.response.status.value}, Error: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
                 messageError = ConstantsApp.ERROR_SERVER
             )
-        } catch (e: UnresolvedAddressException) {
-            println("Error Address: ${e.printStackTrace()}")
+        } catch (e: ResponseException) {
+            println("SERVER RESPONSE EXCEPTION => Status: ${e.response.status.value}, Error: ${e.message}")
             ApiResponse.failure(
                 exception = e,
-                statusCode = null,
-                messageError = ConstantsApp.ERROR_SERVER
+                statusCode = e.response.status.value,
+                messageError = ConstantsApp.ERROR_API
             )
-        } catch (e: SerializationException) {
-            println("Error Serialization: ${e.printStackTrace()}")
+        } catch (e: UnresolvedAddressException) {
+            println("SERVER ERROR ADDRESS => Error: ${e.printStackTrace()}, Message: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
                 messageError = ConstantsApp.ERROR_API
             )
-        } catch (e: Exception) {
-            println("Error Exception: ${e.message}")
+        } catch (e: SerializationException) {
+            println("ERROR SERIALIZATION => Error: ${e.printStackTrace()}, Message: ${e.message}")
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
-                messageError = e.message + ConstantsApp.ERROR_API
+                messageError = ConstantsApp.ERROR_SERIALIZATION
+            )
+        } catch (e: Exception) {
+            println("EXCEPTION ERROR => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            ApiResponse.failure(
+                exception = e,
+                statusCode = null,
+                messageError = ConstantsApp.ERROR_EXCEPTION
             )
         }
     }

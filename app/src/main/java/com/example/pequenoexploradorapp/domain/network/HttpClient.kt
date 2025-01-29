@@ -23,6 +23,8 @@ private const val NETWORK_TIME_OUT = 30_000L
 private const val TAG = "HTTP_CLIENT"
 
 val httpClientAndroid = HttpClient(Android) {
+    expectSuccess = false
+
     install(ContentNegotiation) {
         json(
             Json {
