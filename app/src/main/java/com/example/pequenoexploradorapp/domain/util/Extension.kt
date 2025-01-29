@@ -168,7 +168,7 @@ fun String.formattedToMillis(adjustDataPickerInitialDate: Int = 0): Long {
 }
 
 fun List<FavouriteImageToSave>.formattedHeadText(): String {
-    return if (this.size == 1) "Encontrado 1 imagem favorita"
+    return if (this.size == 1) "Foi encontrada 1 imagem favorita"
     else if (this.isEmpty()) ""
-    else "Encontrado ${this.size} imagens favoritas"
+    else "Foram encontradas ${this.size} imagens favoritas"
 }
