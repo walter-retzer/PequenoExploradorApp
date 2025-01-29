@@ -19,6 +19,7 @@ import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.serialization.SerializationException
+import java.net.UnknownHostException
 
 
 class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
@@ -164,6 +165,13 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
                 exception = e,
                 statusCode = null,
                 messageError = ConstantsApp.ERROR_SERIALIZATION
+            )
+        } catch (e: UnknownHostException) {
+            println("UNKNOWN HOST => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            ApiResponse.failure(
+                exception = e,
+                statusCode = null,
+                messageError = ConstantsApp.ERROR_WITHOUT_INTERNET
             )
         } catch (e: Exception) {
             println("EXCEPTION ERROR => Error: ${e.printStackTrace()}, Message: ${e.message}")
