@@ -86,12 +86,14 @@ import com.example.pequenoexploradorapp.presentation.theme.primaryLight
 import com.example.pequenoexploradorapp.presentation.theme.secondaryLight
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewState
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PictureOfTheDayScreen(
+    onNavigateToHomeMenu: () -> Unit,
     viewModel: PictureOfTheDayViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -99,7 +101,6 @@ fun PictureOfTheDayScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -118,25 +119,7 @@ fun PictureOfTheDayScreen(
         containerColor = Color.Transparent
     ) { paddingValues ->
         when (val state = uiState) {
-            is PictureOfTheDayViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-
             is PictureOfTheDayViewState.Init -> {
-                viewModel.onPictureOfTheDayRequest()
-            }
-
-            is PictureOfTheDayViewState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -153,6 +136,7 @@ fun PictureOfTheDayScreen(
                         color = mainColor
                     )
                 }
+                viewModel.onPictureOfTheDayRequest()
             }
 
             is PictureOfTheDayViewState.Success -> {
@@ -171,13 +155,40 @@ fun PictureOfTheDayScreen(
                 )
             }
 
-            is PictureOfTheDayViewState.LoadingSaveFavourite -> {
+            is PictureOfTheDayViewState.SaveFavourite -> {
                 RenderSuccessLoadImage(
                     paddingValues = paddingValues,
                     viewModel = viewModel,
                     image = state.image,
                     isLoading = state.isLoading
                 )
+            }
+
+            is PictureOfTheDayViewState.Error -> {
+                snackBarIsActivated = state.isActivated
+                if (snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
+                            )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
+                            onNavigateToHomeMenu()
+                        }
+                    }
+                }
             }
         }
 
@@ -201,7 +212,7 @@ fun RenderSuccessLoadImage(
     viewModel: PictureOfTheDayViewModel,
     image: PictureOfTheDay,
     isLoading: Boolean,
-){
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

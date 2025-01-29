@@ -43,10 +43,10 @@ class PictureOfTheDayViewModel(
     ) {
         viewModelScope.launch {
             if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
-            _uiState.value = PictureOfTheDayViewState.LoadingSaveFavourite(image, true)
+            _uiState.value = PictureOfTheDayViewState.SaveFavourite(image, true)
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
-            _uiState.value = PictureOfTheDayViewState.LoadingSaveFavourite(image, true)
+            _uiState.value = PictureOfTheDayViewState.SaveFavourite(image, true)
             _uiState.value = PictureOfTheDayViewState.Success(image.copy(isFavourite = true))
         }
     }
@@ -57,7 +57,6 @@ class PictureOfTheDayViewModel(
     }
 
     fun onPictureOfTheDayRequest() {
-        _uiState.value = PictureOfTheDayViewState.Loading
         var favouriteImages = emptyList<FavouriteImageToSave>()
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.ENGLISH)
@@ -74,7 +73,7 @@ class PictureOfTheDayViewModel(
                 viewModelScope.launch {
                     when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
                         is ApiResponse.Failure -> _uiState.value =
-                            PictureOfTheDayViewState.Error(responseApi.messageError)
+                            PictureOfTheDayViewState.Error(responseApi.messageError, true)
 
                         is ApiResponse.Success -> {
                             responseApi.data.explanation?.let {
@@ -117,9 +116,8 @@ class PictureOfTheDayViewModel(
 
 sealed interface PictureOfTheDayViewState {
     data object Init : PictureOfTheDayViewState
-    data object Loading : PictureOfTheDayViewState
-    data class LoadingSaveFavourite(val image: PictureOfTheDay, val isLoading: Boolean) : PictureOfTheDayViewState
+    data class SaveFavourite(val image: PictureOfTheDay, val isLoading: Boolean) : PictureOfTheDayViewState
     data class Success(val image: PictureOfTheDay) : PictureOfTheDayViewState
     data class SuccessVideoUrl(val videoUrl: PictureOfTheDay) : PictureOfTheDayViewState
-    data class Error(val message: String) : PictureOfTheDayViewState
+    data class Error(val message: String, val isActivated: Boolean) : PictureOfTheDayViewState
 }

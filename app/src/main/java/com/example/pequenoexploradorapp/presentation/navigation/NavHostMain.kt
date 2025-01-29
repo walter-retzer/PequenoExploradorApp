@@ -282,7 +282,11 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-                    PictureOfTheDayScreen()
+                    PictureOfTheDayScreen(
+                        onNavigateToHomeMenu = {
+                            navController.navigate(Route.HomeScreenRoute.route)
+                        }
+                    )
                 }
 
                 composable(
