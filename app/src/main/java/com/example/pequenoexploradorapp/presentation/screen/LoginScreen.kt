@@ -90,8 +90,6 @@ fun LoginScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { paddingValues ->
         when (val state = uiState) {
-            is LoginUserViewState.DrawScreen -> {}
-
             is LoginUserViewState.Loading -> {
                 progressButtonIsActivated = true
             }
@@ -99,7 +97,6 @@ fun LoginScreen(
             is LoginUserViewState.Error -> {
                 progressButtonIsActivated = false
                 snackBarIsActivated = true
-
                 LaunchedEffect(snackBarIsActivated) {
                     snackBarOnlyMessage(
                         snackBarHostState = snackBarHostState,
@@ -113,7 +110,6 @@ fun LoginScreen(
 
             is LoginUserViewState.Success -> {
                 progressButtonIsActivated = false
-
                 LaunchedEffect(key1 = true) {
                     snackBarOnlyMessage(
                         snackBarHostState = snackBarHostState,
@@ -127,7 +123,6 @@ fun LoginScreen(
 
             is LoginUserViewState.SuccessResetPassword -> {
                 snackBarIsActivated = true
-
                 LaunchedEffect(snackBarIsActivated) {
                     snackBarOnlyMessage(
                         snackBarHostState = snackBarHostState,
@@ -140,13 +135,16 @@ fun LoginScreen(
             }
         }
 
-        if(isConnected?.not() == true){
-            snackBarOnlyMessage(
-                snackBarHostState = snackBarHostState,
-                coroutineScope = scope,
-                message = "Não há internet disponível, verifique seu WIFI ou Dados conectado.",
-                duration = SnackbarDuration.Long
-            )
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
+                snackBarOnlyMessage(
+                    snackBarHostState = snackBarHostState,
+                    coroutineScope = scope,
+                    message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                    duration = SnackbarDuration.Long
+                )
+                snackBarIsActivated = false
+            }
         }
 
         Box(

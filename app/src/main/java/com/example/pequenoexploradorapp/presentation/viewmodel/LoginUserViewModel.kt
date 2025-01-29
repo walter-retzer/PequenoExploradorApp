@@ -37,7 +37,7 @@ class LoginUserViewModel(
     private val _userLoginState = MutableStateFlow(FirebaseUserData())
     val userLoginState = _userLoginState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.DrawScreen)
+    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Loading)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
 
     val isConnected = connectivityObserver
@@ -68,7 +68,6 @@ class LoginUserViewModel(
     }
 
     fun onFirebaseAuthSignIn(email: String, password: String) {
-        _uiState.value = LoginUserViewState.Loading
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -125,7 +124,6 @@ class LoginUserViewModel(
 
 sealed interface LoginUserViewState {
     data object Loading : LoginUserViewState
-    data object DrawScreen : LoginUserViewState
     data class Success(val message: String) : LoginUserViewState
     data class SuccessResetPassword(val message: String) : LoginUserViewState
     data class Error(val message: String) : LoginUserViewState
