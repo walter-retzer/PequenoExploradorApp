@@ -35,6 +35,7 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMA
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.LoadNasaVideoScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadRoverImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
@@ -230,6 +231,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         },
                         onNavigateToFavouriteImage = {
                             navController.navigate(Route.LoadFavouriteImageScreenRoute.route)
+                        },
+                        onNavigateToNasaVideos = {
+                            navController.navigate(Route.LoadNasaVideoScreenRoute.route)
                         }
                     )
                 }
@@ -462,6 +466,21 @@ private fun NavGraphBuilder.homeNavGraph() {
 
                     ShareFavouriteImageScreen(
                         image = imageUrl
+                    )
+                }
+
+                composable(
+                    route = Route.LoadNasaVideoScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    LoadNasaVideoScreen(
+                        video = "lua",
+                        onNavigateToSearchImage = {
+
+                        }
                     )
                 }
             }
