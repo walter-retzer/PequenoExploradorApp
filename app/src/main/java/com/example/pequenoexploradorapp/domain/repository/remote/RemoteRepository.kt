@@ -8,6 +8,14 @@ import com.example.pequenoexploradorapp.domain.network.ApiResponse
 
 interface RemoteRepository {
 
+    suspend fun getNasaVideos(
+        imageSearch: String?,
+        page: Int = 1,
+        mediaType: String = "video"
+    ): ApiResponse<NasaImageResponse>
+
+    suspend fun fetchVideoUrl(url: String): ApiResponse<String>
+
     suspend fun getRoverSpiritImages(date: String): ApiResponse<RoverImageResponse>
 
     suspend fun getRoverOpportunityImages(date: String): ApiResponse<RoverImageResponse>
