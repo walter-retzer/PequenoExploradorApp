@@ -6,8 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -47,10 +49,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.enableButton
 import com.example.pequenoexploradorapp.domain.util.formattedDate
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewState
@@ -71,6 +74,7 @@ fun RoverMissionDetailScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+    val enableButton = roverName.enableButton()
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -233,20 +237,23 @@ fun RoverMissionDetailScreen(
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor
                             )
-                            ProgressButton(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                text = "Pesquisar",
-                                isLoading = false,
-                                onClick = {
-                                    onNavigateToSearchImage(
-                                        state.mission.rover.landingDate.formattedDate(),
-                                        state.mission.rover.maxDate.formattedDate(),
-                                        roverName
-                                    )
-                                }
-                            )
+                            if(enableButton) {
+                                ProgressButton(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .fillMaxWidth(),
+                                    text = "Pesquisar",
+                                    isLoading = false,
+                                    onClick = {
+                                        onNavigateToSearchImage(
+                                            state.mission.rover.landingDate.formattedDate(),
+                                            state.mission.rover.maxDate.formattedDate(),
+                                            roverName
+                                        )
+                                    }
+                                )
+                            }
+                            else Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 }
