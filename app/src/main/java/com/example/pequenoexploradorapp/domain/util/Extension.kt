@@ -4,7 +4,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
+import com.example.pequenoexploradorapp.domain.firebase.FirebaseRemoteConfigManager
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -171,4 +173,12 @@ fun List<FavouriteImageToSave>.formattedHeadText(): String {
     return if (this.size == 1) "Foi encontrada 1 imagem favorita"
     else if (this.isEmpty()) ""
     else "Foram encontradas ${this.size} imagens favoritas"
+}
+
+fun String.enableButton(): Boolean {
+    return if (this == BuildConfig.SPIRIT) FirebaseRemoteConfigManager.isRoverSpiritSearchActivated
+    else if (this == BuildConfig.OPPORTUNITY) FirebaseRemoteConfigManager.isRoverOpportunitySearchActivated
+    else if (this == BuildConfig.CURIOSITY) FirebaseRemoteConfigManager.isRoverCuriositySearchActivated
+    else if (this == BuildConfig.PERSEVERANCE) FirebaseRemoteConfigManager.isRoverPerseveranceSearchActivated
+    else false
 }
