@@ -9,8 +9,10 @@ object FirebaseRemoteConfigManager {
     private val remoteConfig get() = Firebase.remoteConfig(FirebaseApp.getInstance())
     private const val FETCH_TIMEOUT = 60L
 
-    val isActivated get() = getBoolean("isActivated")
-    val isActivatedMenu get() = getBoolean("isActivatedMenu")
+    val isRoverSpiritSearchActivated get() = getBoolean("isRoverSpiritSearchActivated")
+    val isRoverCuriositySearchActivated get() = getBoolean("isRoverCuriositySearchActivated")
+    val isRoverOpportunitySearchActivated get() = getBoolean("isRoverOpportunitySearchActivated")
+    val isRoverPerseveranceSearchActivated get() = getBoolean("isRoverPerseveranceSearchActivated")
     val name get() = getString("name")
     val rover get() = getString("rover")
 
