@@ -23,6 +23,41 @@ import java.net.UnknownHostException
 
 
 class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
+    override suspend fun getNasaVideos(
+        imageSearch: String?,
+        page: Int,
+        mediaType: String
+    ): ApiResponse<NasaImageResponse> =
+        doRequest {
+            client.get {
+                url(BASE_URL_IMAGES)
+                parameter("q", imageSearch)
+                parameter("page", page)
+                parameter("media_type", mediaType)
+            }
+        }
+
+    override suspend fun fetchVideoUrl(url: String): ApiResponse<String> =
+        doRequest {
+            client.get {
+                url(url)
+            }
+        }
+
+    override suspend fun getNasaImage(
+        imageSearch: String?,
+        page: Int,
+        mediaType: String
+    ): ApiResponse<NasaImageResponse> =
+        doRequest {
+            client.get {
+                url(BASE_URL_IMAGES)
+                parameter("q", imageSearch)
+                parameter("page", page)
+                parameter("media_type", mediaType)
+            }
+        }
+
     override suspend fun getRoverSpiritImages(date: String): ApiResponse<RoverImageResponse> =
         doRequest {
             client.get {
@@ -88,20 +123,6 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             client.get {
                 url(BASE_URL_ROVER_CURIOSITY)
                 parameter("api_key", BuildConfig.API_KEY_DEMO)
-            }
-        }
-
-    override suspend fun getNasaImage(
-        imageSearch: String?,
-        page: Int,
-        mediaType: String
-    ): ApiResponse<NasaImageResponse> =
-        doRequest {
-            client.get {
-                url(BASE_URL_IMAGES)
-                parameter("q", imageSearch)
-                parameter("page", page)
-                parameter("media_type", mediaType)
             }
         }
 
