@@ -5,6 +5,7 @@ import com.example.pequenoexploradorapp.domain.connectivity.AndroidConnectivityO
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
@@ -60,6 +61,13 @@ val viewModelModules = module {
     factory<LoadFavouriteImageViewModel> {
         LoadFavouriteImageViewModel(
             provideConnectivityStatus(androidApplication()),
+            get()
+        )
+    }
+    factory<LoadNasaVideoViewModel> {
+        LoadNasaVideoViewModel(
+            provideConnectivityStatus(androidApplication()),
+            get(),
             get()
         )
     }
