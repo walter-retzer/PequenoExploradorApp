@@ -55,6 +55,7 @@ fun HomeMenuScreen(
     onNavigateToPictureOfTheDay: () -> Unit,
     onNavigateToRoverMission: () -> Unit,
     onNavigateToFavouriteImage: () -> Unit,
+    onNavigateToNasaVideos: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -87,13 +88,21 @@ fun HomeMenuScreen(
                 actionButtonRight = { onNavigateToSearchImage() }
             ),
             DrawOptionsMenuButton(
-                titleButtonLeft = "Sistema Solar",
+                titleButtonLeft = "Sistema\nSolar",
                 iconButtonLeft = R.drawable.icon_solar_system,
                 actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Destaque\ndo Dia",
                 iconButtonRight = R.drawable.icon_comet,
                 actionButtonRight = { onNavigateToPictureOfTheDay() }
             ),
+            DrawOptionsMenuButton(
+                titleButtonLeft = "Videos\nNasa",
+                iconButtonLeft = R.drawable.icon_solar_system,
+                actionButtonLeft = { onNavigateToNasaVideos() },
+                titleButtonRight = "Galeria\nGaláctica",
+                iconButtonRight = R.drawable.icon_comet,
+                actionButtonRight = { onNavigateToPictureOfTheDay() }
+            )
         )
     }
 
