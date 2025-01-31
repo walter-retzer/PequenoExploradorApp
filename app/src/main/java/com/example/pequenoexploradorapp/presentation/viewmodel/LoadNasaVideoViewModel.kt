@@ -13,6 +13,7 @@ import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONException
 
@@ -108,10 +110,10 @@ class LoadNasaVideoViewModel(
                                     LoadNasaVideoViewState.Error(responseApi.messageError, true)
 
                                 is ApiResponse.Success -> {
+                                    totalHits = responseApi.data.collection.metadata?.totalHits ?: 0
+                                    val items = responseApi.data.collection.items
 
-                                    responseApi.data.collection.items?.first()?.href?.let { url ->
-                                        videoCollectionReceive(url)
-                                    }
+                                    _uiState.value = LoadNasaVideoViewState.SuccessVideo(items, totalHits)
 
 //                                    responseApi.data.collection.items?.let { imagesToLoad ->
 //                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
@@ -134,28 +136,17 @@ class LoadNasaVideoViewModel(
             }
     }
 
-    fun videoCollectionReceive(url: String) {
-        viewModelScope.launch {
-            when (val responseApi =
-                remoteRepositoryImpl.fetchVideoUrl(url)) {
-                is ApiResponse.Failure -> _uiState.value =
-                    LoadNasaVideoViewState.Error(responseApi.messageError, true)
-
-                is ApiResponse.Success -> {
-                    println("Response => $responseApi")
-                    val arrayList = fileTypeCheck(createJsonArrayFromString(responseApi.data))
-                    println("Array => $arrayList")
-                    _uiState.value = LoadNasaVideoViewState.SuccessVideo(
-                        arrayList, totalHits
-                    )
-                }
+    suspend fun onVideoUrlToLoad(url: String): String? {
+        return withContext(Dispatchers.IO) {
+            when (val response = remoteRepositoryImpl.fetchVideoUrl(url)) {
+                is ApiResponse.Failure -> null
+                is ApiResponse.Success -> getVideoUrl(createJsonArrayFromString(response.data))
             }
-
         }
     }
 
-    private fun fileTypeCheck(array: ArrayList<String>): String {
-        Log.d("fileTypeCheck", array.toString())
+    private fun getVideoUrl(array: ArrayList<String>): String? {
+        Log.d("getVideoUrl", array.toString())
         for (i in 0 until array.size) {
             val file = array[i].replace("http://", "https://")
             when {
@@ -163,7 +154,7 @@ class LoadNasaVideoViewModel(
                 file.contains(".mp4") -> { return file }
             }
         }
-        return "File not found"
+        return null
     }
 
     private fun createJsonArrayFromString(stringResponse: String): ArrayList<String> {
@@ -173,8 +164,7 @@ class LoadNasaVideoViewModel(
             for (url in 0 until jsonArray.length()) {
                 arrayList.add(jsonArray.getString(url))
             }
-        }
-        catch (e: JSONException) {
+        } catch (e: JSONException) {
             Log.e("Error converting String response to a JSON Array", e.toString())
         }
         return arrayList
@@ -232,7 +222,7 @@ sealed interface LoadNasaVideoViewState {
     ) : LoadNasaVideoViewState
 
     data class SuccessVideo(
-        val video: String,
+        val video: List<NasaImageItems>?,
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
