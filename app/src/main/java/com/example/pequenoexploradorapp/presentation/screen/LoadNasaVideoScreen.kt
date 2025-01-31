@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.presentation.screen
 
 import android.util.Log
 import android.webkit.URLUtil
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -220,13 +222,12 @@ fun LoadNasaVideoScreen(
                             color = Color.White
                         )
                     }
-                    LazyVerticalGrid(
-                        state = scrollState,
-                        contentPadding = PaddingValues(all = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        columns = GridCells.Fixed(1),
-                        modifier = Modifier.clipToBounds(),
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .background(Color.White),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
                     ) {
                         val list = state.video
                         items(list?.size!!) { numberOfImage ->

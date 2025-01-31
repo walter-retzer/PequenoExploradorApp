@@ -32,13 +32,13 @@ class LoadNasaVideoViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
     private val localRepositoryImpl: FavouriteImageRepositoryImpl,
-    val handle: SavedStateHandle
+    private val handle: SavedStateHandle
 ) : ViewModel() {
+
     companion object {
         private const val KEY_PLAYER_STATE = "player_state"
         private const val KEY_PLAYBACK_POSITION = "playback_position"
     }
-
 
     var playerState: Boolean
         get() = handle[KEY_PLAYER_STATE] ?: false
