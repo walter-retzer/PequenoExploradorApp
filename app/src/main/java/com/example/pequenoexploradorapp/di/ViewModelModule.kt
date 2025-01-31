@@ -1,6 +1,7 @@
 package com.example.pequenoexploradorapp.di
 
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import com.example.pequenoexploradorapp.domain.connectivity.AndroidConnectivityObserver
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
@@ -68,7 +69,8 @@ val viewModelModules = module {
         LoadNasaVideoViewModel(
             provideConnectivityStatus(androidApplication()),
             get(),
-            get()
+            get(),
+            SavedStateHandle()
         )
     }
 }

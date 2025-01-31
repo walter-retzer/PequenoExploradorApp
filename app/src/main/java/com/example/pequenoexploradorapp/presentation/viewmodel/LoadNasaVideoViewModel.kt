@@ -1,8 +1,10 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.exoplayer.ExoPlayer
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
@@ -30,7 +32,22 @@ class LoadNasaVideoViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
     private val localRepositoryImpl: FavouriteImageRepositoryImpl,
+    val handle: SavedStateHandle
 ) : ViewModel() {
+    companion object {
+        private const val KEY_PLAYER_STATE = "player_state"
+        private const val KEY_PLAYBACK_POSITION = "playback_position"
+    }
+
+
+    var playerState: Boolean
+        get() = handle[KEY_PLAYER_STATE] ?: false
+        set(value) = handle.set(KEY_PLAYER_STATE, value)
+
+    private var playbackPosition: Long
+        get() = handle[KEY_PLAYBACK_POSITION] ?: 0L
+        set(value) = handle.set(KEY_PLAYBACK_POSITION, value)
+
     private var image = ""
     private var page = 1
     private var totalHits = 0
@@ -48,6 +65,14 @@ class LoadNasaVideoViewModel(
             SharingStarted.WhileSubscribed(5000L),
             null
         )
+
+    fun savePlaybackPosition(player: ExoPlayer) {
+        playbackPosition = player.currentPosition
+    }
+
+    fun restorePlaybackPosition(player: ExoPlayer) {
+        player.seekTo(playbackPosition)
+    }
 
     fun onSaveFavourite(
         imageFavouriteToSave: FavouriteImageToSave,
