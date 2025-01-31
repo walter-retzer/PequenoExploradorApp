@@ -242,6 +242,8 @@ fun LoadNasaVideoScreen(
                                                 .build()
                                             exoPlayer.setMediaItem(mediaItem)
                                             exoPlayer.prepare()
+                                            viewModel.restorePlaybackPosition(exoPlayer)
+                                            exoPlayer.playWhenReady = viewModel.playerState
 
                                         } catch (e: Exception) {
                                             Log.d(
@@ -264,6 +266,8 @@ fun LoadNasaVideoScreen(
 
                                 DisposableEffect(exoPlayer) {
                                     onDispose {
+                                        viewModel.savePlaybackPosition(exoPlayer)
+                                        viewModel.playerState = exoPlayer.playWhenReady
                                         exoPlayer.stop()
                                         exoPlayer.release()
                                     }
