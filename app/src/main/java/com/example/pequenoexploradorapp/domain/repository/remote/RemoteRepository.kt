@@ -1,6 +1,6 @@
 package com.example.pequenoexploradorapp.domain.repository.remote
 
-import com.example.pequenoexploradorapp.data.NasaImageResponse
+import com.example.pequenoexploradorapp.data.NasaLibraryResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.data.RoverMission
@@ -12,7 +12,7 @@ interface RemoteRepository {
         imageSearch: String?,
         page: Int = 1,
         mediaType: String = "video"
-    ): ApiResponse<NasaImageResponse>
+    ): ApiResponse<NasaLibraryResponse>
 
     suspend fun fetchVideoUrl(url: String): ApiResponse<String>
 
@@ -37,7 +37,7 @@ interface RemoteRepository {
         imageSearch: String?,
         page: Int = 1,
         mediaType: String = "image"
-    ): ApiResponse<NasaImageResponse>
+    ): ApiResponse<NasaLibraryResponse>
 
     suspend fun getPictureOfTheDay(): ApiResponse<PictureOfTheDay>
 }

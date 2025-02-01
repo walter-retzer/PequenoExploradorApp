@@ -1,7 +1,7 @@
 package com.example.pequenoexploradorapp.domain.repository.remote
 
 import com.example.pequenoexploradorapp.BuildConfig
-import com.example.pequenoexploradorapp.data.NasaImageResponse
+import com.example.pequenoexploradorapp.data.NasaLibraryResponse
 import com.example.pequenoexploradorapp.data.PictureOfTheDay
 import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.data.RoverMission
@@ -27,7 +27,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
         imageSearch: String?,
         page: Int,
         mediaType: String
-    ): ApiResponse<NasaImageResponse> =
+    ): ApiResponse<NasaLibraryResponse> =
         doRequest {
             client.get {
                 url(BASE_URL_IMAGES)
@@ -48,7 +48,7 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
         imageSearch: String?,
         page: Int,
         mediaType: String
-    ): ApiResponse<NasaImageResponse> =
+    ): ApiResponse<NasaLibraryResponse> =
         doRequest {
             client.get {
                 url(BASE_URL_IMAGES)

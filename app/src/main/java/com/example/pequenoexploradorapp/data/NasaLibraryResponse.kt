@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class NasaImageResponse(
-    @SerialName("collection") val collection: NasaImageCollection
+data class NasaLibraryResponse(
+    @SerialName("collection") val collection: Collection
 )
 
 @Serializable
-data class NasaImageCollection(
+data class Collection(
     @SerialName("href") val href: String?,
     @SerialName("version") val version: String?,
     @SerialName("items") val items: List<NasaImageItems>? = null,
