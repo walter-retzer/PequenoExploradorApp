@@ -27,6 +27,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,8 +53,8 @@ import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewState
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
@@ -61,15 +62,16 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NasaVideoDetailScreen(
-    video: String?,
+    video: String,
     viewModel: NasaVideoDetailViewModel = koinInject()
 ) {
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
-    var isLoading by remember { mutableStateOf(true) }
+    val isLoading by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -77,7 +79,7 @@ fun NasaVideoDetailScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagens",
+                title = "Detail",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -87,93 +89,162 @@ fun NasaVideoDetailScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .paint(
-                    painterResource(id = R.drawable.simple_background),
-                    contentScale = ContentScale.FillBounds
-                ),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row {
-                val exoPlayer = ExoPlayer.Builder(context).build()
-                LaunchedEffect(Unit) {
-                    delay(3000L)
-                    isLoading = false
-                    if (URLUtil.isValidUrl(video)) {
-                        try {
-                            val mediaItem = MediaItem.Builder()
-                                .setUri(video)
-                                .build()
-                            exoPlayer.setMediaItem(mediaItem)
-                            exoPlayer.prepare()
-//                            viewModel.restorePlaybackPosition(exoPlayer)
-//                            exoPlayer.playWhenReady = viewModel.playerState
-
-                        } catch (e: Exception) {
-                            Log.d(
-                                "ExoPlayer Error",
-                                exoPlayer.playerError.toString()
+        when (val state = uiState) {
+            is NasaVideoDetailViewState.Error -> {
+                snackBarIsActivated = state.isActivated
+                if (snackBarIsActivated) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .paint(
+                                painterResource(id = R.drawable.simple_background),
+                                contentScale = ContentScale.FillBounds
                             )
+                    ) {
+                        LaunchedEffect(Unit) {
+                            snackBarOnlyMessage(
+                                snackBarHostState = snackBarHostState,
+                                coroutineScope = scope,
+                                message = state.message,
+                                duration = SnackbarDuration.Long
+                            )
+                            snackBarIsActivated = false
+                            delay(3000L)
                         }
                     }
                 }
-                AndroidView(
-                    factory = {
-                        PlayerView(context).apply {
-                            player = exoPlayer
-                        }
-                    },
+            }
+
+            is NasaVideoDetailViewState.Init -> {
+                Box(
                     modifier = Modifier
-                        .aspectRatio(1f)
-                        .semantics { testTag = "Card Media Player" }
-                )
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .paint(
+                            painterResource(id = R.drawable.simple_background),
+                            contentScale = ContentScale.FillBounds
+                        )
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .width(64.dp)
+                            .align(Alignment.Center),
+                        color = mainColor
+                    )
+                }
+                viewModel.onVideoUrlToLoad(video)
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
+            is NasaVideoDetailViewState.Success -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .paint(
+                            painterResource(id = R.drawable.simple_background),
+                            contentScale = ContentScale.FillBounds
+                        ),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    //println("Video => ${state.video}")
+                    //val u = "https://images-assets.nasa.gov/video/NHQ_2019_0311_Go Forward to the Moon/NHQ_2019_0311_Go Forward to the Moon~large.mp4"
+                    Row {
+                        if (URLUtil.isValidUrl(state.video)) {
+                            val exoPlayer = ExoPlayer.Builder(context).build()
+                            LaunchedEffect(exoPlayer) {
+                                try {
+                                    val mediaItem = MediaItem.Builder()
+                                        .setUri(state.video)
+                                        .build()
+                                    exoPlayer.setMediaItem(mediaItem)
+                                    exoPlayer.prepare()
+                                    viewModel.restorePlaybackPosition(exoPlayer)
+                                    exoPlayer.playWhenReady = viewModel.playerState
 
-                DisposableEffect(exoPlayer) {
-                    onDispose {
-//                        viewModel.savePlaybackPosition(exoPlayer)
-//                        viewModel.playerState = exoPlayer.playWhenReady
-                        exoPlayer.stop()
-                        exoPlayer.release()
+                                } catch (e: Exception) {
+                                    Log.d(
+                                        "ExoPlayer Error",
+                                        exoPlayer.playerError.toString()
+                                    )
+                                }
+                            }
+                            AndroidView(
+                                factory = {
+                                    PlayerView(context).apply {
+                                        player = exoPlayer
+                                    }
+                                },
+                                modifier = Modifier
+                                    .aspectRatio(1f)
+                                    .semantics { testTag = "Card Media Player" }
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            DisposableEffect(exoPlayer) {
+                                onDispose {
+                                    viewModel.savePlaybackPosition(exoPlayer)
+                                    viewModel.playerState = exoPlayer.playWhenReady
+                                    exoPlayer.stop()
+                                    exoPlayer.release()
+                                }
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues)
+                                    .paint(
+                                        painterResource(id = R.drawable.simple_background),
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                            ) {
+                                LaunchedEffect(Unit) {
+                                    snackBarOnlyMessage(
+                                        snackBarHostState = snackBarHostState,
+                                        coroutineScope = scope,
+                                        message = ConstantsApp.VIDEO_ERROR_LOAD,
+                                        duration = SnackbarDuration.Long
+                                    )
+                                    snackBarIsActivated = false
+                                    delay(3000L)
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        }
-        AnimatedVisibility(
-            visible = isLoading,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent)
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .width(64.dp)
-                        .align(Alignment.Center),
-                    color = mainColor
-                )
-            }
-        }
-        if (isConnected == false && !snackBarIsActivated) {
-            LaunchedEffect(Unit) {
-                snackBarOnlyMessage(
-                    snackBarHostState = snackBarHostState,
-                    coroutineScope = scope,
-                    message = ConstantsApp.ERROR_WITHOUT_INTERNET,
-                    duration = SnackbarDuration.Long
-                )
-                snackBarIsActivated = false
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Transparent)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .width(64.dp)
+                                .align(Alignment.Center),
+                            color = mainColor
+                        )
+                    }
+                }
+                if (isConnected == false && !snackBarIsActivated) {
+                    LaunchedEffect(Unit) {
+                        snackBarOnlyMessage(
+                            snackBarHostState = snackBarHostState,
+                            coroutineScope = scope,
+                            message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                            duration = SnackbarDuration.Long
+                        )
+                        snackBarIsActivated = false
+                    }
+                }
             }
         }
     }
 }
-
-//val u = "https://images-assets.nasa.gov/video/NHQ_2019_0311_Go Forward to the Moon/NHQ_2019_0311_Go Forward to the Moon~large.mp4"

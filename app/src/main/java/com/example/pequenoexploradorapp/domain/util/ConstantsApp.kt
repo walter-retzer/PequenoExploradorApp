@@ -33,6 +33,7 @@ class ConstantsApp {
             const val SHARE_IMAGE = "Imagem compartilhada pelo aplicativo Pequeno Explorador"
             const val SAVE_IMAGE_OK = "A imagem foi salva na galeria do seu celular"
             const val SAVE_IMAGE_ERROR = "Não foi possível salvar a imagem na galeria do celular"
-            const val SAVE_IMAGE_ERROR_DECODE = "Arquivo da imagem não compatível"
+            const val SAVE_IMAGE_ERROR_DECODE = "Arquivo da imagem não é compátivel"
+            const val VIDEO_ERROR_LOAD = "Infelizmente, o video não é compátivel"
         }
 }

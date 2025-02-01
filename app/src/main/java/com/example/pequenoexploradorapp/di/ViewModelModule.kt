@@ -9,6 +9,7 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageView
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
@@ -69,6 +70,13 @@ val viewModelModules = module {
         LoadNasaVideoViewModel(
             provideConnectivityStatus(androidApplication()),
             get(),
+            get(),
+            SavedStateHandle()
+        )
+    }
+    factory<NasaVideoDetailViewModel> {
+        NasaVideoDetailViewModel(
+            provideConnectivityStatus(androidApplication()),
             get(),
             SavedStateHandle()
         )

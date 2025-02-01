@@ -32,12 +32,14 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DAT
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_TO_LOAD
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaVideoScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadRoverImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
+import com.example.pequenoexploradorapp.presentation.screen.NasaVideoDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
@@ -478,9 +480,35 @@ private fun NavGraphBuilder.homeNavGraph() {
                 ) {
                     LoadNasaVideoScreen(
                         video = "lua",
-                        onNavigateToSearchImage = {
-
+                        onNavigateToSearchVideo = { },
+                        onNavigateToVideoDetail = { url ->
+                            val encodeImagedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+                            navController.navigate(
+                                route = "${Route.NasaVideoDetailScreenRoute.route}/${encodeImagedUrl}"
+                            )
                         }
+                    )
+                }
+
+                composable(
+                    route = "${Route.NasaVideoDetailScreenRoute.route}/{$VIDEO_TO_LOAD}",
+                    arguments = listOf(
+                        navArgument(VIDEO_TO_LOAD) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    ),
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val video = arguments.getString(VIDEO_TO_LOAD).toString()
+
+                    NasaVideoDetailScreen(
+                        video = video
                     )
                 }
             }
@@ -506,4 +534,5 @@ object ArgumentsKey {
     const val DATE_INITIAL_KEY = "DATE_INITIAL_KEY"
     const val DATE_FINAL_KEY = "DATE_FINAL_KEY"
     const val IMAGE_TO_SHARE = "IMAGE_TO_SHARE"
+    const val VIDEO_TO_LOAD = "VIDEO_TO_LOAD"
 }

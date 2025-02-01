@@ -93,13 +93,15 @@ import org.koin.compose.koinInject
 @Composable
 fun LoadNasaVideoScreen(
     video: String?,
-    onNavigateToSearchImage: () -> Unit,
+    onNavigateToSearchVideo: () -> Unit,
+    onNavigateToVideoDetail: (url: String) -> Unit,
     viewModel: LoadNasaVideoViewModel = koinInject()
 ) {
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -109,7 +111,7 @@ fun LoadNasaVideoScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagens",
+                title = "Videos",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -150,6 +152,7 @@ fun LoadNasaVideoScreen(
                     isLoading = state.isLoading,
                     isLoadingNextItems = false,
                     totalHits = state.totalHits,
+                    onNavigateToVideoDetail = { onNavigateToVideoDetail(it) }
                 )
             }
 
@@ -163,6 +166,7 @@ fun LoadNasaVideoScreen(
                     isLoading = false,
                     isLoadingNextItems = true,
                     totalHits = state.totalHits,
+                    onNavigateToVideoDetail = { onNavigateToVideoDetail(it) }
                 )
 
             }
@@ -177,6 +181,7 @@ fun LoadNasaVideoScreen(
                     isLoading = false,
                     isLoadingNextItems = true,
                     totalHits = state.totalHits,
+                    onNavigateToVideoDetail = { onNavigateToVideoDetail(it) }
                 )
             }
 
@@ -190,6 +195,7 @@ fun LoadNasaVideoScreen(
                     isLoading = false,
                     isLoadingNextItems = false,
                     totalHits = state.totalHits,
+                    onNavigateToVideoDetail = { onNavigateToVideoDetail(it) }
                 )
             }
 
@@ -214,7 +220,7 @@ fun LoadNasaVideoScreen(
                             )
                             snackBarIsActivated = false
                             delay(3000L)
-                            onNavigateToSearchImage()
+                            onNavigateToSearchVideo()
                         }
                     }
                 }
@@ -250,9 +256,10 @@ fun InfiniteVideoListHandler(
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer) &&
-            isLoadingNextItems && totalHits != listOfImagesFromApi.size
+                    isLoadingNextItems && totalHits != listOfImagesFromApi.size
         }
     }
 
@@ -277,6 +284,7 @@ fun RenderVideoSuccess(
     isLoading: Boolean,
     isLoadingNextItems: Boolean,
     totalHits: Int,
+    onNavigateToVideoDetail: (url: String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -318,7 +326,8 @@ fun RenderVideoSuccess(
                 LoadVideoOnCard(
                     listOfImages = listOfVideosFromApi,
                     numberOfImage = numberOfImage,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    onNavigateToVideoDetail = { onNavigateToVideoDetail(it) }
                 )
             }
 
@@ -359,9 +368,11 @@ fun RenderVideoSuccess(
 fun LoadVideoOnCard(
     listOfImages: List<NasaImageItems>?,
     numberOfImage: Int,
-    viewModel: LoadNasaVideoViewModel
+    viewModel: LoadNasaVideoViewModel,
+    onNavigateToVideoDetail: (url: String) -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
+    val urlVideo = listOfImages?.first()?.href
     val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
     val date = listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
@@ -375,7 +386,6 @@ fun LoadVideoOnCard(
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = ""
     )
-
 
     LaunchedEffect(isPressed) {
         if (isPressed) {
@@ -427,6 +437,7 @@ fun LoadVideoOnCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
+                    .clickable { onNavigateToVideoDetail(urlVideo.toString()) }
             )
             Text(
                 text = index.toString(),

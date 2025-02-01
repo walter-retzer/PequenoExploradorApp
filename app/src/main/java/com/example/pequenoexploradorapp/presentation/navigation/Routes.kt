@@ -51,6 +51,9 @@ sealed class Route(
     @Serializable
     object LoadNasaVideoScreenRoute : Route(route = "LoadNasaVideoScreen")
 
+    @Serializable
+    object NasaVideoDetailScreenRoute : Route(route = "NasaVideoDetailScreen")
+
     // Routes from Graph Navigation:
     @Serializable
     object LoginGraphNav : Route(route = "LoginNavigation")
