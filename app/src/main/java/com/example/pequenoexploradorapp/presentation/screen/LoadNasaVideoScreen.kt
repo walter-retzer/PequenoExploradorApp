@@ -100,8 +100,7 @@ fun LoadNasaVideoScreen(
     val scrollState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     var snackBarIsActivated by remember { mutableStateOf(false) }
@@ -147,7 +146,7 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfVideosFromApi = state.listOfNasaImage,
+                    listOfVideosFromApi = state.listOfNasaVideos,
                     viewModel = viewModel,
                     isLoading = state.isLoading,
                     isLoadingNextItems = false,
@@ -190,7 +189,7 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    listOfVideosFromApi = state.updateListOfImageFavourite,
+                    listOfVideosFromApi = state.updateListOfVideoFavourite,
                     viewModel = viewModel,
                     isLoading = false,
                     isLoadingNextItems = false,
@@ -338,8 +337,7 @@ fun RenderVideoSuccess(
             listOfImagesFromApi = listOfVideosFromApi,
             totalHits = totalHits,
             onLoadMore = {
-                //viewModel.loadNextImage()
-                println("loadNextVideos")
+                viewModel.loadNextVideos()
             }
         )
     }
@@ -402,10 +400,10 @@ fun LoadVideoOnCard(
                 isFavourite = true
             )
             if (listOfImages != null) {
-//                viewModel.onSaveFavourite(
-//                    favourite,
-//                    listOfImages
-//                )
+                viewModel.onSaveFavourite(
+                    favourite,
+                    listOfImages
+                )
             }
         }
     }

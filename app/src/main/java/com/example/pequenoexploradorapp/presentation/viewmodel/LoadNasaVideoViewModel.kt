@@ -1,10 +1,7 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.exoplayer.ExoPlayer
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
@@ -15,7 +12,6 @@ import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,17 +19,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONException
 
 
 class LoadNasaVideoViewModel(
     private val connectivityObserver: ConnectivityObserver,
     private val remoteRepositoryImpl: RemoteRepositoryImpl,
-    private val localRepositoryImpl: FavouriteImageRepositoryImpl,
-    private val handle: SavedStateHandle
+    private val localRepositoryImpl: FavouriteImageRepositoryImpl
 ) : ViewModel() {
+
     private var video = ""
     private var page = 1
     private var totalHits = 0
@@ -51,6 +44,33 @@ class LoadNasaVideoViewModel(
             SharingStarted.WhileSubscribed(5000L),
             null
         )
+
+    fun onSaveFavourite(
+        imageFavouriteToSave: FavouriteImageToSave,
+        listOfImage: List<NasaImageItems>
+    ) {
+        println(listOfImage)
+        viewModelScope.launch {
+            if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
+            _uiState.value = LoadNasaVideoViewState.Loading(
+                true,
+                listOfImage,
+                totalHits
+            )
+            localRepositoryImpl.saveImage(imageFavouriteToSave)
+            delay(800L)
+            _listOfVideosFromApi.value = listOfImage
+            _uiState.value = LoadNasaVideoViewState.Loading(
+                false,
+                listOfImage,
+                totalHits
+            )
+            _uiState.value = LoadNasaVideoViewState.SuccessAddFavourite(
+                listOfImage,
+                totalHits
+            )
+        }
+    }
 
     private suspend fun checkIfFavouriteExist(listOfImagesFavourite: FavouriteImageToSave): Boolean {
         val favouriteImages = localRepositoryImpl.getFavouriteImage()
@@ -108,6 +128,37 @@ class LoadNasaVideoViewModel(
                 println("Error Download Model Translation: ${exception.printStackTrace()}")
             }
     }
+
+    fun loadNextVideos() {
+        viewModelScope.launch {
+            _uiState.value = LoadNasaVideoViewState.Loading(
+                true,
+                _listOfVideosFromApi.value,
+                totalHits
+            )
+            delay(3000L)
+            page++
+            when (val responseApi = remoteRepositoryImpl.getNasaImage(video, page)) {
+                is ApiResponse.Failure -> _uiState.value =
+                    LoadNasaVideoViewState.Error(responseApi.messageError, true)
+
+                is ApiResponse.Success -> {
+                    responseApi.data.collection.items?.let { imagesToLoad ->
+                        _listOfVideosFromApi.value += updateFavouriteStatus(imagesToLoad)
+                    }
+                    _uiState.value = LoadNasaVideoViewState.Loading(
+                        false,
+                        _listOfVideosFromApi.value,
+                        totalHits
+                    )
+                    _uiState.value = LoadNasaVideoViewState.SuccessLoadMoreVideos(
+                        _listOfVideosFromApi.value,
+                        totalHits
+                    )
+                }
+            }
+        }
+    }
 }
 
 
@@ -115,12 +166,12 @@ sealed interface LoadNasaVideoViewState {
     data object Init : LoadNasaVideoViewState
     data class Loading(
         val isLoading: Boolean,
-        val listOfNasaImage: List<NasaImageItems>,
+        val listOfNasaVideos: List<NasaImageItems>,
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
     data class SuccessAddFavourite(
-        val updateListOfImageFavourite: List<NasaImageItems>,
+        val updateListOfVideoFavourite: List<NasaImageItems>,
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
