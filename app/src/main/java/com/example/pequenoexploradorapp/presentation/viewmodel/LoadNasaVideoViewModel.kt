@@ -48,12 +48,12 @@ class LoadNasaVideoViewModel(
         get() = handle[KEY_PLAYBACK_POSITION] ?: 0L
         set(value) = handle.set(KEY_PLAYBACK_POSITION, value)
 
-    private var image = ""
+    private var video = ""
     private var page = 1
     private var totalHits = 0
 
-    private var listOfImageFromApi = emptyList<NasaImageItems>()
-    private val _listOfImageFromApi = MutableStateFlow(listOfImageFromApi)
+    private var listOfVideosFromApi = emptyList<NasaImageItems>()
+    private val _listOfVideosFromApi = MutableStateFlow(listOfVideosFromApi)
 
     private val _uiState = MutableStateFlow<LoadNasaVideoViewState>(LoadNasaVideoViewState.Init)
     val uiState: StateFlow<LoadNasaVideoViewState> = _uiState.asStateFlow()
@@ -88,7 +88,7 @@ class LoadNasaVideoViewModel(
             )
             localRepositoryImpl.saveImage(imageFavouriteToSave)
             delay(800L)
-            _listOfImageFromApi.value = listOfImage
+            _listOfVideosFromApi.value = listOfImage
             _uiState.value = LoadNasaVideoViewState.Loading(
                 false,
                 listOfImage,
@@ -127,7 +127,7 @@ class LoadNasaVideoViewModel(
                 textTranslator.translate(imageSearch.toString())
                     .addOnSuccessListener { translatedText ->
                         println("Success Text Translation: $translatedText")
-                        image = translatedText
+                        video = translatedText
                         viewModelScope.launch {
                             when (val responseApi =
                                 remoteRepositoryImpl.getNasaVideos(translatedText)) {
@@ -136,9 +136,15 @@ class LoadNasaVideoViewModel(
 
                                 is ApiResponse.Success -> {
                                     totalHits = responseApi.data.collection.metadata?.totalHits ?: 0
-                                    val items = responseApi.data.collection.items
+                                    val items = responseApi.data.collection.items ?: emptyList()
+                                    items.let { videosToLoad ->
+                                        _listOfVideosFromApi.value = updateFavouriteStatus(videosToLoad)
+                                    }
 
-                                    _uiState.value = LoadNasaVideoViewState.SuccessVideo(items, totalHits)
+                                    _uiState.value = LoadNasaVideoViewState.SuccessVideo(
+                                        _listOfVideosFromApi.value,
+                                        totalHits
+                                    )
 
 //                                    responseApi.data.collection.items?.let { imagesToLoad ->
 //                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
@@ -199,26 +205,26 @@ class LoadNasaVideoViewModel(
         viewModelScope.launch {
             _uiState.value = LoadNasaVideoViewState.Loading(
                 true,
-                _listOfImageFromApi.value,
+                _listOfVideosFromApi.value,
                 totalHits
             )
             delay(3000L)
             page++
-            when (val responseApi = remoteRepositoryImpl.getNasaImage(image, page)) {
+            when (val responseApi = remoteRepositoryImpl.getNasaVideos(video, page)) {
                 is ApiResponse.Failure -> _uiState.value =
                     LoadNasaVideoViewState.Error(responseApi.messageError, true)
 
                 is ApiResponse.Success -> {
                     responseApi.data.collection.items?.let { imagesToLoad ->
-                        _listOfImageFromApi.value += updateFavouriteStatus(imagesToLoad)
+                        _listOfVideosFromApi.value += updateFavouriteStatus(imagesToLoad)
                     }
                     _uiState.value = LoadNasaVideoViewState.Loading(
                         false,
-                        _listOfImageFromApi.value,
+                        _listOfVideosFromApi.value,
                         totalHits
                     )
-                    _uiState.value = LoadNasaVideoViewState.Success(
-                        _listOfImageFromApi.value,
+                    _uiState.value = LoadNasaVideoViewState.SuccessLoadMoreVideos(
+                        _listOfVideosFromApi.value,
                         totalHits
                     )
                 }
@@ -241,13 +247,13 @@ sealed interface LoadNasaVideoViewState {
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
-    data class Success(
-        val images: List<NasaImageItems>,
+    data class SuccessLoadMoreVideos(
+        val updateListOfVideos: List<NasaImageItems>,
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
     data class SuccessVideo(
-        val video: List<NasaImageItems>?,
+        val video: List<NasaImageItems>,
         val totalHits: Int
     ) : LoadNasaVideoViewState
 
