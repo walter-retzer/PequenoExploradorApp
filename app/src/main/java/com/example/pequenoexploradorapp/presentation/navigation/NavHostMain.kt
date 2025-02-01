@@ -32,6 +32,7 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DAT
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_TO_LOAD
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
@@ -45,6 +46,7 @@ import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.SearchNasaVideoScreen
 import com.example.pequenoexploradorapp.presentation.screen.ShareFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
@@ -235,7 +237,7 @@ private fun NavGraphBuilder.homeNavGraph() {
                             navController.navigate(Route.LoadFavouriteImageScreenRoute.route)
                         },
                         onNavigateToNasaVideos = {
-                            navController.navigate(Route.LoadNasaVideoScreenRoute.route)
+                            navController.navigate(Route.SearchNasaVideosScreenRoute.route)
                         }
                     )
                 }
@@ -472,14 +474,40 @@ private fun NavGraphBuilder.homeNavGraph() {
                 }
 
                 composable(
-                    route = Route.LoadNasaVideoScreenRoute.route,
+                    route = Route.SearchNasaVideosScreenRoute.route,
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
+                    SearchNasaVideoScreen(
+                        onNavigateToLoadNasaVideo = { searchVideo ->
+                            navController.navigate(
+                                route = "${Route.LoadNasaVideoScreenRoute.route}/${searchVideo}"
+                            )
+                        }
+                    )
+                }
+
+                composable(
+                    route = "${Route.LoadNasaVideoScreenRoute.route}/{$VIDEO_SEARCH_KEY}",
+                    arguments = listOf(
+                        navArgument(VIDEO_SEARCH_KEY) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    ),
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val searchVideo = arguments.getString(VIDEO_SEARCH_KEY).toString()
+
                     LoadNasaVideoScreen(
-                        video = "lua",
+                        video = searchVideo,
                         onNavigateToSearchVideo = { },
                         onNavigateToVideoDetail = { url ->
                             val encodeImagedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
@@ -529,6 +557,7 @@ private fun NavGraphBuilder.homeNavGraph() {
 
 object ArgumentsKey {
     const val IMAGE_SEARCH_KEY = "IMAGE_SEARCH_KEY"
+    const val VIDEO_SEARCH_KEY = "VIDEO_SEARCH_KEY"
     const val ID_NAME_KEY = "ID_NAME_KEY"
     const val DATE_KEY = "DATE_KEY"
     const val DATE_INITIAL_KEY = "DATE_INITIAL_KEY"

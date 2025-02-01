@@ -13,6 +13,7 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailVi
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -78,6 +79,11 @@ val viewModelModules = module {
             provideConnectivityStatus(androidApplication()),
             get(),
             SavedStateHandle()
+        )
+    }
+    factory<SearchNasaViewModel> {
+        SearchNasaViewModel(
+            provideConnectivityStatus(androidApplication())
         )
     }
 }
