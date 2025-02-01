@@ -70,8 +70,7 @@ val viewModelModules = module {
         LoadNasaVideoViewModel(
             provideConnectivityStatus(androidApplication()),
             get(),
-            get(),
-            SavedStateHandle()
+            get()
         )
     }
     factory<NasaVideoDetailViewModel> {

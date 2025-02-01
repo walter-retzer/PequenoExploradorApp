@@ -370,7 +370,7 @@ fun LoadVideoOnCard(
     onNavigateToVideoDetail: (url: String) -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
-    val urlVideo = listOfImages?.first()?.href
+    val urlVideo = listOfImages?.get(numberOfImage)?.href
     val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
     val date = listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
     val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
