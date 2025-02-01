@@ -33,7 +33,6 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
                 url(BASE_URL_IMAGES)
                 parameter("q", imageSearch)
                 parameter("page", page)
-                parameter("page_size", 20)
                 parameter("media_type", mediaType)
             }
         }

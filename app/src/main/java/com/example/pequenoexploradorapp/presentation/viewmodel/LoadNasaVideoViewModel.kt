@@ -34,20 +34,6 @@ class LoadNasaVideoViewModel(
     private val localRepositoryImpl: FavouriteImageRepositoryImpl,
     private val handle: SavedStateHandle
 ) : ViewModel() {
-
-    companion object {
-        private const val KEY_PLAYER_STATE = "player_state"
-        private const val KEY_PLAYBACK_POSITION = "playback_position"
-    }
-
-    var playerState: Boolean
-        get() = handle[KEY_PLAYER_STATE] ?: false
-        set(value) = handle.set(KEY_PLAYER_STATE, value)
-
-    private var playbackPosition: Long
-        get() = handle[KEY_PLAYBACK_POSITION] ?: 0L
-        set(value) = handle.set(KEY_PLAYBACK_POSITION, value)
-
     private var video = ""
     private var page = 1
     private var totalHits = 0
@@ -65,41 +51,6 @@ class LoadNasaVideoViewModel(
             SharingStarted.WhileSubscribed(5000L),
             null
         )
-
-    fun savePlaybackPosition(player: ExoPlayer) {
-        playbackPosition = player.currentPosition
-    }
-
-    fun restorePlaybackPosition(player: ExoPlayer) {
-        player.seekTo(playbackPosition)
-    }
-
-    fun onSaveFavourite(
-        imageFavouriteToSave: FavouriteImageToSave,
-        listOfImage: List<NasaImageItems>
-    ) {
-        println(listOfImage)
-        viewModelScope.launch {
-            if (checkIfFavouriteExist(imageFavouriteToSave)) (return@launch)
-            _uiState.value = LoadNasaVideoViewState.Loading(
-                true,
-                listOfImage,
-                totalHits
-            )
-            localRepositoryImpl.saveImage(imageFavouriteToSave)
-            delay(800L)
-            _listOfVideosFromApi.value = listOfImage
-            _uiState.value = LoadNasaVideoViewState.Loading(
-                false,
-                listOfImage,
-                totalHits
-            )
-            _uiState.value = LoadNasaVideoViewState.SuccessAddFavourite(
-                listOfImage,
-                totalHits
-            )
-        }
-    }
 
     private suspend fun checkIfFavouriteExist(listOfImagesFavourite: FavouriteImageToSave): Boolean {
         val favouriteImages = localRepositoryImpl.getFavouriteImage()
@@ -145,15 +96,6 @@ class LoadNasaVideoViewModel(
                                         _listOfVideosFromApi.value,
                                         totalHits
                                     )
-
-//                                    responseApi.data.collection.items?.let { imagesToLoad ->
-//                                        _listOfImageFromApi.value = updateFavouriteStatus(imagesToLoad)
-//                                    }
-//                                    totalHits = responseApi.data.collection.metadata?.totalHits ?: 0
-//                                    _uiState.value = LoadNasaVideoViewState.Success(
-//                                        _listOfImageFromApi.value,
-//                                        totalHits
-//                                    )
                                 }
                             }
                         }
@@ -165,71 +107,6 @@ class LoadNasaVideoViewModel(
             .addOnFailureListener { exception ->
                 println("Error Download Model Translation: ${exception.printStackTrace()}")
             }
-    }
-
-    suspend fun onVideoUrlToLoad(url: String): String? {
-        return withContext(Dispatchers.IO) {
-            when (val response = remoteRepositoryImpl.fetchVideoUrl(url)) {
-                is ApiResponse.Failure -> null
-                is ApiResponse.Success -> getVideoUrl(createJsonArrayFromString(response.data))
-            }
-        }
-    }
-
-    private fun getVideoUrl(array: ArrayList<String>): String? {
-        Log.d("getVideoUrl", array.toString())
-        for (i in 0 until array.size) {
-            val file = array[i].replace("http://", "https://")
-            when {
-                file.contains("mobile.mp4") -> { return file }
-                file.contains(".mp4") -> { return file }
-            }
-        }
-        return null
-    }
-
-    private fun createJsonArrayFromString(stringResponse: String): ArrayList<String> {
-        val arrayList: ArrayList<String> = arrayListOf()
-        try {
-            val jsonArray = JSONArray(stringResponse)
-            for (url in 0 until jsonArray.length()) {
-                arrayList.add(jsonArray.getString(url))
-            }
-        } catch (e: JSONException) {
-            Log.e("Error converting String response to a JSON Array", e.toString())
-        }
-        return arrayList
-    }
-
-    fun loadNextImage() {
-        viewModelScope.launch {
-            _uiState.value = LoadNasaVideoViewState.Loading(
-                true,
-                _listOfVideosFromApi.value,
-                totalHits
-            )
-            delay(3000L)
-            page++
-            when (val responseApi = remoteRepositoryImpl.getNasaVideos(video, page)) {
-                is ApiResponse.Failure -> _uiState.value =
-                    LoadNasaVideoViewState.Error(responseApi.messageError, true)
-
-                is ApiResponse.Success -> {
-                    responseApi.data.collection.items?.let { imagesToLoad ->
-                        _listOfVideosFromApi.value += updateFavouriteStatus(imagesToLoad)
-                    }
-                    _uiState.value = LoadNasaVideoViewState.Loading(
-                        false,
-                        _listOfVideosFromApi.value,
-                        totalHits
-                    )
-                    _uiState.value = LoadNasaVideoViewState.SuccessLoadMoreVideos(
-                        _listOfVideosFromApi.value,
-                        totalHits
-                    )
-                }
-            }
-        }
     }
 }
 

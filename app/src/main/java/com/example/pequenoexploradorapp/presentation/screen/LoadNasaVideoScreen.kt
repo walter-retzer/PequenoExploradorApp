@@ -1,30 +1,33 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
-import android.content.Context
-import android.util.Log
-import android.webkit.URLUtil
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -32,6 +35,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -40,7 +44,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -52,30 +55,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
+import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.NasaImageItems
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.formattedDate
+import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.primaryDark
+import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewState
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +102,6 @@ fun LoadNasaVideoScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val uiState by viewModel.uiState.collectAsState()
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
@@ -143,7 +145,6 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    context = context,
                     listOfVideosFromApi = state.listOfNasaImage,
                     viewModel = viewModel,
                     isLoading = state.isLoading,
@@ -157,7 +158,6 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    context = context,
                     listOfVideosFromApi = state.video,
                     viewModel = viewModel,
                     isLoading = false,
@@ -172,7 +172,6 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    context = context,
                     listOfVideosFromApi = state.updateListOfVideos,
                     viewModel = viewModel,
                     isLoading = false,
@@ -186,7 +185,6 @@ fun LoadNasaVideoScreen(
                     paddingValues = paddingValues,
                     scrollState = scrollState,
                     scope = scope,
-                    context = context,
                     listOfVideosFromApi = state.updateListOfImageFavourite,
                     viewModel = viewModel,
                     isLoading = false,
@@ -240,14 +238,12 @@ fun LoadNasaVideoScreen(
 //val u = "https://images-assets.nasa.gov/video/NHQ_2019_0311_Go Forward to the Moon/NHQ_2019_0311_Go Forward to the Moon~large.mp4"
 
 
-
 @Composable
 fun InfiniteVideoListHandler(
     listState: LazyGridState,
     isLoadingNextItems: Boolean,
     listOfImagesFromApi: List<NasaImageItems>,
     totalHits: Int,
-    numberOfVideo: Int,
     buffer: Int = 6,
     onLoadMore: () -> Unit
 ) {
@@ -255,17 +251,10 @@ fun InfiniteVideoListHandler(
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
             val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= (totalItemsCount - buffer)
-            //&& isLoadingNextItems && totalHits != listOfImagesFromApi.size
+            lastVisibleItemIndex >= (totalItemsCount - buffer) &&
+            isLoadingNextItems && totalHits != listOfImagesFromApi.size
         }
     }
-
-//    val shouldLoadMore = remember {
-//        derivedStateOf {
-//            listOfImagesFromApi.size - buffer == (numberOfVideo)
-//
-//        }
-//    }
 
     LaunchedEffect(shouldLoadMore) {
         snapshotFlow { shouldLoadMore.value }
@@ -278,7 +267,6 @@ fun InfiniteVideoListHandler(
 }
 
 
-
 @Composable
 fun RenderVideoSuccess(
     paddingValues: PaddingValues,
@@ -286,12 +274,10 @@ fun RenderVideoSuccess(
     scope: CoroutineScope,
     listOfVideosFromApi: List<NasaImageItems>,
     viewModel: LoadNasaVideoViewModel,
-    context: Context,
     isLoading: Boolean,
     isLoadingNextItems: Boolean,
     totalHits: Int,
 ) {
-    var numberOfVideo = 0
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -329,112 +315,21 @@ fun RenderVideoSuccess(
             modifier = Modifier.clipToBounds(),
         ) {
             items(listOfVideosFromApi.size) { numberOfImage ->
-                numberOfVideo = numberOfImage
-                Row {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .clickable {
-                                scope.launch {
-                                    scrollState.animateScrollToItem(0)
-                                }
-                            },
-                        text = "list: ${listOfVideosFromApi.size}",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Justify,
-                        color = Color.White
-                    )
-                }
-                Row{
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .clickable {
-                                scope.launch {
-                                    scrollState.animateScrollToItem(0)
-                                }
-                            },
-                        text = "Video: ${numberOfImage + 1}",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Justify,
-                        color = Color.White
-                    )
-                }
-                Row {
-                    val url = listOfVideosFromApi[numberOfImage].href ?: ""
-
-                    val exoPlayer = ExoPlayer.Builder(context).build()
-                    LaunchedEffect(Unit) {
-                        val response = viewModel.onVideoUrlToLoad(url)
-                        if (URLUtil.isValidUrl(response)) {
-                            try {
-                                val mediaItem = MediaItem.Builder()
-                                    .setUri(response)
-                                    .build()
-                                exoPlayer.setMediaItem(mediaItem)
-                                exoPlayer.prepare()
-                                viewModel.restorePlaybackPosition(exoPlayer)
-                                exoPlayer.playWhenReady = viewModel.playerState
-
-                            } catch (e: Exception) {
-                                Log.d(
-                                    "ExoPlayer Error",
-                                    exoPlayer.playerError.toString()
-                                )
-                            }
-                        }
-                    }
-                    AndroidView(
-                        factory = {
-                            PlayerView(context).apply {
-                                player = exoPlayer
-                            }
-                        },
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .semantics { testTag = "Card Media Player" }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    DisposableEffect(exoPlayer) {
-                        onDispose {
-                            viewModel.savePlaybackPosition(exoPlayer)
-                            viewModel.playerState = exoPlayer.playWhenReady
-                            exoPlayer.stop()
-                            exoPlayer.release()
-                        }
-                    }
-                }
-                Row{
-                    val isFavourite = listOfVideosFromApi[numberOfImage].isFavourite
-                    IconButton(
-                        onClick = {  },
-                        modifier = Modifier
-                            .padding(6.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite Nasa Image",
-                            tint = mainColor
-                        )
-                    }
-                }
-
+                LoadVideoOnCard(
+                    listOfImages = listOfVideosFromApi,
+                    numberOfImage = numberOfImage,
+                    viewModel = viewModel
+                )
             }
+
         }
         InfiniteVideoListHandler(
             listState = scrollState,
             isLoadingNextItems = isLoadingNextItems,
             listOfImagesFromApi = listOfVideosFromApi,
             totalHits = totalHits,
-            numberOfVideo = numberOfVideo,
             onLoadMore = {
-                viewModel.loadNextImage()
+                //viewModel.loadNextImage()
                 println("loadNextVideos")
             }
         )
@@ -454,6 +349,127 @@ fun RenderVideoSuccess(
                     .width(64.dp)
                     .align(Alignment.Center),
                 color = mainColor
+            )
+        }
+    }
+}
+
+
+@Composable
+fun LoadVideoOnCard(
+    listOfImages: List<NasaImageItems>?,
+    numberOfImage: Int,
+    viewModel: LoadNasaVideoViewModel
+) {
+    var isPressed by remember { mutableStateOf(false) }
+    val title = listOfImages?.get(numberOfImage)?.data?.first()?.title
+    val date = listOfImages?.get(numberOfImage)?.data?.first()?.dateCreated?.formattedDate() ?: ""
+    val imageUrl = listOfImages?.get(numberOfImage)?.links?.first()?.href?.toHttpsPrefix()
+    val creators = listOfImages?.get(numberOfImage)?.data?.first()?.creators
+    val keywords = listOfImages?.get(numberOfImage)?.data?.first()?.keywords?.first()
+    val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
+    val index = numberOfImage + 1
+    val interactionSource = remember { MutableInteractionSource() }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed && !isFavourite) 1.5f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = ""
+    )
+
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(600L)
+            listOfImages?.get(numberOfImage)?.isFavourite = true
+            isPressed = false
+            val favourite = FavouriteImageToSave(
+                id = System.currentTimeMillis(),
+                title = title,
+                dateCreated = date,
+                link = imageUrl,
+                creators = creators,
+                keywords = null,
+                isFavourite = true
+            )
+            if (listOfImages != null) {
+//                viewModel.onSaveFavourite(
+//                    favourite,
+//                    listOfImages
+//                )
+            }
+        }
+    }
+    Column(
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = Color.DarkGray,
+                shape = RoundedCornerShape(16.dp)
+            )
+    ) {
+        Box {
+            SubcomposeAsyncImage(
+                model = imageUrl,
+                loading = {
+                    Box(contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .align(Alignment.Center),
+                            color = mainColor
+                        )
+                    }
+                },
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+            )
+            Text(
+                text = index.toString(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(6.dp)
+                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .wrapContentSize(),
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = ListItemDefaults.contentColor
+            )
+            IconButton(
+                onClick = { isPressed = true },
+                interactionSource = interactionSource,
+                modifier = Modifier
+                    .scale(scale)
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite Nasa Image",
+                    tint = mainColor
+                )
+            }
+        }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(primaryDark),
+        ) {
+            Text(
+                text = date,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .padding(4.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                color = Color.DarkGray
             )
         }
     }
