@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,10 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
-import com.example.pequenoexploradorapp.presentation.theme.backgroundDark
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 import com.example.pequenoexploradorapp.domain.util.OnBoardingPage
+import com.example.pequenoexploradorapp.presentation.theme.Purple50
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 
 @ExperimentalAnimationApi
 @Composable
@@ -85,8 +85,7 @@ fun WelcomeScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
-                    val color =
-                        if (pagerState.currentPage == iteration) primaryDark else Color.DarkGray
+                    val color = if (pagerState.currentPage == iteration) Purple50 else Color.DarkGray
                     Box(
                         modifier = Modifier
                             .padding(4.dp)
@@ -177,7 +176,7 @@ fun FinishButton(
             ) {
                 Text(
                     text = "Continuar",
-                    color = backgroundDark,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = TextStyle(
                         fontFamily = FontFamily.SansSerif,
                         fontWeight = FontWeight.Bold,
