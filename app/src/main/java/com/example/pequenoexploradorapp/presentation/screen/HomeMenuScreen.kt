@@ -140,7 +140,7 @@ fun HomeMenuScreen(
                 Box {
                     AnimatedLottieFile(
                         modifier = Modifier
-                            .padding(top = 20.dp)
+                            .padding(top = 32.dp)
                             .size(200.dp)
                             .align(Alignment.TopCenter),
                         file = R.raw.astronaut_exploration
@@ -148,7 +148,7 @@ fun HomeMenuScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 0.dp),
+                            .padding(16.dp),
                         text = "Nossa Exploração pelo Universo começa agora",
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Bold,
@@ -228,6 +228,7 @@ fun HomeMenuScreen(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

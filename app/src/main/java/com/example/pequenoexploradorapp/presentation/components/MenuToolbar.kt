@@ -22,14 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
+import com.example.pequenoexploradorapp.presentation.theme.navColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuToolbar(
-    color: Color = Color.Black,
-    titleColor: Color = primaryDark,
+    color: Color = navColor,
+    titleColor: Color = Color.White,
     title: String,
     onNavigationToMenu: () -> Unit,
     onNavigateToNotifications: () -> Unit,
@@ -87,7 +87,7 @@ fun MenuToolbar(
 @Composable
 fun SimpleToolbar(
     color: Color = Color.Black,
-    titleColor: Color = primaryDark,
+    titleColor: Color = Color.White,
     title: String,
     onNavigationToMenu: () -> Unit,
     onNavigationClose: () -> Unit,
@@ -122,7 +122,7 @@ fun SimpleToolbar(
 @Composable
 fun ProfileToolbar(
     color: Color = Color.Black,
-    titleColor: Color = primaryDark,
+    titleColor: Color = Color.White,
     title: String,
     onNavigationIconBack: () -> Unit,
     onNavigationIconClose: () -> Unit,
@@ -159,7 +159,7 @@ fun ProfileToolbar(
 @Composable
 fun TicketsToolbar(
     color: Color = Color.Black,
-    titleColor: Color = primaryDark,
+    titleColor: Color = Color.White,
     title: String,
     onNavigationIconBack: () -> Unit,
     onNavigationIconClose: () -> Unit,
