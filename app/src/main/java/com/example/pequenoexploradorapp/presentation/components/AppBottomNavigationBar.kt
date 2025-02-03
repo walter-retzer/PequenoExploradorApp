@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
 import com.example.pequenoexploradorapp.presentation.navigation.Item
+import com.example.pequenoexploradorapp.presentation.theme.navColor
 
 
 @Composable
@@ -46,7 +47,7 @@ fun AppBottomNavigationBar(
                 )
             }
         },
-        containerColor = Color.Black,
-        contentColor = Color.Black
+        containerColor = navColor,
+        contentColor = navColor
     )
 }

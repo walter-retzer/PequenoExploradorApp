@@ -2,8 +2,8 @@ package com.example.pequenoexploradorapp.data
 
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Brush
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.tertiaryLight
 
 data class DrawOptionsMenuButton(
     val titleButtonLeft: String,
@@ -17,7 +17,7 @@ data class DrawOptionsMenuButton(
     val backgroundColor: Brush = Brush.linearGradient(
         colors = listOf(
             mainColor,
-            tertiaryLight
+            mainColor
         )
     ),
 )
