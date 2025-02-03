@@ -36,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults.contentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -77,9 +78,10 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Purple50
+import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
-import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewState
 import kotlinx.coroutines.CoroutineScope
@@ -135,7 +137,7 @@ fun LoadNasaImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
                 viewModel.onNasaImageSearch(imageSearch)
@@ -328,7 +330,7 @@ fun RenderSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = MaterialTheme.colorScheme.tertiary
             )
         }
     }
@@ -383,7 +385,6 @@ fun LoadImageOnCard(
         label = ""
     )
 
-
     LaunchedEffect(isPressed) {
         if (isPressed) {
             delay(600L)
@@ -408,7 +409,7 @@ fun LoadImageOnCard(
     }
     Column(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
+            //.padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
@@ -425,7 +426,7 @@ fun LoadImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = mainColor
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 },
@@ -439,12 +440,11 @@ fun LoadImageOnCard(
                 text = index.toString(),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(6.dp)
-                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .padding(3.dp)
                     .wrapContentSize(),
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.End,
                 color = contentColor
             )
             IconButton(
@@ -454,18 +454,19 @@ fun LoadImageOnCard(
                     .scale(scale)
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
+                    .background(mainColor.copy(alpha = 0.5f), shape = CircleShape)
             ) {
                 Icon(
                     imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Nasa Image",
-                    tint = mainColor
+                    tint = Color.White
                 )
             }
         }
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(primaryDark),
+                .background(cardColor),
         ) {
             Text(
                 text = date,
@@ -476,7 +477,7 @@ fun LoadImageOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray
+                color = Color.White
             )
         }
     }
