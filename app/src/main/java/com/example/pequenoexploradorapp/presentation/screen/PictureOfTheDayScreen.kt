@@ -8,11 +8,15 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +62,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
@@ -213,6 +218,34 @@ fun RenderSuccessLoadImage(
     image: PictureOfTheDay,
     isLoading: Boolean,
 ) {
+    var isPressed by remember { mutableStateOf(false) }
+    val isFavourite = image.isFavourite
+    val interactionSource = remember { MutableInteractionSource() }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed && !isFavourite) 1.5f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = ""
+    )
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(600L)
+            image.isFavourite = true
+            isPressed = false
+            val favourite = FavouriteImageToSave(
+                id = System.currentTimeMillis(),
+                title = image.title,
+                dateCreated = image.date?.formattedDate(),
+                link = image.url,
+                creators = null,
+                keywords = null,
+                isFavourite = true
+            )
+            viewModel.onSaveFavourite(
+                favourite,
+                image
+            )
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -263,35 +296,16 @@ fun RenderSuccessLoadImage(
                             .height(350.dp)
                     )
                     IconButton(
-                        onClick = {
-                            val favourite = FavouriteImageToSave(
-                                id = System.currentTimeMillis(),
-                                title = image.title,
-                                dateCreated = image.date?.formattedDate(),
-                                link = image.url,
-                                creators = null,
-                                keywords = null,
-                                isFavourite = true
-                            )
-                            viewModel.onSaveFavourite(
-                                favourite,
-                                image
-                            )
-
-                        },
+                        onClick = { isPressed = true },
+                        interactionSource = interactionSource,
                         modifier = Modifier
+                            .scale(scale)
                             .align(Alignment.TopEnd)
                             .padding(6.dp)
-                            .background(secondaryLight.copy(alpha = 0.75f), shape = CircleShape)
-                            .border(
-                                width = 1.dp,
-                                color = primaryLight,
-                                shape = CircleShape
-                            )
                     ) {
                         Icon(
                             imageVector = if (image.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite Nasa Image",
+                            contentDescription = "Favorite Image from Picture Of the Day",
                             tint = mainColor
                         )
                     }
