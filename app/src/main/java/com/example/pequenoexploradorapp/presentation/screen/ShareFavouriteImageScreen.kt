@@ -56,6 +56,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,7 +123,7 @@ fun ShareFavouriteImageScreen(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.Center),
-                                color = mainColor
+                                color = Pink40
                             )
                         }
                     },
@@ -141,10 +142,10 @@ fun ShareFavouriteImageScreen(
                     IconButton(
                         modifier = Modifier
                             .padding(16.dp)
-                            .background(Color.Black.copy(alpha = 0.85f), shape = CircleShape)
+                            .background(mainColor.copy(alpha = 0.85f), shape = CircleShape)
                             .border(
                                 width = 1.dp,
-                                color = mainColor,
+                                color = Color.White,
                                 shape = CircleShape
                             ),
                         onClick = {
@@ -161,16 +162,16 @@ fun ShareFavouriteImageScreen(
                         Icon(
                             imageVector = Icons.Default.Save,
                             contentDescription = "Save Favorite Image",
-                            tint = mainColor
+                            tint = Color.White
                         )
                     }
                     IconButton(
                         modifier = Modifier
                             .padding(16.dp)
-                            .background(Color.Black.copy(alpha = 0.85f), shape = CircleShape)
+                            .background(mainColor.copy(alpha = 0.85f), shape = CircleShape)
                             .border(
                                 width = 1.dp,
-                                color = mainColor,
+                                color = Color.White,
                                 shape = CircleShape
                             ),
                         onClick = {
@@ -185,7 +186,7 @@ fun ShareFavouriteImageScreen(
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = "Share Favorite Image",
-                            tint = mainColor
+                            tint = Color.White
                         )
                     }
                 }
