@@ -36,7 +36,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults.contentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -79,7 +78,6 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
-import com.example.pequenoexploradorapp.presentation.theme.Purple50
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaImageViewModel
@@ -137,7 +135,7 @@ fun LoadNasaImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = Pink40
                     )
                 }
                 viewModel.onNasaImageSearch(imageSearch)
@@ -330,7 +328,7 @@ fun RenderSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.tertiary
+                color = Pink40
             )
         }
     }
@@ -409,11 +407,10 @@ fun LoadImageOnCard(
     }
     Column(
         modifier = Modifier
-            //.padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.DarkGray,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -426,7 +423,7 @@ fun LoadImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = MaterialTheme.colorScheme.tertiary
+                            color = Pink40
                         )
                     }
                 },

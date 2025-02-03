@@ -75,9 +75,9 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
-import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewState
 import kotlinx.coroutines.CoroutineScope
@@ -132,7 +132,7 @@ fun LoadRoverImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink40
                     )
                 }
                 viewModel.onRequestRoverImages(date, nameRover)
@@ -310,7 +310,7 @@ fun RenderSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink40
             )
         }
     }
@@ -357,11 +357,10 @@ fun LoadRoverImageOnCard(
 
     Column(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.DarkGray,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -374,7 +373,7 @@ fun LoadRoverImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = mainColor
+                            color = Pink40
                         )
                     }
                 },
@@ -388,8 +387,7 @@ fun LoadRoverImageOnCard(
                 text = index.toString(),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(6.dp)
-                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .padding(3.dp)
                     .wrapContentSize(),
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
@@ -403,18 +401,19 @@ fun LoadRoverImageOnCard(
                     .scale(scale)
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
+                    .background(mainColor.copy(alpha = 0.5f), shape = CircleShape)
             ) {
                 Icon(
                     imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Rover Image",
-                    tint = mainColor
+                    tint = Color.White
                 )
             }
         }
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(primaryDark),
+                .background(cardColor),
         ) {
             Text(
                 text = date,
@@ -425,7 +424,7 @@ fun LoadRoverImageOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray
+                color = Color.White
             )
         }
     }
