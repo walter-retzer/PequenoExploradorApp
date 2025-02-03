@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pequenoexploradorapp.presentation.theme.backgroundDark
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 
 
@@ -60,7 +59,7 @@ fun ProgressButton(
         ) {
             Text(
                 text = text,
-                color = backgroundDark,
+                color = Color.White,
                 style = TextStyle(
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,

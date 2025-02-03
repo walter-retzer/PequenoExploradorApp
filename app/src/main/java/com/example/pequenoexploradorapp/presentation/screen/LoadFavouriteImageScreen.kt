@@ -66,8 +66,9 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
 import kotlinx.coroutines.CoroutineScope
@@ -121,7 +122,7 @@ fun LoadFavouriteImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink40
                     )
                 }
                 viewModel.onGetFavouriteImageList()
@@ -286,7 +287,7 @@ fun RenderImageFavouriteSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink40
             )
         }
     }
@@ -315,7 +316,7 @@ fun LoadFavouriteImageOnCard(
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.DarkGray,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -328,7 +329,7 @@ fun LoadFavouriteImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = mainColor
+                            color = Pink40
                         )
                     }
                 },
@@ -343,12 +344,7 @@ fun LoadFavouriteImageOnCard(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
-                    .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
-                    .border(
-                        width = 1.dp,
-                        color = primaryDark,
-                        shape = CircleShape
-                    ),
+                    .background(mainColor.copy(alpha = 0.5f), shape = CircleShape),
                 onClick = {
                     snackBarWithActionButton(
                         coroutineScope = scope,
@@ -374,14 +370,14 @@ fun LoadFavouriteImageOnCard(
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "Favorite Nasa Image",
-                    tint = mainColor
+                    tint = Color.White
                 )
             }
         }
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .background(primaryDark),
+                .background(cardColor),
         ) {
             Text(
                 text = date,
