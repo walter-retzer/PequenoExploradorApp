@@ -1,11 +1,15 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -168,7 +173,7 @@ fun LoadRoverImageScreen(
 
             is LoadRoverImageViewState.Error -> {
                 snackBarIsActivated = state.isActivated
-                if(snackBarIsActivated) {
+                if (snackBarIsActivated) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -318,10 +323,37 @@ fun LoadRoverImageOnCard(
     listOfImages: List<RoverImageInfo>,
     numberOfImage: Int
 ) {
+    var isPressed by remember { mutableStateOf(false) }
     val imageToLoad = listOfImages[numberOfImage].imageUrl
     val date = listOfImages[numberOfImage].date.formattedDate()
     val isFavourite = listOfImages[numberOfImage].isFavourite
     val index = numberOfImage + 1
+    val interactionSource = remember { MutableInteractionSource() }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed && !isFavourite) 1.5f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = ""
+    )
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(600L)
+            listOfImages[numberOfImage].isFavourite = true
+            isPressed = false
+            val favourite = FavouriteImageToSave(
+                id = System.currentTimeMillis(),
+                title = null,
+                dateCreated = date,
+                link = imageToLoad,
+                creators = null,
+                keywords = null,
+                isFavourite = true
+            )
+            viewModel.onSaveFavourite(
+                favourite,
+                listOfImages
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -365,31 +397,12 @@ fun LoadRoverImageOnCard(
                 color = contentColor
             )
             IconButton(
+                onClick = { isPressed = true },
+                interactionSource = interactionSource,
                 modifier = Modifier
+                    .scale(scale)
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
-                    .background(Color.Black.copy(alpha = 0.75f), shape = CircleShape)
-                    .border(
-                        width = 1.dp,
-                        color = primaryDark,
-                        shape = CircleShape
-                    ),
-                onClick = {
-                    val favourite = FavouriteImageToSave(
-                        id = System.currentTimeMillis(),
-                        title = null,
-                        dateCreated = date,
-                        link = imageToLoad,
-                        creators = null,
-                        keywords = null,
-                        isFavourite = true
-                    )
-                    listOfImages[numberOfImage].isFavourite = true
-                    viewModel.onSaveFavourite(
-                        favourite,
-                        listOfImages
-                    )
-                }
             ) {
                 Icon(
                     imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
