@@ -388,7 +388,7 @@ fun LoadFavouriteImageOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray
+                color = Color.White
             )
         }
     }

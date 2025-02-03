@@ -58,6 +58,8 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
 import org.koin.compose.koinInject
@@ -167,10 +169,10 @@ fun SearchNasaVideoScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .background(Color.DarkGray, RoundedCornerShape(20.dp)),
+                    .background(backgroundColor, RoundedCornerShape(20.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.Gray,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = PurpleGrey40,
                 ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,

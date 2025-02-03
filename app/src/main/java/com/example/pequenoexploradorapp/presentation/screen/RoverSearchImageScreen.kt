@@ -26,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
@@ -62,7 +63,9 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
+import com.example.pequenoexploradorapp.presentation.theme.Purple50
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -214,14 +217,14 @@ fun RoverSearchImageScreen(
                         .padding(16.dp)
                         .clickable { isShowDatePickerDialog = true }
                         .clip(RoundedCornerShape(20.dp))
-                        .border(1.dp, primaryDark, RoundedCornerShape(20.dp))
-                        .background(Color.Black, RoundedCornerShape(20.dp))
+                        .border(1.dp, Color.White, RoundedCornerShape(20.dp))
+                        .background(backgroundColor, RoundedCornerShape(20.dp))
                         .padding(16.dp),
                     text = "Data Selecionada: $selectedDate",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = primaryDark
+                    color = Color.White
                 )
             }
             AnimatedVisibility(
