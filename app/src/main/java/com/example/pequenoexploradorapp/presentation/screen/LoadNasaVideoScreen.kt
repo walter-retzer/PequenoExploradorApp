@@ -36,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -76,9 +77,10 @@ import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Purple50
+import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
-import com.example.pequenoexploradorapp.presentation.theme.primaryDark
-import com.example.pequenoexploradorapp.presentation.theme.surfaceDark
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewState
 import kotlinx.coroutines.CoroutineScope
@@ -135,7 +137,7 @@ fun LoadNasaVideoScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink40
                     )
                 }
                 viewModel.onNasaVideoSearch(video)
@@ -239,10 +241,6 @@ fun LoadNasaVideoScreen(
     }
 }
 
-
-//val u = "https://images-assets.nasa.gov/video/NHQ_2019_0311_Go Forward to the Moon/NHQ_2019_0311_Go Forward to the Moon~large.mp4"
-
-
 @Composable
 fun InfiniteVideoListHandler(
     listState: LazyGridState,
@@ -255,8 +253,7 @@ fun InfiniteVideoListHandler(
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex =
-                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer) &&
                     isLoadingNextItems && totalHits != listOfImagesFromApi.size
         }
@@ -355,7 +352,7 @@ fun RenderVideoSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink40
             )
         }
     }
@@ -409,11 +406,10 @@ fun LoadVideoOnCard(
     }
     Column(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
-                color = Color.DarkGray,
+                color = Color.Gray,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -426,7 +422,7 @@ fun LoadVideoOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = mainColor
+                            color = Pink40
                         )
                     }
                 },
@@ -441,8 +437,7 @@ fun LoadVideoOnCard(
                 text = index.toString(),
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(6.dp)
-                    .background(surfaceDark.copy(alpha = 0.75f), shape = CircleShape)
+                    .padding(3.dp)
                     .wrapContentSize(),
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
@@ -456,18 +451,19 @@ fun LoadVideoOnCard(
                     .scale(scale)
                     .align(Alignment.TopEnd)
                     .padding(6.dp)
+                    .background(mainColor.copy(alpha = 0.5f), shape = CircleShape)
             ) {
                 Icon(
                     imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite Nasa Image",
-                    tint = mainColor
+                    contentDescription = "Favorite Nasa Video",
+                    tint = Color.White
                 )
             }
         }
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(primaryDark),
+                .background(cardColor),
         ) {
             Text(
                 text = date,
@@ -478,7 +474,7 @@ fun LoadVideoOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray
+                color = Color.White
             )
         }
     }
