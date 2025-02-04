@@ -15,13 +15,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.navColor
 
 
@@ -43,12 +47,21 @@ fun MenuToolbar(
             scrolledContainerColor = color,
             titleContentColor = titleColor,
         ),
-        title = { Text(title) },
+        title = {
+            Text(
+                text = title,
+                color = PurpleGrey80,
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         navigationIcon = {
             IconButton(onClick = { onNavigationToMenu() }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
+                    contentDescription = "Localized description",
+                    tint = Color.White
                 )
             }
         },
@@ -69,13 +82,15 @@ fun MenuToolbar(
             ) {
                 Icon(
                     imageVector = Icons.Default.NotificationsNone,
-                    contentDescription = "Notification"
+                    contentDescription = "Notification",
+                    tint = Color.White
                 )
             }
             IconButton(onClick = { onNavigationToProfile() }) {
                 Icon(
                     imageVector = Icons.Default.PermIdentity,
-                    contentDescription = "Profile"
+                    contentDescription = "Profile",
+                    tint = Color.White
                 )
             }
         },
