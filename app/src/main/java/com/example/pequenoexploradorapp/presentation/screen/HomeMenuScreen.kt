@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,8 +37,6 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,8 +58,7 @@ fun HomeMenuScreen(
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val options = remember {
         listOf(
             DrawOptionsMenuButton(
@@ -69,7 +67,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Favoritos",
                 iconButtonRight = R.drawable.icon_favorite,
-                actionButtonRight = { onNavigateToFavouriteImage()}
+                actionButtonRight = { onNavigateToFavouriteImage() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
@@ -77,7 +75,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToRoverMission() },
                 titleButtonRight = "Planetas",
                 iconButtonRight = R.drawable.icon_planet_earth,
-                actionButtonRight = {  onNavigateToSearchImage() }
+                actionButtonRight = { onNavigateToSearchImage() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Curiosidades",
@@ -141,28 +139,32 @@ fun HomeMenuScreen(
                     AnimatedLottieFile(
                         modifier = Modifier
                             .padding(top = 32.dp)
-                            .size(200.dp)
+                            .fillMaxWidth()
+                            .height(250.dp)
                             .align(Alignment.TopCenter),
-                        file = R.raw.astronaut_exploration
+                        file = R.raw.astronaut_exploration,
+                        contentScale = ContentScale.FillWidth
                     )
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(6.dp),
                         text = "Nossa Exploração pelo Universo começa agora",
+                        color = Color.White,
                         fontSize = 21.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                     text = "Opções de exploração:",
+                    color = Color.White,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Left
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.labelSmall,
                 )
                 options.forEach { option ->
                     Spacer(modifier = Modifier.height(16.dp))
@@ -185,11 +187,10 @@ fun HomeMenuScreen(
                         ) {
                             Text(
                                 text = option.titleButtonLeft,
-                                style = TextStyle(
-                                    color = Color.White,
-                                    fontSize = 19.sp,
-                                    textAlign = TextAlign.Center,
-                                )
+                                color = Color.White,
+                                fontSize = 19.sp,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                             Image(
@@ -212,11 +213,10 @@ fun HomeMenuScreen(
                         ) {
                             Text(
                                 text = option.titleButtonRight,
-                                style = TextStyle(
-                                    color = Color.White,
-                                    fontSize = 19.sp,
-                                    textAlign = TextAlign.Center,
-                                )
+                                color = Color.White,
+                                fontSize = 19.sp,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                             Image(
