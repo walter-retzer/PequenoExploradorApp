@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
@@ -12,7 +13,6 @@ import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.presentation.navigation.NavHostMain
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.theme.PequenoExploradorAppTheme
-import com.example.pequenoexploradorapp.presentation.theme.navColor
 import com.google.android.gms.auth.api.identity.Identity
 
 
@@ -30,8 +30,8 @@ class MainActivity : ComponentActivity() {
 
         actionBar?.hide()
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        window.statusBarColor = navColor.toArgb()
-        window.navigationBarColor = navColor.toArgb()
+        window.statusBarColor = Color.Black.toArgb()
+        window.navigationBarColor = Color.Black.toArgb()
         WindowCompat.getInsetsController(window, window.decorView).apply {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
