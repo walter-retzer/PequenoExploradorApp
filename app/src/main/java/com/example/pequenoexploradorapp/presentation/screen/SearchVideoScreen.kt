@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -52,15 +53,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
-import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
 import org.koin.compose.koinInject
 
@@ -159,11 +159,12 @@ fun SearchNasaVideoScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
                     .fillMaxWidth(),
-                text = "Encontre as videos mais fascinantes do Universo",
-                fontSize = 18.sp,
+                text = "Maravilhe-se com os videos mais fascinantes do Universo",
+                fontSize = 21.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
             )
             OutlinedTextField(
                 modifier = Modifier
@@ -183,7 +184,14 @@ fun SearchNasaVideoScreen(
                 shape = RoundedCornerShape(20.dp),
                 value = textSearchImage.textInput,
                 isError = false,
-                placeholder = { Text("Procurar Videos") },
+                placeholder = {
+                    Text(
+                        "Procurar Videos",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
                 onValueChange = { viewModel.onTextInputChange(it) },
                 trailingIcon = {
                     if (isVisible) {

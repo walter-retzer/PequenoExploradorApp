@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -158,11 +159,12 @@ fun SearchImageScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
                     .fillMaxWidth(),
-                text = "Encontre as imagens mais fascinantes do Universo",
-                fontSize = 18.sp,
+                text = "Maravilhe-se com as fotos mais fascinantes do Universo",
+                fontSize = 21.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
             )
             OutlinedTextField(
                 modifier = Modifier
@@ -182,7 +184,14 @@ fun SearchImageScreen(
                 shape = RoundedCornerShape(20.dp),
                 value = textSearchImage.textInput,
                 isError = false,
-                placeholder = { Text("Procurar Imagens") },
+                placeholder = {
+                    Text(
+                        "Procurar Imagens",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
                 onValueChange = { viewModel.onTextInputChange(it) },
                 trailingIcon = {
                     if (isVisible) {

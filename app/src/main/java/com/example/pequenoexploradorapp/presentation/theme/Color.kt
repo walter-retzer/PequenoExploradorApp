@@ -7,6 +7,7 @@ val navColor = Color(0xFF201E33)
 val scaffoldColor = Color(0xFF09051D)
 val cardColor = Color(0xFF212035)
 val backgroundColor = Color(0xFF524C6A)
+val onSurfaceLight = Color(0xFFFFFBF1)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
