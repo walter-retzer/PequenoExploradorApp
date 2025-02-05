@@ -95,7 +95,7 @@ fun RoverSearchImageScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Rover",
+                title = nameRover,
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -152,7 +152,8 @@ fun RoverSearchImageScreen(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge
             )
             Box {
                 AnimatedLottieFile(
@@ -175,7 +176,8 @@ fun RoverSearchImageScreen(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Start,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Image(
                     painter = painterResource(R.drawable.icon_date),
@@ -224,7 +226,8 @@ fun RoverSearchImageScreen(
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
             AnimatedVisibility(

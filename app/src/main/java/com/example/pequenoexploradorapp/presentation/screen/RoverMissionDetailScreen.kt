@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -82,7 +83,7 @@ fun RoverMissionDetailScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Rovers",
+                title = roverName,
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -165,7 +166,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -175,7 +177,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -185,7 +188,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -195,7 +199,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -205,7 +210,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -215,7 +221,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -225,7 +232,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Text(
                                 modifier = Modifier
@@ -235,7 +243,8 @@ fun RoverMissionDetailScreen(
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
-                                color = ListItemDefaults.contentColor
+                                color = ListItemDefaults.contentColor,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             if(enableButton) {
                                 ProgressButton(

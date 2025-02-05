@@ -36,6 +36,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults.contentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -76,6 +77,7 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageViewModel
@@ -107,7 +109,7 @@ fun LoadRoverImageScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Imagens",
+                title = nameRover,
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -253,7 +255,8 @@ fun RenderSuccess(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         } else {
@@ -271,7 +274,8 @@ fun RenderSuccess(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
@@ -392,7 +396,8 @@ fun LoadRoverImageOnCard(
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = contentColor
+                color = contentColor,
+                style = MaterialTheme.typography.labelSmall
             )
             IconButton(
                 onClick = { isPressed = true },
@@ -424,7 +429,8 @@ fun LoadRoverImageOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = PurpleGrey80,
+                style = MaterialTheme.typography.titleLarge
             )
         }
     }

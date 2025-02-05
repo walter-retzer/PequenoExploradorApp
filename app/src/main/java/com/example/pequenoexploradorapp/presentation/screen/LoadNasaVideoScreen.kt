@@ -78,7 +78,7 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
-import com.example.pequenoexploradorapp.presentation.theme.Purple50
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
@@ -307,7 +307,8 @@ fun RenderVideoSuccess(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Justify,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         LazyVerticalGrid(
@@ -442,7 +443,8 @@ fun LoadVideoOnCard(
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = ListItemDefaults.contentColor
+                color = ListItemDefaults.contentColor,
+                style = MaterialTheme.typography.labelSmall
             )
             IconButton(
                 onClick = { isPressed = true },
@@ -474,7 +476,8 @@ fun LoadVideoOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = PurpleGrey80,
+                style = MaterialTheme.typography.titleLarge
             )
         }
     }
