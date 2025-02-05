@@ -167,6 +167,7 @@ fun SearchImageScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
@@ -187,9 +188,8 @@ fun SearchImageScreen(
                 placeholder = {
                     Text(
                         "Procurar Imagens",
-                        fontSize = 16.sp,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )
                 },
                 onValueChange = { viewModel.onTextInputChange(it) },

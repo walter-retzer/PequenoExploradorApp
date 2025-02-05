@@ -63,9 +63,7 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
-import com.example.pequenoexploradorapp.presentation.theme.Purple50
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
