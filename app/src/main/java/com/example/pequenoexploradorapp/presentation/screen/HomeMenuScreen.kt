@@ -65,13 +65,13 @@ fun HomeMenuScreen(
                 titleButtonLeft = "Imagens",
                 iconButtonLeft = R.drawable.icon_search,
                 actionButtonLeft = { onNavigateToSearchImage() },
-                titleButtonRight = "Favoritos",
-                iconButtonRight = R.drawable.icon_favorite,
-                actionButtonRight = { onNavigateToFavouriteImage() }
+                titleButtonRight = "Videos",
+                iconButtonRight = R.drawable.icon_play_videos,
+                actionButtonRight = { onNavigateToNasaVideos() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Rovers",
-                iconButtonLeft = R.drawable.icon_rover,
+                iconButtonLeft = R.drawable.icon_space_rover,
                 actionButtonLeft = { onNavigateToRoverMission() },
                 titleButtonRight = "Planetas",
                 iconButtonRight = R.drawable.icon_planet_earth,
@@ -94,11 +94,11 @@ fun HomeMenuScreen(
                 actionButtonRight = { onNavigateToPictureOfTheDay() }
             ),
             DrawOptionsMenuButton(
-                titleButtonLeft = "Videos\nNasa",
-                iconButtonLeft = R.drawable.icon_solar_system,
-                actionButtonLeft = { onNavigateToNasaVideos() },
-                titleButtonRight = "Galeria\nGaláctica",
-                iconButtonRight = R.drawable.icon_comet,
+                titleButtonLeft = "Favoritos",
+                iconButtonLeft = R.drawable.icon_favorite,
+                actionButtonLeft = { onNavigateToFavouriteImage() },
+                titleButtonRight = "Galeria",
+                iconButtonRight = R.drawable.icon_gallery,
                 actionButtonRight = { onNavigateToPictureOfTheDay() }
             )
         )
