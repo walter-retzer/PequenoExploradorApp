@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,6 +30,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -67,6 +70,7 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
@@ -246,7 +250,8 @@ fun RenderImageFavouriteSuccess(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Start,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         Row {
@@ -309,10 +314,10 @@ fun LoadFavouriteImageOnCard(
     val creators = listOfImages?.get(numberOfImage)?.creators
     val keywords = listOfImages?.get(numberOfImage)?.keywords?.first()
     val isFavourite = listOfImages?.get(numberOfImage)?.isFavourite ?: false
+    val index = numberOfImage + 1
 
     Column(
         modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp, top = 0.dp, bottom = 10.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp,
@@ -339,6 +344,18 @@ fun LoadFavouriteImageOnCard(
                     .fillMaxWidth()
                     .height(180.dp)
                     .clickable { onNavigateToShareImage(imageUrl) }
+            )
+            Text(
+                text = index.toString(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(3.dp)
+                    .wrapContentSize(),
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.End,
+                color = ListItemDefaults.contentColor,
+                style = MaterialTheme.typography.labelSmall
             )
             IconButton(
                 modifier = Modifier
@@ -388,7 +405,8 @@ fun LoadFavouriteImageOnCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = PurpleGrey80,
+                style = MaterialTheme.typography.titleLarge
             )
         }
     }
