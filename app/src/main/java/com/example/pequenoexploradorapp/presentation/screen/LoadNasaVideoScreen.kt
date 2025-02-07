@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -253,7 +254,8 @@ fun InfiniteVideoListHandler(
     val shouldLoadMore = remember {
         derivedStateOf {
             val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             lastVisibleItemIndex >= (totalItemsCount - buffer) &&
                     isLoadingNextItems && totalHits != listOfImagesFromApi.size
         }
@@ -458,6 +460,20 @@ fun LoadVideoOnCard(
                 Icon(
                     imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite Nasa Video",
+                    tint = Color.White
+                )
+            }
+            IconButton(
+                onClick = { onNavigateToVideoDetail(urlVideo.toString()) },
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(Color.Black.copy(alpha = 0.85f), shape = CircleShape)
+                    .border(1.dp, Color.White.copy(alpha = 0.85f), CircleShape)
+            ) {
+                Icon(
+                    modifier = Modifier.size(64.dp),
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play Nasa Video",
                     tint = Color.White
                 )
             }
