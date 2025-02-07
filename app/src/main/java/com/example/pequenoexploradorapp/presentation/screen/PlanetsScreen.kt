@@ -79,10 +79,9 @@ fun PlanetsScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.image_sun),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.size(300.dp).align(Alignment.CenterHorizontally),
                 contentDescription = "Pager Image",
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Fit,
             )
             LazyColumn {
                 items(listOfPlanets) { planet ->
@@ -109,7 +108,7 @@ fun PlanetItem(planet: Planet) {
             Box(contentAlignment = Alignment.Center) {
                 Canvas(modifier = Modifier.size(600.dp, 120.dp)) {
                     drawArc(
-                        color = Color.LightGray,
+                        color = Color.LightGray.copy(alpha = 0.75f),
                         topLeft = Offset(0f, -size.height / 2),
                         startAngle = 0f,
                         sweepAngle = 180f,
@@ -121,16 +120,12 @@ fun PlanetItem(planet: Planet) {
                 Image(
                     painter = painterResource(id = planet.img),
                     contentDescription = "Imagem",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clipToBounds(),
+                    modifier = Modifier.size(150.dp),
                     contentScale = ContentScale.Crop
                 )
             }
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
+                modifier = Modifier.fillMaxWidth(),
                 text = planet.name,
                 color = Color.White,
                 fontSize = 21.sp,
@@ -139,5 +134,5 @@ fun PlanetItem(planet: Planet) {
             )
         }
     }
-    Spacer(Modifier.height(32.dp))
+    Spacer(Modifier.height(24.dp))
 }
