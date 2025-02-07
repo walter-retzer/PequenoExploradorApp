@@ -42,6 +42,7 @@ import com.example.pequenoexploradorapp.presentation.screen.LoadRoverImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.NasaVideoDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
+import com.example.pequenoexploradorapp.presentation.screen.PlanetsScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
@@ -238,6 +239,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         },
                         onNavigateToNasaVideos = {
                             navController.navigate(Route.SearchNasaVideosScreenRoute.route)
+                        },
+                        onNavigateToPlanets = {
+                            navController.navigate(Route.PlanetsScreenRoute.route)
                         }
                     )
                 }
@@ -537,6 +541,18 @@ private fun NavGraphBuilder.homeNavGraph() {
 
                     NasaVideoDetailScreen(
                         video = video
+                    )
+                }
+
+                composable(
+                    route = Route.PlanetsScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    PlanetsScreen(
+                        onNavigateToLoadNasaImage = { }
                     )
                 }
             }

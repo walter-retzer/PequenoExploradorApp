@@ -55,6 +55,7 @@ fun HomeMenuScreen(
     onNavigateToRoverMission: () -> Unit,
     onNavigateToFavouriteImage: () -> Unit,
     onNavigateToNasaVideos: () -> Unit,
+    onNavigateToPlanets: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -75,7 +76,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToRoverMission() },
                 titleButtonRight = "Planetas",
                 iconButtonRight = R.drawable.icon_planet_earth,
-                actionButtonRight = { onNavigateToSearchImage() }
+                actionButtonRight = { onNavigateToPlanets() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Curiosidades",
