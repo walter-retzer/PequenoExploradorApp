@@ -34,6 +34,7 @@ import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMA
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_TO_LOAD
+import com.example.pequenoexploradorapp.presentation.screen.GallerySearchScreen
 import com.example.pequenoexploradorapp.presentation.screen.HomeMenuScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.LoadNasaImageScreen
@@ -242,6 +243,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         },
                         onNavigateToPlanets = {
                             navController.navigate(Route.PlanetsScreenRoute.route)
+                        },
+                        onNavigateToGallerySearch = {
+                            navController.navigate(Route.GallerySearchScreenRoute.route)
                         }
                     )
                 }
@@ -553,6 +557,18 @@ private fun NavGraphBuilder.homeNavGraph() {
                 ) {
                     PlanetsScreen(
                         onNavigateToLoadNasaImage = { }
+                    )
+                }
+
+                composable(
+                    route = Route.GallerySearchScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    GallerySearchScreen(
+                        onNavigateToLoadImage = { }
                     )
                 }
             }

@@ -56,6 +56,7 @@ fun HomeMenuScreen(
     onNavigateToFavouriteImage: () -> Unit,
     onNavigateToNasaVideos: () -> Unit,
     onNavigateToPlanets: () -> Unit,
+    onNavigateToGallerySearch: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -100,7 +101,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToFavouriteImage() },
                 titleButtonRight = "Galeria",
                 iconButtonRight = R.drawable.icon_gallery,
-                actionButtonRight = { onNavigateToPictureOfTheDay() }
+                actionButtonRight = { onNavigateToGallerySearch() }
             )
         )
     }
