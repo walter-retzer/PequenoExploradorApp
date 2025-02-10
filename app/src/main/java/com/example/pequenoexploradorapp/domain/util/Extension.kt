@@ -182,3 +182,11 @@ fun String.enableButton(): Boolean {
     else if (this == BuildConfig.PERSEVERANCE) FirebaseRemoteConfigManager.isRoverPerseveranceSearchActivated
     else false
 }
+
+fun getLocalDate(): String {
+    val c = Calendar.getInstance()
+    val year = c.get(Calendar.YEAR)
+    val month = c.get(Calendar.MONTH)
+    val day = c.get(Calendar.DAY_OF_MONTH)
+    return "$day.$month.$year"
+}
