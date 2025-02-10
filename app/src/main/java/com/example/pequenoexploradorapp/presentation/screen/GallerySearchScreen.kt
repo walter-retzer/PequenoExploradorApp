@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedRequestDateApi
 import com.example.pequenoexploradorapp.domain.util.formattedToMillis
 import com.example.pequenoexploradorapp.domain.util.getLocalDate
@@ -74,7 +75,7 @@ fun GallerySearchScreen(
     val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val stateScroll = rememberScrollState()
     val dateFinal = getLocalDate()
-    val dateInitial = "01.01.2015"
+    val dateInitial = ConstantsApp.DATE_INITIAL_APOD
     val dateState = rememberDatePickerState(
         initialSelectedDateMillis = dateFinal.formattedToMillis(),
         selectableDates = FutureSelectableDates(
