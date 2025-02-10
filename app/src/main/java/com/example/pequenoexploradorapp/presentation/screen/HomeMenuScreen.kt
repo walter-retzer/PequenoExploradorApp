@@ -100,7 +100,7 @@ fun HomeMenuScreen(
                 iconButtonLeft = R.drawable.icon_favorite,
                 actionButtonLeft = { onNavigateToFavouriteImage() },
                 titleButtonRight = "Galeria",
-                iconButtonRight = R.drawable.icon_gallery,
+                iconButtonRight = R.drawable.icon_telescope,
                 actionButtonRight = { onNavigateToGallerySearch() }
             )
         )
