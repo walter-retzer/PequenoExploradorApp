@@ -190,3 +190,11 @@ fun getLocalDate(): String {
     val day = c.get(Calendar.DAY_OF_MONTH)
     return "$day.$month.$year"
 }
+
+fun getLocalDateFormattedApi(): String {
+    val c = Calendar.getInstance()
+    val year = c.get(Calendar.YEAR)
+    val month = c.get(Calendar.MONTH)
+    val day = c.get(Calendar.DAY_OF_MONTH)
+    return "$year-$month-$day"
+}
