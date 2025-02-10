@@ -27,6 +27,7 @@ material-icons-extended = "1.7.7"
 media3Ui = "1.5.1"
 media3Exoplayer = "1.5.1"
 firebaseConfig = "22.1.0"
+firebaseMessaging = "24.1.0"
 
 [libraries]
 #Lifecycle
@@ -37,6 +38,7 @@ androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle
 firebase-analytics = { module = "com.google.firebase:firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 #Play Service Auth
 play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServiceAuth" }
