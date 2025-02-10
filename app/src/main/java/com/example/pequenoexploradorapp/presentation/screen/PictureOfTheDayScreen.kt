@@ -95,6 +95,8 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PictureOfTheDayScreen(
+    date: String,
+    toolbarTitle: String,
     onNavigateToHomeMenu: () -> Unit,
     viewModel: PictureOfTheDayViewModel = koinInject()
 ) {
@@ -110,7 +112,7 @@ fun PictureOfTheDayScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Destaque do dia",
+                title = toolbarTitle,
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -138,7 +140,7 @@ fun PictureOfTheDayScreen(
                         color = mainColor
                     )
                 }
-                viewModel.onPictureOfTheDayRequest()
+                viewModel.onPictureOfTheDayRequest(date)
             }
 
             is PictureOfTheDayViewState.Success -> {

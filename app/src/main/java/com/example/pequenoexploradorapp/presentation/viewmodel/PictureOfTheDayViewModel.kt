@@ -56,7 +56,7 @@ class PictureOfTheDayViewModel(
         return favouriteImages.any { it.link == listOfImagesFavourite.link }
     }
 
-    fun onPictureOfTheDayRequest() {
+    fun onPictureOfTheDayRequest(date: String) {
         var favouriteImages = emptyList<FavouriteImageToSave>()
         val options = TranslatorOptions.Builder()
             .setSourceLanguage(TranslateLanguage.ENGLISH)
@@ -71,7 +71,7 @@ class PictureOfTheDayViewModel(
             .addOnSuccessListener {
                 println("Success Download Model Translation")
                 viewModelScope.launch {
-                    when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay()) {
+                    when (val responseApi = remoteRepositoryImpl.getPictureOfTheDay(date)) {
                         is ApiResponse.Failure -> _uiState.value =
                             PictureOfTheDayViewState.Error(responseApi.messageError, true)
 
