@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.navColor
 
 
@@ -33,7 +32,7 @@ import com.example.pequenoexploradorapp.presentation.theme.navColor
 @Composable
 fun MenuToolbar(
     color: Color = navColor,
-    titleColor: Color = Color.White,
+    titleColor: Color = Color.White.copy(0.75f),
     title: String,
     onNavigationToMenu: () -> Unit,
     onNavigateToNotifications: () -> Unit,
@@ -50,7 +49,7 @@ fun MenuToolbar(
         title = {
             Text(
                 text = title,
-                color = PurpleGrey80,
+                color = titleColor,
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge
@@ -61,7 +60,7 @@ fun MenuToolbar(
                 Icon(
                     imageVector = Icons.Filled.Menu,
                     contentDescription = "Localized description",
-                    tint = Color.White
+                    tint = titleColor
                 )
             }
         },
@@ -83,14 +82,14 @@ fun MenuToolbar(
                 Icon(
                     imageVector = Icons.Default.NotificationsNone,
                     contentDescription = "Notification",
-                    tint = Color.White
+                    tint = titleColor
                 )
             }
             IconButton(onClick = { onNavigationToProfile() }) {
                 Icon(
                     imageVector = Icons.Default.PermIdentity,
                     contentDescription = "Profile",
-                    tint = Color.White
+                    tint = titleColor
                 )
             }
         },
