@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.presentation.navigation
 
 import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -57,6 +58,7 @@ import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.screen.WelcomeScreen
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
@@ -68,6 +70,7 @@ import java.nio.charset.StandardCharsets
 fun NavHostMain(
     navController: NavHostController = rememberNavController(),
     googleAuthUiClient: GoogleAuthUiClient,
+    firebaseAnalytics: FirebaseAnalytics,
     context: Context
 ) {
     KoinContext {
@@ -82,6 +85,7 @@ fun NavHostMain(
             loginNavGraph(
                 navController,
                 googleAuthUiClient,
+                firebaseAnalytics,
                 context
             )
         }
@@ -92,6 +96,7 @@ fun NavHostMain(
 private fun NavGraphBuilder.loginNavGraph(
     navController: NavHostController,
     googleAuthUiClient: GoogleAuthUiClient,
+    firebaseAnalytics: FirebaseAnalytics,
     context: Context
 ) {
     navigation(
@@ -201,12 +206,20 @@ private fun NavGraphBuilder.loginNavGraph(
             )
         }
 
-        homeNavGraph()
+        homeNavGraph(firebaseAnalytics = firebaseAnalytics)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val params = Bundle()
+            params.putString(FirebaseAnalytics.Param.SCREEN_NAME, destination.route)
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params)
+        }
     }
 }
 
 
-private fun NavGraphBuilder.homeNavGraph() {
+private fun NavGraphBuilder.homeNavGraph(
+    firebaseAnalytics: FirebaseAnalytics,
+) {
     composable(
         route = Route.HomeGraphNav.route,
         enterTransition = NavAnimations.slideLeftEnterAnimation,
@@ -215,6 +228,13 @@ private fun NavGraphBuilder.homeNavGraph() {
         popExitTransition = NavAnimations.popExitRightAnimation
     ) {
         val navController = rememberNavController()
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val params = Bundle()
+            params.putString(FirebaseAnalytics.Param.SCREEN_NAME, destination.route)
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params)
+        }
+
         Column(Modifier.fillMaxSize()) {
             NavHost(
                 navController = navController,

@@ -14,9 +14,12 @@ import com.example.pequenoexploradorapp.presentation.navigation.NavHostMain
 import com.example.pequenoexploradorapp.presentation.screen.SplashScreen
 import com.example.pequenoexploradorapp.presentation.theme.PequenoExploradorAppTheme
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
@@ -37,12 +40,15 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightNavigationBars = false
         }
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
         setContent {
             PequenoExploradorAppTheme {
                 val navController = rememberNavController()
                 NavHostMain(
                     navController = navController,
                     googleAuthUiClient = googleAuthUiClient,
+                    firebaseAnalytics = firebaseAnalytics,
                     context = applicationContext
                 )
            }
