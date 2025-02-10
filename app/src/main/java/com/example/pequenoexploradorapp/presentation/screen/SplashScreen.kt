@@ -1,5 +1,6 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -7,6 +8,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,8 +34,13 @@ import androidx.compose.ui.unit.dp
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.firebase.FirebaseRemoteConfigManager
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp.Companion.TAG_FIREBASE_MESSAGING
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 @Composable
@@ -43,7 +50,7 @@ fun SplashScreen(
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val scale = remember { Animatable(0f) }
-    val animationDelay = 900
+    val animationDelay = 1500
     val circles = listOf(
         remember { Animatable(initialValue = 0f) },
         remember { Animatable(initialValue = 0f) },
@@ -52,9 +59,14 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = true) {
         delay(5000L)
-        FirebaseRemoteConfigManager.fetchRemoteConfig {isSuccess ->
-            if(isSuccess) onNavigateToWelcomeScreen()
-            else snackBarOnlyMessage(
+        FirebaseRemoteConfigManager.fetchRemoteConfig { isSuccess ->
+            if (isSuccess) {
+                scope.launch {
+                    val token = Firebase.messaging.token.await()
+                    Log.d(TAG_FIREBASE_MESSAGING, "FCM token: $token")
+                }
+                onNavigateToWelcomeScreen()
+            } else snackBarOnlyMessage(
                 snackBarHostState = snackBarHostState,
                 coroutineScope = scope,
                 message = ConstantsApp.ERROR_REMOTE_CONFIG,
@@ -62,9 +74,9 @@ fun SplashScreen(
             )
         }
     }
-
-    circles.forEach { animatable ->
+    circles.forEachIndexed { index, animatable ->
         LaunchedEffect(key1 = true) {
+            delay((animationDelay / 3L) * (index + 1))
             scale.animateTo(
                 targetValue = 1f,
                 animationSpec = spring(
@@ -84,36 +96,34 @@ fun SplashScreen(
             )
         }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .paint(
                 painterResource(id = R.drawable.simple_background),
                 contentScale = ContentScale.FillBounds
-            ),
+            )
+            .background(color = Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
         circles.forEach { animatable ->
             Box(
                 modifier = Modifier
                     .scale(scale = animatable.value)
-                    .size(size = 400.dp)
+                    .size(360.dp)
                     .clip(shape = CircleShape)
                     .background(
-                        color = Color.White
-                            .copy(alpha = (1 - animatable.value))
+                        color = Color.White.copy(alpha = (1 - animatable.value)),
+                        CircleShape
                     )
             )
         }
-
         Image(
             painter = painterResource(R.drawable.perfil01),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .scale(scale.value)
-                .size(200.dp)
+                .size(180.dp)
                 .clip(CircleShape)
                 .border(2.dp, Color.White, CircleShape)
                 .background(Color.Black, CircleShape)

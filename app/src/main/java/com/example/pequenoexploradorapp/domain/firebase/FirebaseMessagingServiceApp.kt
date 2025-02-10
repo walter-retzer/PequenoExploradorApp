@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.domain.util.ConstantsApp.Companion.CHANNEL_FIREBASE_CLOUD_MESSAGING
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp.Companion.TAG_FIREBASE_MESSAGING
 import com.example.pequenoexploradorapp.presentation.MainActivity
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -39,7 +40,7 @@ class FirebaseMessagingServiceApp : FirebaseMessagingService() {
             this, 1001, intent, FLAG_IMMUTABLE
         )
 
-        val channelId = this.getString(R.string.app_notification)
+        val channelId = CHANNEL_FIREBASE_CLOUD_MESSAGING
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -53,7 +54,7 @@ class FirebaseMessagingServiceApp : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
 
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val channel = NotificationChannel(channelId, "CHANNEL_FCM", IMPORTANCE_DEFAULT)
+        val channel = NotificationChannel(channelId, "FCM", IMPORTANCE_DEFAULT)
         manager.createNotificationChannel(channel)
         manager.notify(Random.nextInt(), notificationBuilder.build())
     }

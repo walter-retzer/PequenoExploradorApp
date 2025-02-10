@@ -36,5 +36,7 @@ class ConstantsApp {
             const val SAVE_IMAGE_ERROR_DECODE = "Arquivo da imagem não é compátivel"
             const val VIDEO_ERROR_LOAD = "Infelizmente, o video não é compátivel"
             const val DATE_INITIAL_APOD = "16.06.1995"
+            const val TAG_FIREBASE_MESSAGING = "FIREBASE CLOUD MESSAGING"
+            const val CHANNEL_FIREBASE_CLOUD_MESSAGING = "CHANNEL FIREBASE CLOUD MESSAGING"
         }
 }
