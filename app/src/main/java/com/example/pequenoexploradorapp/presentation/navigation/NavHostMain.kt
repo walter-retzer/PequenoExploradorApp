@@ -25,13 +25,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
+import com.example.pequenoexploradorapp.domain.util.getLocalDateFormattedApi
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_FINAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_INITIAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_KEY
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_TO_SEARCH
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.TOOLBAR
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.VIDEO_TO_LOAD
 import com.example.pequenoexploradorapp.presentation.screen.GallerySearchScreen
@@ -44,10 +47,10 @@ import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.NasaVideoDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.PlanetsScreen
-import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
-import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
+import com.example.pequenoexploradorapp.presentation.screen.SearchImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SearchNasaVideoScreen
 import com.example.pequenoexploradorapp.presentation.screen.ShareFavouriteImageScreen
 import com.example.pequenoexploradorapp.presentation.screen.SignInScreen
@@ -230,7 +233,11 @@ private fun NavGraphBuilder.homeNavGraph() {
                             navController.navigate(Route.SearchImageScreenRoute.route)
                         },
                         onNavigateToPictureOfTheDay = {
-                            navController.navigate(Route.PictureOfTheDayScreenRoute.route)
+                            val date = getLocalDateFormattedApi()
+                            val toolbar = "Destaque do Dia"
+                            navController.navigate(
+                                route = "${Route.PictureOfTheDayScreenRoute.route}/${date}/${toolbar}"
+                            )
                         },
                         onNavigateToRoverMission = {
                             navController.navigate(Route.RoverMissionScreenRoute.route)
@@ -292,13 +299,30 @@ private fun NavGraphBuilder.homeNavGraph() {
                 }
 
                 composable(
-                    route = Route.PictureOfTheDayScreenRoute.route,
+                    route = "${Route.PictureOfTheDayScreenRoute.route}/{$DATE_TO_SEARCH}/{$TOOLBAR}",
+                    arguments = listOf(
+                        navArgument(DATE_TO_SEARCH) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        },
+                        navArgument(TOOLBAR) {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    ),
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
+                    val arguments = requireNotNull(it.arguments)
+                    val date = arguments.getString(DATE_TO_SEARCH) ?: getLocalDateFormattedApi()
+                    val toolbarTitle = arguments.getString(TOOLBAR) ?: "Destaque do Dia"
                     PictureOfTheDayScreen(
+                        date = date,
+                        toolbarTitle = toolbarTitle,
                         onNavigateToHomeMenu = {
                             navController.navigate(Route.HomeScreenRoute.route)
                         }
@@ -450,8 +474,9 @@ private fun NavGraphBuilder.homeNavGraph() {
                         onNavigateToHomeMenu = {
                             navController.navigate(Route.HomeScreenRoute.route)
                         },
-                        onNavigateToShareImage = {image->
-                            val encodeImagedUrl = URLEncoder.encode(image, StandardCharsets.UTF_8.toString())
+                        onNavigateToShareImage = { image ->
+                            val encodeImagedUrl =
+                                URLEncoder.encode(image, StandardCharsets.UTF_8.toString())
                             navController.navigate(
                                 route = "${Route.ShareFavouriteImageScreenRoute.route}/${encodeImagedUrl}"
                             )
@@ -518,7 +543,8 @@ private fun NavGraphBuilder.homeNavGraph() {
                         video = searchVideo,
                         onNavigateToSearchVideo = { },
                         onNavigateToVideoDetail = { url ->
-                            val encodeImagedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+                            val encodeImagedUrl =
+                                URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
                             navController.navigate(
                                 route = "${Route.NasaVideoDetailScreenRoute.route}/${encodeImagedUrl}"
                             )
@@ -556,7 +582,7 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
                     PlanetsScreen(
-                        onNavigateToLoadNasaImage = { }
+                        onNavigateToLoadNasaImage = {}
                     )
                 }
 
@@ -567,8 +593,13 @@ private fun NavGraphBuilder.homeNavGraph() {
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
+                    val toolbar = "Galeria"
                     GallerySearchScreen(
-                        onNavigateToLoadImage = { }
+                        onNavigateToLoadImage = { date ->
+                            navController.navigate(
+                                route = "${Route.PictureOfTheDayScreenRoute.route}/${date}/${toolbar}"
+                            )
+                        }
                     )
                 }
             }
@@ -596,4 +627,6 @@ object ArgumentsKey {
     const val DATE_FINAL_KEY = "DATE_FINAL_KEY"
     const val IMAGE_TO_SHARE = "IMAGE_TO_SHARE"
     const val VIDEO_TO_LOAD = "VIDEO_TO_LOAD"
+    const val DATE_TO_SEARCH = "DATE_TO_SEARCH"
+    const val TOOLBAR = "TOOLBAR"
 }
