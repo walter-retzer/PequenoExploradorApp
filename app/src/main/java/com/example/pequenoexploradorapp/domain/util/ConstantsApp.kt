@@ -35,6 +35,6 @@ class ConstantsApp {
             const val SAVE_IMAGE_ERROR = "Não foi possível salvar a imagem na galeria do celular"
             const val SAVE_IMAGE_ERROR_DECODE = "Arquivo da imagem não é compátivel"
             const val VIDEO_ERROR_LOAD = "Infelizmente, o video não é compátivel"
-            const val DATE_INITIAL_APOD = "01.01.2015"
+            const val DATE_INITIAL_APOD = "16.06.1995"
         }
 }
