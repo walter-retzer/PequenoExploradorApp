@@ -39,5 +39,5 @@ interface RemoteRepository {
         mediaType: String = "image"
     ): ApiResponse<NasaLibraryResponse>
 
-    suspend fun getPictureOfTheDay(): ApiResponse<PictureOfTheDay>
+    suspend fun getPictureOfTheDay(date: String): ApiResponse<PictureOfTheDay>
 }

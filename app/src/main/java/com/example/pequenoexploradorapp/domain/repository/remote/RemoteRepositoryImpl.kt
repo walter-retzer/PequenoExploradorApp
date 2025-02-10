@@ -126,11 +126,11 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             }
         }
 
-    override suspend fun getPictureOfTheDay(): ApiResponse<PictureOfTheDay>  =
+    override suspend fun getPictureOfTheDay(date: String): ApiResponse<PictureOfTheDay>  =
         doRequest {
             client.get {
                 url(BASE_URL_PICTURE_OF_THE_DAY)
-                //parameter("date", "1995-06-16")
+                parameter("date", date)
                 parameter("api_key", BuildConfig.API_KEY_DEMO)
             }
         }
