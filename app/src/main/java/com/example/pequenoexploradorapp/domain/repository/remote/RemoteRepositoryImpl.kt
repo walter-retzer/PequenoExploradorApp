@@ -7,6 +7,7 @@ import com.example.pequenoexploradorapp.data.RoverImageResponse
 import com.example.pequenoexploradorapp.data.RoverMission
 import com.example.pequenoexploradorapp.domain.network.ApiResponse
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -147,6 +148,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             }
         } catch (e: RedirectResponseException) {
             println("SERVER REDIRECTION => Status: ${e.response.status.value}, Error: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("SERVER REDIRECTION")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.response.status.value}", e.message)
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
@@ -154,6 +158,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: ClientRequestException) {
             println("SERVER CLIENT ERROR => Status: ${e.response.status.value}, Error: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("SERVER CLIENT ERROR")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.response.status.value}", e.message)
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
@@ -161,6 +168,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: ServerResponseException) {
             println("SERVER ERROR RESPONSE => Status: ${e.response.status.value}, Error: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("SERVER ERROR RESPONSE")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.response.status.value}", e.message)
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
@@ -168,6 +178,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: ResponseException) {
             println("SERVER RESPONSE EXCEPTION => Status: ${e.response.status.value}, Error: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("SERVER RESPONSE EXCEPTION")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.response.status.value}", e.message.toString())
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = e.response.status.value,
@@ -175,6 +188,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: UnresolvedAddressException) {
             println("SERVER ERROR ADDRESS => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("SERVER ERROR ADDRESS")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.printStackTrace()}", e.message.toString())
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
@@ -182,6 +198,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: SerializationException) {
             println("ERROR SERIALIZATION => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("ERROR SERIALIZATION")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.printStackTrace()}", e.message.toString())
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
@@ -189,6 +208,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: UnknownHostException) {
             println("UNKNOWN HOST => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("UNKNOWN HOST")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.printStackTrace()}", e.message.toString())
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
@@ -196,6 +218,9 @@ class RemoteRepositoryImpl(private val client: HttpClient) : RemoteRepository {
             )
         } catch (e: Exception) {
             println("EXCEPTION ERROR => Error: ${e.printStackTrace()}, Message: ${e.message}")
+            FirebaseCrashlytics.getInstance().log("EXCEPTION ERROR")
+            FirebaseCrashlytics.getInstance().setCustomKey("${e.printStackTrace()}", e.message.toString())
+            FirebaseCrashlytics.getInstance().recordException(e)
             ApiResponse.failure(
                 exception = e,
                 statusCode = null,
