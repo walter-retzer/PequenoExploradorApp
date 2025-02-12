@@ -1,6 +1,7 @@
 package com.example.pequenoexploradorapp.domain.firebase
 
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -23,18 +24,20 @@ object FirebaseRemoteConfigManager {
         remoteConfig.setConfigSettingsAsync(configSettings)
     }
 
-    fun fetchRemoteConfig(onComplete: (Boolean) -> Unit) {
+    fun fetchRemoteConfig(onSuccess: (Boolean) -> Unit, onFailure: (Boolean) -> Unit) {
         remoteConfig.fetchAndActivate()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     println("Firebase Remote Config => Success ")
-                    onComplete(task.isSuccessful)
-                } else {
-                    println("Firebase Remote Config => Error")
+                    onSuccess(task.isSuccessful)
                 }
             }
             .addOnFailureListener {
-                println("Firebase Remote Config => Exception: ${it.message}")
+                println("Error Firebase Remote Config => Exception: ${it.cause}, Message: ${it.message}")
+                FirebaseCrashlytics.getInstance().log("ERROR FIREBASE REMOTE CONFIG")
+                FirebaseCrashlytics.getInstance().setCustomKey("${it.cause}", it.message.toString())
+                FirebaseCrashlytics.getInstance().recordException(it)
+                onFailure(true)
             }
     }
 

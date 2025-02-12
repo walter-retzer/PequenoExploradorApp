@@ -38,5 +38,7 @@ class ConstantsApp {
             const val DATE_INITIAL_APOD = "16.06.1995"
             const val TAG_FIREBASE_MESSAGING = "FIREBASE CLOUD MESSAGING"
             const val CHANNEL_FIREBASE_CLOUD_MESSAGING = "CHANNEL FIREBASE CLOUD MESSAGING"
+            const val NOTIFICATION_GRANTED = "Notificações ativadas"
+            const val NOTIFICATION_DENIED = "A permissão da notificação esta negada.\nVocê pode ir nas configurações do aplicativo e alterar."
         }
 }
