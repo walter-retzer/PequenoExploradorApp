@@ -1,7 +1,6 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -56,6 +55,7 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.scaffoldColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewState
 import kotlinx.coroutines.delay
@@ -66,6 +66,7 @@ import org.koin.compose.koinInject
 @Composable
 fun RoverMissionDetailScreen(
     roverName: String,
+    image: Int,
     onNavigateToSearchImage: (firstDate: String, lastDate: String, nameRover: String) -> Unit,
     onNavigateToHomeMenu: () -> Unit,
     viewModel: RoverMissionDetailViewModel = koinInject()
@@ -134,36 +135,29 @@ fun RoverMissionDetailScreen(
                                 .fillMaxWidth()
                                 .padding(16.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Color.Black)
                                 .border(
-                                    width = 2.dp,
+                                    width = 1.dp,
                                     color = ListItemDefaults.contentColor,
                                     shape = RoundedCornerShape(16.dp)
                                 )
                                 .clickable { },
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            colors =  CardDefaults.cardColors().copy(
+                                containerColor = scaffoldColor
+                            )
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.rover_spirit),
+                                painter = painterResource(image),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .border(
-                                        1.dp,
-                                        ListItemDefaults.contentColor,
-                                        RoundedCornerShape(16.dp)
-                                    )
-                                    .background(Color.Black, RoundedCornerShape(16.dp))
+                                modifier = Modifier.fillMaxSize()
                             )
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp),
+                                    .padding(start = 16.dp, top = 16.dp),
                                 text = "Nome: ${state.mission.rover.name}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -174,7 +168,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Status: Missão ${state.mission.rover.status}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -185,7 +179,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Total de Fotos: ${state.mission.rover.totalPhotos}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -196,7 +190,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Sol: ${state.mission.rover.maxSun}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -207,7 +201,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Lançamento: ${state.mission.rover.launchDate.formattedDate()}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -218,7 +212,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Pouso em Marte: ${state.mission.rover.landingDate.formattedDate()}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -228,8 +222,8 @@ fun RoverMissionDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
-                                text = "Última data em operação: ${state.mission.rover.maxDate.formattedDate()}",
-                                fontSize = 14.sp,
+                                text = "Última atividade: ${state.mission.rover.maxDate.formattedDate()}",
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
@@ -240,7 +234,7 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Quantidade de cameras: ${state.mission.rover.cameras.size - 1}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,

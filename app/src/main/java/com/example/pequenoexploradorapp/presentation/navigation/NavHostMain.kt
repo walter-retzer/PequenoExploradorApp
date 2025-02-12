@@ -25,14 +25,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.domain.util.getLocalDateFormattedApi
+import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_FINAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_INITIAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_TO_SEARCH
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.ID_NAME_KEY
+import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_ROVER
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_SEARCH_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.IMAGE_TO_SHARE
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.TOOLBAR
@@ -357,35 +360,40 @@ private fun NavGraphBuilder.homeNavGraph(
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
                     RoverMissionScreen(
-                        onNavigateToRoverSpirit = { idName ->
+                        onNavigateToRoverSpirit = { idName, image ->
                             navController.navigate(
-                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}/${image}"
                             )
                         },
-                        onNavigateToRoverCuriosity = { idName ->
+                        onNavigateToRoverCuriosity = { idName, image ->
                             navController.navigate(
-                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}/${image}"
                             )
                         },
-                        onNavigateToRoverOpportunity = { idName ->
+                        onNavigateToRoverOpportunity = { idName, image ->
                             navController.navigate(
-                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}/${image}"
                             )
                         },
-                        onNavigateToRoverPerseverance = { idName ->
+                        onNavigateToRoverPerseverance = { idName, image ->
                             navController.navigate(
-                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}"
+                                route = "${Route.RoverMissionDetailScreenRoute.route}/${idName}/${image}"
                             )
                         }
                     )
                 }
 
                 composable(
-                    route = "${Route.RoverMissionDetailScreenRoute.route}/{$ID_NAME_KEY}",
+                    route = "${Route.RoverMissionDetailScreenRoute.route}/{$ID_NAME_KEY}/{$IMAGE_ROVER}",
                     arguments = listOf(
                         navArgument(ID_NAME_KEY) {
                             type = NavType.StringType
                             defaultValue = ""
+                            nullable = false
+                        },
+                        navArgument(IMAGE_ROVER) {
+                            type = NavType.IntType
+                            defaultValue = 0
                             nullable = false
                         }
                     ),
@@ -396,9 +404,11 @@ private fun NavGraphBuilder.homeNavGraph(
                 ) {
                     val arguments = requireNotNull(it.arguments)
                     val idName = arguments.getString(ID_NAME_KEY).toString()
+                    val image = arguments.getInt(IMAGE_ROVER)
 
                     RoverMissionDetailScreen(
                         roverName = idName,
+                        image = image,
                         onNavigateToSearchImage = { initialDate, finalDate, nameRover ->
                             navController.navigate(
                                 route = "${Route.RoverSearchImageScreenRoute.route}/${initialDate}/${finalDate}/${nameRover}"
@@ -649,4 +659,5 @@ object ArgumentsKey {
     const val VIDEO_TO_LOAD = "VIDEO_TO_LOAD"
     const val DATE_TO_SEARCH = "DATE_TO_SEARCH"
     const val TOOLBAR = "TOOLBAR"
+    const val IMAGE_ROVER = "IMAGE_ROVER"
 }
