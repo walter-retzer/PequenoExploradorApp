@@ -18,9 +18,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 
 
 class MainActivity : ComponentActivity() {
-
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
             context = applicationContext,
@@ -39,9 +37,7 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
         }
-
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
         setContent {
             PequenoExploradorAppTheme {
                 val navController = rememberNavController()
