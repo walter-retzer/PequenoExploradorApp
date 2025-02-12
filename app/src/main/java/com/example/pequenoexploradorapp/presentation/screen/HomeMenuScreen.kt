@@ -57,6 +57,7 @@ fun HomeMenuScreen(
     onNavigateToNasaVideos: () -> Unit,
     onNavigateToPlanets: () -> Unit,
     onNavigateToGallerySearch: () -> Unit,
+    onNavigateToProfile: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -85,7 +86,7 @@ fun HomeMenuScreen(
                 actionButtonLeft = { onNavigateToSearchImage() },
                 titleButtonRight = "Perfil",
                 iconButtonRight = R.drawable.icon_astronaut,
-                actionButtonRight = { onNavigateToSearchImage() }
+                actionButtonRight = { onNavigateToProfile() }
             ),
             DrawOptionsMenuButton(
                 titleButtonLeft = "Sistema\nSolar",

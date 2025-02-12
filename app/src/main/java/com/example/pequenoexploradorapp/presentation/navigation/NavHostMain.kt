@@ -51,6 +51,7 @@ import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.NasaVideoDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.PlanetsScreen
+import com.example.pequenoexploradorapp.presentation.screen.ProfileScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
@@ -276,6 +277,9 @@ private fun NavGraphBuilder.homeNavGraph(
                         },
                         onNavigateToGallerySearch = {
                             navController.navigate(Route.GallerySearchScreenRoute.route)
+                        },
+                        onNavigateToProfile = {
+                            navController.navigate(Route.ProfileScreenRoute.route)
                         }
                     )
                 }
@@ -631,6 +635,16 @@ private fun NavGraphBuilder.homeNavGraph(
                             )
                         }
                     )
+                }
+
+                composable(
+                    route = Route.ProfileScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    ProfileScreen()
                 }
             }
             val items = remember {
