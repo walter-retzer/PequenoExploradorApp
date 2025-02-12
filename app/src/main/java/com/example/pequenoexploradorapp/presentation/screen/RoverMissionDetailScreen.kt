@@ -51,6 +51,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.enableButton
 import com.example.pequenoexploradorapp.domain.util.formattedDate
+import com.example.pequenoexploradorapp.domain.util.formattedMission
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
@@ -150,7 +151,9 @@ fun RoverMissionDetailScreen(
                                 painter = painterResource(image),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(310.dp)
                             )
                             Text(
                                 modifier = Modifier
@@ -167,7 +170,7 @@ fun RoverMissionDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
-                                text = "Status: Missão ${state.mission.rover.status}",
+                                text = "Status: ${state.mission.rover.status.formattedMission()}",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,

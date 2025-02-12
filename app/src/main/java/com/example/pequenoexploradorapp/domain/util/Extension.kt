@@ -209,3 +209,9 @@ fun Activity.openAppSettings() {
         Uri.fromParts("package", packageName, null)
     ).also(::startActivity)
 }
+
+fun String.formattedMission(): String {
+    if(this.contains("complete")) return "Missão Finalizada"
+    if(this.contains("active")) return "Missão Ativa"
+    else return this
+}
