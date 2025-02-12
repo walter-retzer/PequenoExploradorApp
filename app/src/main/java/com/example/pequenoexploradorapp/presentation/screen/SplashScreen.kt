@@ -70,6 +70,7 @@ fun SplashScreen(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val activity = LocalActivity.current
     val snackBarHostState = remember { SnackbarHostState() }
     val scale = remember { Animatable(0f) }
     val animationDelay = 1500
@@ -78,71 +79,50 @@ fun SplashScreen(
         remember { Animatable(initialValue = 0f) },
         remember { Animatable(initialValue = 0f) }
     )
-    var init by remember { mutableStateOf(false) }
-
+    var request = shouldShowRequestPermissionRationale(activity!!, POST_NOTIFICATIONS)
     var hasNotificationPermission by remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mutableStateOf(
                 ContextCompat.checkSelfPermission(
                     context,
                     POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
+                ) == PackageManager.PERMISSION_GRANTED || request
             )
         } else mutableStateOf(true)
     }
+    val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            hasNotificationPermission = isGranted
+            if(!isGranted) hasNotificationPermission = true
+        }
+    )
 
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        val notificationsPermissionResultLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (isGranted) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = ConstantsApp.NOTIFICATION_DENIED,
-                        duration = SnackbarDuration.Long
-                    )
-                    init = true
-                } else {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = ConstantsApp.NOTIFICATION_DENIED,
-                        duration = SnackbarDuration.Long
-                    )
-                    init = true
-                }
+    if (!hasNotificationPermission) {
+        LaunchedEffect(Unit) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationsPermissionResultLauncher.launch(POST_NOTIFICATIONS)
             }
-        )
-        val isNotificationPermissionGranted = ContextCompat.checkSelfPermission(
-            LocalContext.current,
-            POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
-        val isShouldShowRequestPermissionRationale = LocalActivity.current?.let {
-            shouldShowRequestPermissionRationale(it, POST_NOTIFICATIONS)
-        } ?: false
-
-        if (!isNotificationPermissionGranted && !isShouldShowRequestPermissionRationale) {
-            SideEffect { notificationsPermissionResultLauncher.launch(POST_NOTIFICATIONS) }
         }
     }
 
-    if (init) LaunchedEffect(Unit) {
-        delay(5000L)
-        FirebaseRemoteConfigManager.fetchRemoteConfig { isSuccess ->
-            if (isSuccess) {
-                scope.launch {
-                    val token = Firebase.messaging.token.await()
-                    Log.d(TAG_FIREBASE_MESSAGING, "FCM token: $token")
-                }
-                onNavigateToWelcomeScreen()
-            } else snackBarOnlyMessage(
-                snackBarHostState = snackBarHostState,
-                coroutineScope = scope,
-                message = ConstantsApp.ERROR_REMOTE_CONFIG,
-                duration = SnackbarDuration.Long
-            )
+    if (hasNotificationPermission) {
+        LaunchedEffect(Unit) {
+            delay(5000L)
+            FirebaseRemoteConfigManager.fetchRemoteConfig { isSuccess ->
+                if (isSuccess) {
+                    scope.launch {
+                        val token = Firebase.messaging.token.await()
+                        Log.d(TAG_FIREBASE_MESSAGING, "FCM token: $token")
+                    }
+                    onNavigateToWelcomeScreen()
+                } else snackBarOnlyMessage(
+                    snackBarHostState = snackBarHostState,
+                    coroutineScope = scope,
+                    message = ConstantsApp.ERROR_REMOTE_CONFIG,
+                    duration = SnackbarDuration.Long
+                )
+            }
         }
     }
     circles.forEachIndexed { index, animatable ->
@@ -203,7 +183,7 @@ fun SplashScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            text = "$init ",
+            text = "$hasNotificationPermission ",
             fontSize = 36.sp,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Justify,
@@ -212,3 +192,15 @@ fun SplashScreen(
         )
     }
 }
+
+//    val isNotificationPermissionGranted = ContextCompat.checkSelfPermission(
+//        LocalContext.current,
+//        POST_NOTIFICATIONS
+//    ) == PackageManager.PERMISSION_GRANTED
+//    val isShouldShowRequestPermissionRationale = LocalActivity.current?.let {
+//        shouldShowRequestPermissionRationale(it, POST_NOTIFICATIONS)
+//    } ?: false
+//
+//    if (!isNotificationPermissionGranted && !isShouldShowRequestPermissionRationale) {
+//
+//    }
