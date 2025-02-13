@@ -150,16 +150,6 @@ private fun NavGraphBuilder.loginNavGraph(
                 }
             )
 
-            LaunchedEffect(key1 = Unit) {
-                if (googleAuthUiClient.getSignedInUser() != null) {
-                    Toast.makeText(
-                        context,
-                        "Sign in successful, navigate to Profile",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-
             LaunchedEffect(key1 = stateSignInGoogle.isSignInSuccessful) {
                 if (stateSignInGoogle.isSignInSuccessful) {
 
@@ -168,7 +158,7 @@ private fun NavGraphBuilder.loginNavGraph(
 
                     Toast.makeText(
                         context,
-                        "Sign in successful",
+                        "Login realizado com sucesso.",
                         Toast.LENGTH_LONG
                     ).show()
                     viewModel.resetState()
@@ -221,7 +211,7 @@ private fun NavGraphBuilder.loginNavGraph(
 
 
 private fun NavGraphBuilder.homeNavGraph(
-    firebaseAnalytics: FirebaseAnalytics,
+    firebaseAnalytics: FirebaseAnalytics
 ) {
     composable(
         route = Route.HomeGraphNav.route,
@@ -646,6 +636,9 @@ private fun NavGraphBuilder.homeNavGraph(
                     AvatarSelectionScreen(
                         onNavigateToProfile ={
                             navController.navigate(Route.ProfileScreenRoute.route)
+                        },
+                        onNavigateToMenu = {
+                            navController.navigate(Route.HomeScreenRoute.route)
                         }
                     )
                 }
@@ -659,7 +652,7 @@ private fun NavGraphBuilder.homeNavGraph(
                 ) {
                     ProfileScreen(
                         onNavigateBack = {
-                            navController.navigate(Route.AvatarSelectionScreenRoute.route)
+                            navController.navigate(Route.HomeScreenRoute.route)
                         },
                         onNavigateToChooseAvatar = {
                             navController.navigate(Route.AvatarSelectionScreenRoute.route)

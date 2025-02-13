@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -50,15 +51,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.domain.util.formattedAsPhone
 import com.example.pequenoexploradorapp.domain.util.restartApp
 import com.example.pequenoexploradorapp.presentation.components.LoadingWithLine
 import com.example.pequenoexploradorapp.presentation.components.SimpleToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewState
 import org.koin.compose.koinInject
@@ -89,7 +93,7 @@ fun ProfileScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             SimpleToolbar(
-                title = "Perfil $image",
+                title = "Perfil",
                 onNavigationToBack = { onNavigateBack() },
                 onNavigationClose = { onNavigateBack() }
             )
@@ -101,6 +105,10 @@ fun ProfileScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
+                .paint(
+                    painterResource(id = R.drawable.simple_background),
+                    contentScale = ContentScale.FillBounds
+                )
         ) {
 
             Row(
@@ -134,7 +142,7 @@ fun ProfileScreen(
                 Text(
                     text = name,
                     style = TextStyle(
-                        color = Color.Yellow,
+                        color = Pink40,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.SansSerif,

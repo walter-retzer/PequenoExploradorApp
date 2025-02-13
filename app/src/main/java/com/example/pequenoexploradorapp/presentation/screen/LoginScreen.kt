@@ -60,6 +60,7 @@ import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink40
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewState
 import kotlinx.coroutines.delay
@@ -91,7 +92,7 @@ fun LoginScreen(
     ) { paddingValues ->
         when (val state = uiState) {
             is LoginUserViewState.Loading -> {
-                progressButtonIsActivated = true
+                progressButtonIsActivated = false
             }
 
             is LoginUserViewState.Error -> {
@@ -318,7 +319,7 @@ fun LoginScreen(
                         .clickable { onNavigateToSignIn() },
                     text = "Cadastre-se",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = mainColor,
+                    color = Pink40,
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
