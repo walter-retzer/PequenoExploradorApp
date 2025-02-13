@@ -1,7 +1,10 @@
 package com.example.pequenoexploradorapp.domain.util
 
 import android.app.Activity
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.ui.text.AnnotatedString
@@ -214,4 +217,13 @@ fun String.formattedMission(): String {
     if(this.contains("complete")) return "Missão Finalizada"
     if(this.contains("active")) return "Missão Ativa"
     else return this
+}
+
+fun restartApp(context: Context) {
+    val packageManager: PackageManager = context.packageManager
+    val intent: Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
+    val componentName: ComponentName = intent.component!!
+    val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(restartIntent)
+    Runtime.getRuntime().exit(0)
 }
