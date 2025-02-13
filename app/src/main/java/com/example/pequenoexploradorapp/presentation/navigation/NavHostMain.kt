@@ -114,12 +114,13 @@ private fun NavGraphBuilder.loginNavGraph(
                             inclusive = true
                         }
                     }
-
-//                    navController.navigate(Route.HomeGraphNav.route) {
-//                        popUpTo(Route.LoginScreenRoute.route) {
-//                            inclusive = true
-//                        }
-//                    }
+                },
+                onNavigateToMenuScreen = {
+                    navController.navigate(Route.HomeGraphNav.route) {
+                        popUpTo(Route.LoginScreenRoute.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

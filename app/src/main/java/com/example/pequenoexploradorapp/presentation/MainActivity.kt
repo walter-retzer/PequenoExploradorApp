@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     firebaseAnalytics = firebaseAnalytics,
                     context = applicationContext
                 )
-           }
+            }
         }
     }
 }
@@ -57,7 +57,8 @@ class MainActivity : ComponentActivity() {
 fun SplashScreenPreview() {
     PequenoExploradorAppTheme {
         SplashScreen(
-            onNavigateToWelcomeScreen = {}
+            onNavigateToWelcomeScreen = {},
+            onNavigateToMenuScreen = {}
         )
     }
 }

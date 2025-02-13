@@ -47,6 +47,8 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.firebase.FirebaseRemoteConfigManager
+import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
+import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp.Companion.TAG_FIREBASE_MESSAGING
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
@@ -55,15 +57,19 @@ import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.koin.compose.koinInject
 
 
 @Composable
 fun SplashScreen(
-    onNavigateToWelcomeScreen: () -> Unit
+    onNavigateToWelcomeScreen: () -> Unit,
+    onNavigateToMenuScreen: () -> Unit,
+    sharedPref: SharedPrefApp = koinInject()
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
     val scope = rememberCoroutineScope()
+    val uid: String = sharedPref.readString(UserPreferences.UID)
     val snackBarHostState = remember { SnackbarHostState() }
     val scale = remember { Animatable(0f) }
     val animationDelay = 1200
@@ -122,7 +128,8 @@ fun SplashScreen(
                                 val token = Firebase.messaging.token.await()
                                 Log.d(TAG_FIREBASE_MESSAGING, "FCM token: $token")
                             }
-                            onNavigateToWelcomeScreen()
+                            if(uid.isNotEmpty()) onNavigateToMenuScreen()
+                            else onNavigateToWelcomeScreen()
                         }
                     }
                 )

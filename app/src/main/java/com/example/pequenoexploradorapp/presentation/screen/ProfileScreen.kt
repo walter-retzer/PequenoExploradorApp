@@ -55,7 +55,6 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.domain.util.formattedAsPhone
 import com.example.pequenoexploradorapp.domain.util.restartApp
 import com.example.pequenoexploradorapp.presentation.components.LoadingWithLine
