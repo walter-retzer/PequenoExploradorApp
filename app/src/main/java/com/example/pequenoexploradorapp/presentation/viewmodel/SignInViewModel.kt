@@ -18,7 +18,7 @@ class SignInViewModel(
 
     private val authService: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.Loading)
+    private val _uiState = MutableStateFlow<SignInViewState>(SignInViewState.Init)
     val uiState: StateFlow<SignInViewState> = _uiState.asStateFlow()
 
     private val _newUserSignInState = MutableStateFlow(NewUserSignInContact())
@@ -40,8 +40,7 @@ class SignInViewModel(
         authService.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _uiState.value = SignInViewState.Success(ConstantsApp.SUCCESS_SIGN_IN)
-
+                    _uiState.value = SignInViewState.Success(ConstantsApp.SUCCESS_CREATE_ACCOUNT)
                     if (authService.currentUser != null) {
                         sharedPref.saveString(UserPreferences.NAME, name)
                         sharedPref.saveString(UserPreferences.EMAIL, email)
@@ -53,9 +52,8 @@ class SignInViewModel(
                             )
                         }
                     }
-
                 } else {
-                    _uiState.value = SignInViewState.Error(ConstantsApp.ERROR_SIGN_IN)
+                    _uiState.value = SignInViewState.Error(ConstantsApp.ERROR_CREATE_ACCOUNT)
                 }
             }
     }
@@ -116,7 +114,7 @@ class SignInViewModel(
 
 
 sealed interface SignInViewState {
-    data object Loading : SignInViewState
+    data object Init : SignInViewState
     data class Success(val message: String) : SignInViewState
     data class Error(val message: String) : SignInViewState
 }

@@ -25,10 +25,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.GoogleAuthUiClient
 import com.example.pequenoexploradorapp.domain.util.getLocalDateFormattedApi
-import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AppBottomNavigationBar
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_FINAL_KEY
 import com.example.pequenoexploradorapp.presentation.navigation.ArgumentsKey.DATE_INITIAL_KEY
@@ -51,6 +49,7 @@ import com.example.pequenoexploradorapp.presentation.screen.LoginScreen
 import com.example.pequenoexploradorapp.presentation.screen.NasaVideoDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScreen
 import com.example.pequenoexploradorapp.presentation.screen.PlanetsScreen
+import com.example.pequenoexploradorapp.presentation.screen.AvatarSelectionScreen
 import com.example.pequenoexploradorapp.presentation.screen.ProfileScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
@@ -110,17 +109,17 @@ private fun NavGraphBuilder.loginNavGraph(
         composable(route = Route.SplashScreenRoute.route) {
             SplashScreen(
                 onNavigateToWelcomeScreen = {
-//                    navController.navigate(Route.WelcomeScreenRoute.route) {
-//                        popUpTo(Route.SplashScreenRoute.route) {
-//                            inclusive = true
-//                        }
-//                    }
-
-                    navController.navigate(Route.HomeGraphNav.route) {
-                        popUpTo(Route.LoginScreenRoute.route) {
+                    navController.navigate(Route.WelcomeScreenRoute.route) {
+                        popUpTo(Route.SplashScreenRoute.route) {
                             inclusive = true
                         }
                     }
+
+//                    navController.navigate(Route.HomeGraphNav.route) {
+//                        popUpTo(Route.LoginScreenRoute.route) {
+//                            inclusive = true
+//                        }
+//                    }
                 }
             )
         }
@@ -638,13 +637,34 @@ private fun NavGraphBuilder.homeNavGraph(
                 }
 
                 composable(
+                    route = Route.AvatarSelectionScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    AvatarSelectionScreen(
+                        onNavigateToProfile ={
+                            navController.navigate(Route.ProfileScreenRoute.route)
+                        }
+                    )
+                }
+
+                composable(
                     route = Route.ProfileScreenRoute.route,
                     enterTransition = NavAnimations.slideLeftEnterAnimation,
                     exitTransition = NavAnimations.slideLeftExitAnimation,
                     popEnterTransition = NavAnimations.popEnterRightAnimation,
                     popExitTransition = NavAnimations.popExitRightAnimation
                 ) {
-                    ProfileScreen()
+                    ProfileScreen(
+                        onNavigateBack = {
+                            navController.navigate(Route.AvatarSelectionScreenRoute.route)
+                        },
+                        onNavigateToChooseAvatar = {
+                            navController.navigate(Route.AvatarSelectionScreenRoute.route)
+                        }
+                    )
                 }
             }
             val items = remember {
