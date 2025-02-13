@@ -2,6 +2,7 @@ package com.example.pequenoexploradorapp.domain.secure
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.pequenoexploradorapp.R
 
 class SharedPrefApp(context: Context) {
     private val sharedPref: SharedPreferences =
@@ -24,11 +25,19 @@ class SharedPrefApp(context: Context) {
         return sharedPref.getString(id, "") ?: ""
     }
 
+    fun saveInt(id: String, int: Int) {
+        sharedPref.edit()?.putInt(id, int)?.apply()
+    }
+
+    fun readInt(id: String): Int {
+        return sharedPref.getInt(id, R.drawable.perfil01)
+    }
+
     fun deleteId(id: String) {
         sharedPref.edit()?.remove(id)?.apply()
     }
 
-    fun deleteAll(id: String) {
+    fun deleteAll() {
         sharedPref.edit()?.clear()?.apply()
     }
 }
