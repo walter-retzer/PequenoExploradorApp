@@ -71,7 +71,7 @@ fun WelcomeScreen(
 
         ) {
             HorizontalPager(
-                modifier = Modifier.weight(3.2f),
+                modifier = Modifier.weight(5f),
                 state = pagerState,
                 verticalAlignment = Alignment.Top
             ) { position ->
