@@ -11,6 +11,7 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoadRoverImageVie
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
@@ -28,7 +29,9 @@ val viewModelModules = module {
             get()
         )
     }
-    factory<SignInViewModel> { SignInViewModel(get()) }
+    factory<SignInViewModel> {
+        SignInViewModel(get())
+    }
     factory<SearchImageViewModel> {
         SearchImageViewModel(
             provideConnectivityStatus(androidApplication())
@@ -85,6 +88,9 @@ val viewModelModules = module {
         SearchNasaViewModel(
             provideConnectivityStatus(androidApplication())
         )
+    }
+    factory<ProfileViewModel> {
+        ProfileViewModel(get())
     }
 }
 
