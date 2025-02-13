@@ -3,7 +3,7 @@ package com.example.pequenoexploradorapp.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NotificationsNone
@@ -14,7 +14,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -100,10 +99,10 @@ fun MenuToolbar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleToolbar(
-    color: Color = Color.Black,
-    titleColor: Color = Color.White,
+    color: Color = navColor,
+    titleColor: Color = Color.White.copy(0.75f),
     title: String,
-    onNavigationToMenu: () -> Unit,
+    onNavigationToBack: () -> Unit,
     onNavigationClose: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
@@ -112,12 +111,21 @@ fun SimpleToolbar(
             scrolledContainerColor = color,
             titleContentColor = titleColor,
         ),
-        title = { Text(title) },
+        title = {
+            Text(
+                text = title,
+                color = titleColor,
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         navigationIcon = {
-            IconButton(onClick = { onNavigationToMenu() }) {
+            IconButton(onClick = { onNavigationToBack() }) {
                 Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
+                    imageVector = Icons.Default.ArrowBackIosNew,
+                    contentDescription = "Icon ArrowBack",
+                    tint = titleColor
                 )
             }
         },
@@ -125,79 +133,8 @@ fun SimpleToolbar(
             IconButton(onClick = { onNavigationClose() }) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "Localized description"
-                )
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProfileToolbar(
-    color: Color = Color.Black,
-    titleColor: Color = Color.White,
-    title: String,
-    onNavigationIconBack: () -> Unit,
-    onNavigationIconClose: () -> Unit,
-    toolbarBehavior: TopAppBarScrollBehavior? = null,
-) {
-    LargeTopAppBar(
-        colors = TopAppBarDefaults.largeTopAppBarColors(
-            containerColor = color,
-            scrolledContainerColor = color,
-            titleContentColor = titleColor,
-        ),
-        title = { Text(title) },
-        navigationIcon = {
-            IconButton(onClick = { onNavigationIconBack() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { onNavigationIconClose() }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        scrollBehavior = toolbarBehavior
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TicketsToolbar(
-    color: Color = Color.Black,
-    titleColor: Color = Color.White,
-    title: String,
-    onNavigationIconBack: () -> Unit,
-    onNavigationIconClose: () -> Unit,
-) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.largeTopAppBarColors(
-            containerColor = color,
-            scrolledContainerColor = color,
-            titleContentColor = titleColor,
-        ),
-        title = { Text(title) },
-        navigationIcon = {
-            IconButton(onClick = { onNavigationIconBack() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Localized description"
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = { onNavigationIconClose() }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Localized description"
+                    contentDescription = "Icon Close",
+                    tint = titleColor
                 )
             }
         }
