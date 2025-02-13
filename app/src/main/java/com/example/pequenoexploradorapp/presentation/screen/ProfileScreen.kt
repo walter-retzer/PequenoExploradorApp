@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Phone
@@ -244,7 +245,7 @@ fun ProfileScreen(
                                 onDismiss = { }
                             )
                         },
-                    imageVector = Icons.Filled.AccountCircle,
+                    imageVector = Icons.Filled.Delete,
                     contentDescription = null,
                     tint = Color.White
                 )
