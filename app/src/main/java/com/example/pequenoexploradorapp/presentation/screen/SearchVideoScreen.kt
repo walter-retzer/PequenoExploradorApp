@@ -59,7 +59,6 @@ import com.example.pequenoexploradorapp.presentation.components.parallax.Paralla
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
 import org.koin.compose.koinInject
@@ -85,7 +84,7 @@ fun SearchNasaVideoScreen(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
         topBar = {
             MenuToolbar(
-                title = "Pesquisar",
+                title = "Videos",
                 onNavigationToMenu = { },
                 onNavigationToProfile = { },
                 onNavigateToNotifications = { },
@@ -95,16 +94,15 @@ fun SearchNasaVideoScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        if (isConnected?.not() == true) {
-            snackBarIsActivated = true
-            LaunchedEffect(snackBarIsActivated) {
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
                     snackBarHostState = snackBarHostState,
                     coroutineScope = scope,
                     message = ConstantsApp.ERROR_WITHOUT_INTERNET,
                     duration = SnackbarDuration.Long
                 )
-                snackBarIsActivated = false
+                snackBarIsActivated = true
             }
         }
         Column(
@@ -160,7 +158,6 @@ fun SearchNasaVideoScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 text = "Maravilhe-se com os videos mais fascinantes do Universo",
-                fontSize = 21.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = Color.White,
@@ -171,10 +168,11 @@ fun SearchNasaVideoScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(20.dp)),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = PurpleGrey40,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
                 ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
@@ -189,7 +187,7 @@ fun SearchNasaVideoScreen(
                     Text(
                         "Procurar Videos",
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.labelMedium
                     )
                 },
                 onValueChange = { viewModel.onTextInputChange(it) },
@@ -221,7 +219,6 @@ fun SearchNasaVideoScreen(
                     .padding(16.dp)
                     .fillMaxWidth(),
                 text = "Pesquisar",
-                isLoading = false,
                 onClick = {
                     onNavigateToLoadNasaVideo(textSearchImage.textInput.trimEnd())
                 },

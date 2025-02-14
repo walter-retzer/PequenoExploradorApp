@@ -94,16 +94,15 @@ fun SearchImageScreen(
         },
         containerColor = Color.Transparent
     ) { paddingValues ->
-        if (isConnected?.not() == true) {
-            snackBarIsActivated = true
-            LaunchedEffect(snackBarIsActivated) {
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
                 snackBarOnlyMessage(
                     snackBarHostState = snackBarHostState,
                     coroutineScope = scope,
                     message = ConstantsApp.ERROR_WITHOUT_INTERNET,
                     duration = SnackbarDuration.Long
                 )
-                snackBarIsActivated = false
+                snackBarIsActivated = true
             }
         }
         Column(
