@@ -183,7 +183,7 @@ fun List<FavouriteImageToSave>.formattedHeadText(): String {
     else "Foram encontradas ${this.size} imagens favoritas"
 }
 
-fun List<RoverImageInfo>.formattedHeadRoverText(): String {
+fun List<RoverImageInfo>.formattedHeadImageText(): String {
     return if (this.size == 1) "Foi encontrada 1 imagem"
     else if (this.isEmpty()) ""
     else "Foram encontradas ${this.size} imagens"
