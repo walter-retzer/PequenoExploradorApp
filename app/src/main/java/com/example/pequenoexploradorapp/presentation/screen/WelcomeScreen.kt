@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -19,8 +18,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,17 +29,14 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.OnBoardingPage
-import com.example.pequenoexploradorapp.presentation.theme.Purple50
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.components.ProgressButton
+import com.example.pequenoexploradorapp.presentation.theme.Purple80
+
 
 @ExperimentalAnimationApi
 @Composable
@@ -59,6 +53,8 @@ fun WelcomeScreen(
         initialPageOffsetFraction = 0f,
         pageCount = { 3 }
     )
+
+
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
@@ -68,7 +64,6 @@ fun WelcomeScreen(
                     painterResource(id = R.drawable.simple_background),
                     contentScale = ContentScale.FillBounds
                 )
-
         ) {
             HorizontalPager(
                 modifier = Modifier.weight(5f),
@@ -85,7 +80,8 @@ fun WelcomeScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
-                    val color = if (pagerState.currentPage == iteration) Purple50 else Color.DarkGray
+                    val color =
+                        if (pagerState.currentPage == iteration) Purple80 else Color.DarkGray
                     Box(
                         modifier = Modifier
                             .padding(4.dp)
@@ -109,13 +105,13 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 60.dp),
+            .padding(top = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         Image(
             painter = painterResource(id = onBoardingPage.image),
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(250.dp)
                 .clip(RoundedCornerShape(32.dp)),
@@ -124,23 +120,19 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp),
+                .padding(top = 16.dp, bottom = 16.dp),
             text = onBoardingPage.title,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge
         )
         Text(
             text = onBoardingPage.description,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(horizontal = 16.dp)
-                .padding(top = 20.dp, bottom = 20.dp),
-
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
+                .padding(10.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -154,38 +146,22 @@ fun FinishButton(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+        modifier = modifier.fillMaxSize(),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
     ) {
         AnimatedVisibility(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(54.dp),
+            modifier = Modifier.fillMaxWidth(),
             visible = pagerState.currentPage == 2
         ) {
-            Button(
-                onClick = onClick,
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.Black,
-                    containerColor = mainColor
-                )
-            ) {
-                Text(
-                    text = "Continuar",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = TextStyle(
-                        fontFamily = FontFamily.SansSerif,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp,
-                        lineHeight = 16.sp,
-                        letterSpacing = 0.5.sp
-                    )
-                )
-            }
+            ProgressButton(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                text = "Começar",
+                isLoading = false,
+                onClick = { onClick() }
+            )
         }
     }
 }
