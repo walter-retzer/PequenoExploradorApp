@@ -20,6 +20,7 @@ val QuickSand = FontFamily(
 )
 
 val Typography = Typography(
+    // Text for UI
     bodyLarge = TextStyle(
         fontFamily = QuickSand,
         fontWeight = FontWeight.Bold,
@@ -35,6 +36,7 @@ val Typography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp
     ),
+    // Text using inside a Card
     titleLarge = TextStyle(
         fontFamily = QuickSand,
         fontWeight = FontWeight.Normal,
@@ -50,6 +52,7 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
     ),
+    // Text using in Buttons, InputText..
     labelLarge = TextStyle(
         fontFamily = QuickSand,
         fontWeight = FontWeight.Light,

@@ -46,11 +46,10 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.FutureSelectableDates
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedRequestDateApi
 import com.example.pequenoexploradorapp.domain.util.formattedToMillis
@@ -145,11 +144,9 @@ fun GallerySearchScreen(
                     .padding(16.dp)
                     .fillMaxWidth(),
                 text = "As Imagens do Dia Nasa estão disponíveis do dia $dateInitial ao dia $dateFinal",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = Color.White,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyLarge
             )
             Box {
                 AnimatedLottieFile(
@@ -169,11 +166,9 @@ fun GallerySearchScreen(
                         .wrapContentWidth()
                         .clickable { isShowDatePickerDialog = true },
                     text = "Escolha uma data: ",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Start,
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Image(
                     painter = painterResource(R.drawable.icon_date),
@@ -219,11 +214,9 @@ fun GallerySearchScreen(
                         .background(backgroundColor, RoundedCornerShape(20.dp))
                         .padding(16.dp),
                     text = "Data Selecionada: $selectedDate",
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
             AnimatedVisibility(
@@ -236,7 +229,6 @@ fun GallerySearchScreen(
                         .padding(16.dp)
                         .fillMaxWidth(),
                     text = "Pesquisar",
-                    isLoading = false,
                     onClick = {
                         onNavigateToLoadImage(selectedDate.formattedRequestDateApi())
                     }
