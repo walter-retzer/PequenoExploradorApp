@@ -10,20 +10,20 @@ sealed class OnBoardingPage(
     val description: String
 ) {
     object First : OnBoardingPage(
-        image = R.drawable.image_onboarding1,
+        image = R.drawable.perfil02,
         title = "Bem-vindo ao \nPequeno Explorador!",
-        description = "Prepare-se para uma viagem incrível pelo universo! Aqui, você vai explorar planetas, estrelas, galáxias e muito mais.\nAperte os cintos e embarque nessa jornada cheia de descobertas e diversão. O cosmos está esperando por você!"
+        description = "Prepare-se para uma viagem incrível pelo universo!\nAqui, você vai explorar planetas, estrelas, galáxias e muito mais...\nAperte os cintos e embarque nessa jornada cheia de descobertas e diversão."
     )
 
     object Second : OnBoardingPage(
-        image = R.drawable.image_onboarding2,
+        image = R.drawable.perfil13,
         title = "Seja um Explorador\ndo nosso imenso Universo!",
-        description = "Descubra os segredos do universo, conheça galáxias e viaje por mundos desconhecidos.\nOnde aprender sobre o espaço se transforma em uma grande aventura. Vamos explorar o céu juntos!"
+        description = "Descubra os segredos do universo, conheça galáxias e viaje por mundos desconhecidos.\nOnde aprender sobre o espaço se transforma em uma grande aventura. Vamos explorar o céu juntos, o cosmos está esperando por você!"
     )
 
     object Third : OnBoardingPage(
-        image = R.drawable.image_onboarding3,
+        image = R.drawable.perfil15,
         title = "Sua missão \ncomeçará em breve!",
-        description = "Você está pronto para uma aventura cósmica? Conheça as incríveis imagens dos Planetas do nosso Sistema Solar.\nVamos começar nossa jornada pelo espaço sideral e descobrir as maravilhas que ele esconde!"
+        description = "Conheça as incríveis imagens dos planetas do nosso Sistema Solar.\nVamos começar nossa jornada pelo espaço sideral e descobrir as maravilhas que ele esconde!\nVocê está pronto para uma aventura cósmica?"
     )
 }
