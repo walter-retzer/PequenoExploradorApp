@@ -13,6 +13,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.data.FavouriteImageToSave
+import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.firebase.FirebaseRemoteConfigManager
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -180,6 +181,12 @@ fun List<FavouriteImageToSave>.formattedHeadText(): String {
     return if (this.size == 1) "Foi encontrada 1 imagem favorita"
     else if (this.isEmpty()) ""
     else "Foram encontradas ${this.size} imagens favoritas"
+}
+
+fun List<RoverImageInfo>.formattedHeadRoverText(): String {
+    return if (this.size == 1) "Foi encontrada 1 imagem"
+    else if (this.isEmpty()) ""
+    else "Foram encontradas ${this.size} imagens"
 }
 
 fun String.enableButton(): Boolean {
