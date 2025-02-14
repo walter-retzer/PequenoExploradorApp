@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -38,16 +37,14 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.BuildConfig
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,10 +122,9 @@ fun RoverMissionScreen(
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, top = 0.dp),
                         text = "Nossa Exploração pelo Planeta Marte começa agora",
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        color = Color.White
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
                 Text(
@@ -136,13 +132,12 @@ fun RoverMissionScreen(
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp),
                     text = "Opções de rovers:",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Left,
-                    color = Color.White
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 options.forEach { option ->
-                    Spacer(modifier = Modifier.height(16.dp))
+                    VerticalSpacer(10.dp)
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -162,13 +157,11 @@ fun RoverMissionScreen(
                         ) {
                             Text(
                                 text = option.titleButtonLeft,
-                                style = TextStyle(
-                                    color = Color.White,
-                                    fontSize = 19.sp,
-                                    textAlign = TextAlign.Center,
-                                )
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelLarge
                             )
-                            Spacer(modifier = Modifier.size(16.dp))
+                            VerticalSpacer(10.dp)
                             Image(
                                 painter = painterResource(option.iconButtonLeft),
                                 contentDescription = null,
@@ -193,13 +186,11 @@ fun RoverMissionScreen(
                         ) {
                             Text(
                                 text = option.titleButtonRight,
-                                style = TextStyle(
-                                    color = Color.White,
-                                    fontSize = 19.sp,
-                                    textAlign = TextAlign.Center,
-                                )
+                                textAlign = TextAlign.Center,
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelLarge
                             )
-                            Spacer(modifier = Modifier.size(16.dp))
+                            VerticalSpacer(10.dp)
                             Image(
                                 painter = painterResource(option.iconButtonRight),
                                 contentDescription = null,
@@ -213,7 +204,7 @@ fun RoverMissionScreen(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.size(16.dp))
+                VerticalSpacer(10.dp)
             }
         }
     }
