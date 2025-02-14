@@ -134,11 +134,9 @@ fun AvatarSelectionScreen(
                             .fillMaxWidth()
                             .padding(10.dp),
                         text = "Escolha seu Avatar",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = ListItemDefaults.contentColor,
-                        style = MaterialTheme.typography.titleLarge
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                     VerticalSpacer(12.dp)
                     Text(
@@ -146,11 +144,9 @@ fun AvatarSelectionScreen(
                             .fillMaxWidth()
                             .padding(10.dp),
                         text = "Nós possuimos uma lista com diversos avatares customizados",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = ListItemDefaults.contentColor,
-                        style = MaterialTheme.typography.titleLarge
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

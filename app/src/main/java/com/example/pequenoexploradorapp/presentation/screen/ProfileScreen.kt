@@ -140,13 +140,9 @@ fun ProfileScreen(
             ) {
                 Text(
                     text = name,
-                    style = TextStyle(
-                        color = Pink40,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    ),
+                    textAlign = TextAlign.Center,
+                    color = Pink40,
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
             Row(
@@ -165,13 +161,9 @@ fun ProfileScreen(
                 )
                 Text(
                     text = email,
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    ),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Row(
@@ -190,13 +182,9 @@ fun ProfileScreen(
                 )
                 Text(
                     text = phone.formattedAsPhone(),
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    )
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Row(
@@ -215,13 +203,9 @@ fun ProfileScreen(
                 )
                 Text(
                     text = "ID: $uid",
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    ),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             LoadingWithLine(isLoading)
@@ -260,13 +244,9 @@ fun ProfileScreen(
                         )
                     },
                     text = "Excluir Conta",
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    ),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Row(
@@ -304,13 +284,9 @@ fun ProfileScreen(
                         )
                     },
                     text = "Sair",
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    ),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             when (val state = uiState) {

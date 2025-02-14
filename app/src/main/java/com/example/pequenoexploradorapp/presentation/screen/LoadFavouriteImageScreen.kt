@@ -55,10 +55,8 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
@@ -247,8 +245,6 @@ fun RenderImageFavouriteSuccess(
                     .align(Alignment.CenterVertically)
                     .padding(6.dp),
                 text = listOfImagesFromDb.formattedHeadText(),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Start,
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
@@ -351,8 +347,6 @@ fun LoadFavouriteImageOnCard(
                     .align(Alignment.BottomEnd)
                     .padding(3.dp)
                     .wrapContentSize(),
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.End,
                 color = ListItemDefaults.contentColor,
                 style = MaterialTheme.typography.labelSmall
@@ -402,11 +396,9 @@ fun LoadFavouriteImageOnCard(
                     .fillMaxWidth()
                     .align(Alignment.Center)
                     .padding(4.dp),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = PurpleGrey80,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }

@@ -25,6 +25,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -46,10 +47,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
@@ -201,20 +200,18 @@ fun ShareFavouriteImageScreen(
                         modifier = Modifier
                             .weight(1f)
                             .padding(16.dp),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color.White
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleSmall
                     )
                     Text(
                         text = "Compartilhar",
                         modifier = Modifier
                             .weight(1f)
                             .padding(16.dp),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
-                        color = Color.White
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleSmall
                     )
                 }
             }
