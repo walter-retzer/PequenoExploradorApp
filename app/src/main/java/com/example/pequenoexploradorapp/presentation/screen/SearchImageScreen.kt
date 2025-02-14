@@ -53,13 +53,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
-import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.parallax.ParallaxView
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ContainerSettings
 import com.example.pequenoexploradorapp.presentation.components.parallax.model.ParallaxOrientation
-import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
+import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import org.koin.compose.koinInject
@@ -160,7 +159,6 @@ fun SearchImageScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 text = "Maravilhe-se com as fotos mais fascinantes do Universo",
-                fontSize = 21.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = Color.White,
@@ -171,10 +169,11 @@ fun SearchImageScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .background(backgroundColor, RoundedCornerShape(20.dp)),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = PurpleGrey40,
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
                 ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
@@ -189,7 +188,7 @@ fun SearchImageScreen(
                     Text(
                         "Procurar Imagens",
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.labelMedium
                     )
                 },
                 onValueChange = { viewModel.onTextInputChange(it) },
@@ -221,7 +220,6 @@ fun SearchImageScreen(
                     .padding(16.dp)
                     .fillMaxWidth(),
                 text = "Pesquisar",
-                isLoading = false,
                 onClick = {
                     onNavigateToLoadNasaImage(textSearchImage.textInput.trimEnd())
                 },
