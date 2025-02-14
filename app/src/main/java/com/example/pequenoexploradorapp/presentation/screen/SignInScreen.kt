@@ -183,7 +183,7 @@ fun SignInUI(
                         .size(200.dp)
                         .align(Alignment.CenterVertically),
                     file = R.raw.astronaut_blue,
-                    speed = 2f,
+                    speed = 1f,
                     contentScale = ContentScale.Crop
                 )
             }
