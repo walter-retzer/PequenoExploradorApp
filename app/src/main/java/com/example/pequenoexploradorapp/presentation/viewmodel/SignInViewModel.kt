@@ -50,6 +50,7 @@ class SignInViewModel(
         )
 
     fun onSignInUser(name: String, email: String, password: String, phoneNumber: String) {
+        _uiState.value = SignInViewState.Loading(true)
         authService.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -128,6 +129,7 @@ class SignInViewModel(
 
 sealed interface SignInViewState {
     data object Init : SignInViewState
+    data class Loading(val isLoading: Boolean) : SignInViewState
     data class Success(val message: String) : SignInViewState
     data class Error(val message: String) : SignInViewState
 }

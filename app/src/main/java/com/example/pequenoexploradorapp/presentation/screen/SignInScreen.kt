@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.MaskVisualTransformation
@@ -63,7 +64,6 @@ import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewState
-import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
@@ -73,10 +73,7 @@ fun SignInScreen(
     viewModel: SignInViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    var isLoading by remember { mutableStateOf(false) }
-    var snackBarIsActivated by remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -85,48 +82,47 @@ fun SignInScreen(
         when (val state = uiState) {
             is SignInViewState.Init -> {
                 SignInUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
                     viewModel = viewModel,
                     paddingValues = paddingValues,
-                    isLoading = isLoading
+                    isLoading = false
+                )
+            }
+
+            is SignInViewState.Loading -> {
+                SignInUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = state.isLoading
                 )
             }
 
             is SignInViewState.Success -> {
-                isLoading = true
                 SignInUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
                     viewModel = viewModel,
                     paddingValues = paddingValues,
-                    isLoading = isLoading
+                    isLoading = false,
+                    isSuccess = true,
+                    hasMessage = true,
+                    message = state.message
                 )
-                LaunchedEffect(key1 = true) {
-                    delay(2000L)
-                    isLoading = false
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message
-                    )
-                    delay(2000L)
-                    onNavigateToHome()
-                }
             }
 
             is SignInViewState.Error -> {
-                snackBarIsActivated = true
                 SignInUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
                     viewModel = viewModel,
                     paddingValues = paddingValues,
-                    isLoading = false
+                    isLoading = false,
+                    hasMessage = true,
+                    message = state.message
                 )
-                LaunchedEffect(key1 = snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
             }
         }
     }
@@ -134,19 +130,27 @@ fun SignInScreen(
 
 @Composable
 fun SignInUI(
+    snackBarHostState: SnackbarHostState,
+    onNavigateToHome: () -> Unit,
     viewModel: SignInViewModel,
     paddingValues: PaddingValues,
-    isLoading: Boolean
+    isLoading: Boolean,
+    isSuccess: Boolean? = false,
+    hasMessage: Boolean? = false,
+    message: String? = null
 ) {
+    val scope = rememberCoroutineScope()
     val newUserSignInState by viewModel.newUserSignInState.collectAsState()
     val nameError by viewModel.nameError.collectAsState()
     val phoneError by viewModel.phoneNumberError.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val isVisiblePassword by remember { derivedStateOf { newUserSignInState.password.isNotBlank() } }
     val isVisibleName by remember { derivedStateOf { newUserSignInState.name.isNotBlank() } }
     val isVisibleEmail by remember { derivedStateOf { newUserSignInState.email.isNotBlank() } }
     val isVisiblePhoneNumber by remember { derivedStateOf { newUserSignInState.phoneNumber.isNotBlank() } }
+    var snackBarIsActivated by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -467,6 +471,33 @@ fun SignInUI(
                     .align(Alignment.Center),
                 color = mainColor
             )
+        }
+    }
+    if (isConnected == false && !snackBarIsActivated) {
+        LaunchedEffect(Unit) {
+            snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                duration = SnackbarDuration.Long
+            )
+            snackBarIsActivated = true
+        }
+    }
+    if (isSuccess == true) {
+        LaunchedEffect(Unit) {
+            onNavigateToHome()
+        }
+    }
+    if (hasMessage == true && !snackBarIsActivated) {
+        LaunchedEffect(Unit) {
+            snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = message.toString(),
+                duration = SnackbarDuration.Long
+            )
+            snackBarIsActivated = true
         }
     }
 }
