@@ -7,7 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,13 +19,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -33,6 +43,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +63,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,8 +71,14 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
+import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Purple80
+import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
+import com.example.pequenoexploradorapp.presentation.theme.scaffoldColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewState
 import kotlinx.coroutines.delay
@@ -82,6 +100,8 @@ fun LoginScreen(
     val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val isVisiblePassword by remember { derivedStateOf { userLogin.password.isNotBlank() } }
+    val isVisibleEmail by remember { derivedStateOf { userLogin.email.isNotBlank() } }
     var progressButtonIsActivated by remember { mutableStateOf(false) }
     var snackBarIsActivated by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -150,7 +170,7 @@ fun LoginScreen(
 
         Box(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(paddingValues)
                 .paint(
                     painterResource(id = R.drawable.simple_background),
@@ -166,43 +186,39 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Spacer(modifier = Modifier.height(35.dp))
-
+                VerticalSpacer(16.dp)
                 Text(
                     text = "Seja Bem Vindo!",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Image(
-                    painter = painterResource(R.drawable.image_splash_screen),
-                    contentDescription = null,
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, Color.White, CircleShape)
-                        .background(Color.White)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
+                Row {
+                    AnimatedLottieFile(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .align(Alignment.CenterVertically),
+                        file = R.raw.astronaut_moon,
+                        speed = 2f,
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Text(
                     modifier = Modifier.align(alignment = Alignment.Start),
                     text = "Informe seus dados:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
+                VerticalSpacer(10.dp)
                 OutlinedTextField(
+                    textStyle = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black),
+                        .background(Color.Black, RoundedCornerShape(20.dp)),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.LightGray,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedContainerColor = backgroundColor
+                    ),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrectEnabled = true,
@@ -215,16 +231,47 @@ fun LoginScreen(
                     supportingText = {
                         if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
                     },
-                    placeholder = { Text(text = "Email") },
+                    placeholder = {
+                        Text(
+                            "Email",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    },
                     onValueChange = { viewModel.onEmailChange(it) },
+                    trailingIcon = {
+                        if (isVisibleEmail) {
+                            IconButton(
+                                onClick = { viewModel.onEmailChange("") }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear"
+                                )
+                            }
+                        }
+                    },
+                    leadingIcon = {
+                        IconButton(
+                            onClick = { }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Email,
+                                contentDescription = "Search"
+                            )
+                        }
+                    }
                 )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
+                VerticalSpacer(6.dp)
                 OutlinedTextField(
+                    textStyle = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black),
+                        .background(Color.Black, RoundedCornerShape(20.dp)),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.LightGray,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedContainerColor = backgroundColor
+                    ),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrectEnabled = true,
@@ -239,25 +286,49 @@ fun LoginScreen(
                             Text(text = viewModel.validatePassword(userLogin.password))
                     },
                     visualTransformation = PasswordVisualTransformation(),
-                    placeholder = { Text("Senha") },
+                    placeholder = {
+                        Text(
+                            "Senha",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    },
                     onValueChange = {
                         if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
                             it
                         )
+                    },
+                    trailingIcon = {
+                        if (isVisiblePassword) {
+                            IconButton(
+                                onClick = { viewModel.onPasswordChange("") }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear"
+                                )
+                            }
+                        }
+                    },
+                    leadingIcon = {
+                        IconButton(
+                            onClick = { }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Password,
+                                contentDescription = "Search"
+                            )
+                        }
                     }
                 )
-
                 Text(
                     modifier = Modifier
                         .align(alignment = Alignment.End)
                         .clickable { showBottomSheet = true },
                     text = "Esqueceu a senha?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall
                 )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
+                VerticalSpacer(10.dp)
                 ProgressButton(
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -275,55 +346,39 @@ fun LoginScreen(
                         }
                     }
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                val shape = RoundedCornerShape(20.dp)
-
+                VerticalSpacer(16.dp)
                 Button(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(54.dp)
-                        .clip(shape)
-                        .background(Color.DarkGray),
-                    shape = shape,
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(PurpleGrey40),
+                    shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     onClick = { onGoogleSignInClick() },
                 ) {
                     Text(
                         text = "Google",
                         color = Color.White,
-                        style = TextStyle(
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp,
-                            lineHeight = 16.sp,
-                            letterSpacing = 0.5.sp
-                        )
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
+                VerticalSpacer(32.dp)
                 Text(
                     modifier = Modifier.clickable { },
                     text = "Ainda não tem uma conta?",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = Color.White,
                 )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
+                VerticalSpacer(10.dp)
                 Text(
                     modifier = Modifier
                         .clickable { onNavigateToSignIn() },
                     text = "Cadastre-se",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Pink40,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = mainColor,
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
+                VerticalSpacer(32.dp)
                 if (showBottomSheet) {
                     BottomSheet(viewModel) {
                         showBottomSheet = false
@@ -338,9 +393,10 @@ fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(viewModel: LoginUserViewModel, onDismiss: () -> Unit) {
-
     val modalBottomSheetState = rememberModalBottomSheetState()
     val userLogin by viewModel.userLoginState.collectAsState()
+    val emailError by viewModel.emailResetError.collectAsState()
+    val isVisibleEmail by remember { derivedStateOf { userLogin.email.isNotBlank() } }
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
@@ -355,33 +411,66 @@ fun BottomSheet(viewModel: LoginUserViewModel, onDismiss: () -> Unit) {
             Text(
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 text = "Recuperar senha",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.secondary
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
             )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
+            VerticalSpacer(16.dp)
             Text(
                 modifier = Modifier.align(alignment = Alignment.Start),
                 text = "Informe seu email:",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
+            VerticalSpacer(10.dp)
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true,
+                    autoCorrectEnabled = true,
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Done
                 ),
                 shape = RoundedCornerShape(20.dp),
                 value = userLogin.emailForResetPassword,
-                placeholder = { Text(text = "Email") },
-                onValueChange = { viewModel.onEmailForResetPasswordChange(it) }
+                isError = emailError,
+                supportingText = {
+                    if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
+                },
+                placeholder = {
+                    Text(
+                        "Email",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                onValueChange = { viewModel.onEmailForResetPasswordChange(it) },
+                trailingIcon = {
+                    if (isVisibleEmail) {
+                        IconButton(
+                            onClick = { viewModel.onEmailForResetPasswordChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Search"
+                        )
+                    }
+                }
             )
 
             ProgressButton(

@@ -31,6 +31,9 @@ class LoginUserViewModel(
     private val _emailError = MutableStateFlow(false)
     val emailError = _emailError.asStateFlow()
 
+    private val _emailResetError = MutableStateFlow(false)
+    val emailResetError = _emailResetError.asStateFlow()
+
     private val _passwordError = MutableStateFlow(false)
     val passwordError = _passwordError.asStateFlow()
 
@@ -81,7 +84,7 @@ class LoginUserViewModel(
     fun onFirebaseAuthResetPassword(email: String) {
         auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _uiState.value = LoginUserViewState.Success(ConstantsApp.SUCCESS_RESET_PASSWORD)
+                _uiState.value = LoginUserViewState.SuccessResetPassword(ConstantsApp.SUCCESS_RESET_PASSWORD)
             } else {
                 _uiState.value = LoginUserViewState.Error(ConstantsApp.ERROR_RESET_PASSWORD)
             }
@@ -90,6 +93,7 @@ class LoginUserViewModel(
 
     fun onEmailForResetPasswordChange(newValue: String) {
         _userLoginState.update { it.copy(emailForResetPassword = newValue) }
+        if (newValue.isNotBlank()) _emailResetError.value = false
     }
 
     fun onEmailChange(newValue: String) {

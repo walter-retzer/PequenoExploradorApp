@@ -59,9 +59,8 @@ fun ProgressButton(
             Text(
                 text = text,
                 color = Color.White,
-                fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
