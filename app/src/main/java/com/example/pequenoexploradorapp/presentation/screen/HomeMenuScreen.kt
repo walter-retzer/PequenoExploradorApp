@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,11 +38,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,7 +153,6 @@ fun HomeMenuScreen(
                             .padding(6.dp),
                         text = "Nossa Exploração pelo Universo começa agora",
                         color = Color.White,
-                        fontSize = 21.sp,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -165,12 +163,11 @@ fun HomeMenuScreen(
                         .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                     text = "Opções de exploração:",
                     color = Color.White,
-                    fontSize = 16.sp,
                     textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 options.forEach { option ->
-                    Spacer(modifier = Modifier.height(16.dp))
+                    VerticalSpacer(16.dp)
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -191,11 +188,10 @@ fun HomeMenuScreen(
                             Text(
                                 text = option.titleButtonLeft,
                                 color = Color.White,
-                                fontSize = 19.sp,
                                 textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.labelLarge
                             )
-                            Spacer(modifier = Modifier.size(16.dp))
+                            VerticalSpacer(16.dp)
                             Image(
                                 painter = painterResource(option.iconButtonLeft),
                                 contentDescription = null,
@@ -217,11 +213,10 @@ fun HomeMenuScreen(
                             Text(
                                 text = option.titleButtonRight,
                                 color = Color.White,
-                                fontSize = 19.sp,
                                 textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.labelLarge
                             )
-                            Spacer(modifier = Modifier.size(16.dp))
+                            VerticalSpacer(16.dp)
                             Image(
                                 painter = painterResource(option.iconButtonRight),
                                 contentDescription = null,
@@ -231,7 +226,7 @@ fun HomeMenuScreen(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                VerticalSpacer(16.dp)
             }
         }
     }
