@@ -306,8 +306,6 @@ fun RenderVideoSuccess(
                         }
                     },
                 text = "Foram encontradas ${totalHits} videos",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Justify,
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
@@ -442,10 +440,8 @@ fun LoadVideoOnCard(
                     .align(Alignment.BottomEnd)
                     .padding(3.dp)
                     .wrapContentSize(),
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = ListItemDefaults.contentColor,
+                color = Color.Gray,
                 style = MaterialTheme.typography.labelSmall
             )
             IconButton(
@@ -489,11 +485,9 @@ fun LoadVideoOnCard(
                     .fillMaxWidth()
                     .align(Alignment.Center)
                     .padding(4.dp),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = PurpleGrey80,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }

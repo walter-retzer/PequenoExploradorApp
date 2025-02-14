@@ -262,8 +262,6 @@ fun RenderSuccess(
                         .fillMaxWidth()
                         .padding(16.dp),
                     text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge
@@ -281,11 +279,9 @@ fun RenderSuccess(
                             }
                         },
                     text = "Foram encontradas $totalHits imagens",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
@@ -443,10 +439,8 @@ fun LoadImageOnCard(
                     .align(Alignment.BottomEnd)
                     .padding(3.dp)
                     .wrapContentSize(),
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.End,
-                color = contentColor,
+                color = Color.Gray,
                 style = MaterialTheme.typography.labelSmall
             )
             IconButton(
@@ -476,11 +470,9 @@ fun LoadImageOnCard(
                     .fillMaxWidth()
                     .align(Alignment.Center)
                     .padding(4.dp),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = PurpleGrey80,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }

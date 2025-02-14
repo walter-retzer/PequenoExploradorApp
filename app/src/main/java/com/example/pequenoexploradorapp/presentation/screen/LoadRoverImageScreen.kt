@@ -35,7 +35,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -72,7 +71,7 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
-import com.example.pequenoexploradorapp.domain.util.formattedHeadRoverText
+import com.example.pequenoexploradorapp.domain.util.formattedHeadImageText
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
@@ -269,12 +268,10 @@ fun RenderSuccess(
                                 scrollState.animateScrollToItem(0)
                             }
                         },
-                    text = listOfImagesFromApi.formattedHeadRoverText(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
+                    text = listOfImagesFromApi.formattedHeadImageText(),
                     textAlign = TextAlign.Justify,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
@@ -424,7 +421,7 @@ fun LoadRoverImageOnCard(
                     .padding(4.dp),
                 textAlign = TextAlign.Center,
                 color = PurpleGrey80,
-                style = MaterialTheme.typography.titleSmall
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
