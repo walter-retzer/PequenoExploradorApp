@@ -1,27 +1,32 @@
 package com.example.pequenoexploradorapp.presentation.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -30,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +43,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -47,12 +52,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.MaskVisualTransformation
+import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
+import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewState
@@ -136,6 +143,10 @@ fun SignInUI(
     val phoneError by viewModel.phoneNumberError.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
+    val isVisiblePassword by remember { derivedStateOf { newUserSignInState.password.isNotBlank() } }
+    val isVisibleName by remember { derivedStateOf { newUserSignInState.name.isNotBlank() } }
+    val isVisibleEmail by remember { derivedStateOf { newUserSignInState.email.isNotBlank() } }
+    val isVisiblePhoneNumber by remember { derivedStateOf { newUserSignInState.phoneNumber.isNotBlank() } }
 
     Box(
         modifier = Modifier
@@ -155,37 +166,41 @@ fun SignInUI(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            VerticalSpacer(16.dp)
             Text(
                 text = "Criar uma conta",
-                fontSize = 22.sp,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Image(
-                painter = painterResource(R.drawable.splash),
-                contentDescription = null,
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .size(180.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Color.White, CircleShape)
-                    .background(Color.White)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            VerticalSpacer(16.dp)
+            Row {
+                AnimatedLottieFile(
+                    modifier = Modifier
+                        .size(200.dp)
+                        .align(Alignment.CenterVertically),
+                    file = R.raw.astronaut_blue,
+                    speed = 2f,
+                    contentScale = ContentScale.Crop
+                )
+            }
+            VerticalSpacer(16.dp)
             Text(
                 modifier = Modifier.align(alignment = Alignment.Start),
                 text = "Inscreva-se para começar:",
-                fontSize = 18.sp,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            VerticalSpacer(16.dp)
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Words,
                     autoCorrectEnabled = true,
@@ -202,18 +217,51 @@ fun SignInUI(
                         )
                     )
                 },
-                placeholder = { Text("Nome") },
+                placeholder = {
+                    Text(
+                        "Nome",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 onValueChange = {
                     if (it.length <= ConstantsApp.NAME_MAX_NUMBER) viewModel.onNameChange(
                         it
                     )
+                },
+                trailingIcon = {
+                    if (isVisibleName) {
+                        IconButton(
+                            onClick = { viewModel.onNameChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Search"
+                        )
+                    }
                 }
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            VerticalSpacer(6.dp)
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrectEnabled = true,
@@ -230,7 +278,12 @@ fun SignInUI(
                         )
                     )
                 },
-                placeholder = { Text("Celular") },
+                placeholder = {
+                    Text(
+                        "Celular",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 onValueChange = {
                     if (it.length <= ConstantsApp.PHONE_MAX_NUMBER) viewModel.onPhoneNumberChange(
                         it
@@ -238,13 +291,41 @@ fun SignInUI(
                 },
                 visualTransformation = MaskVisualTransformation(
                     MaskVisualTransformation.PHONE
-                )
+                ),
+                trailingIcon = {
+                    if (isVisiblePhoneNumber) {
+                        IconButton(
+                            onClick = { viewModel.onPhoneNumberChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = "Search"
+                        )
+                    }
+                }
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            VerticalSpacer(6.dp)
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrectEnabled = true,
@@ -261,14 +342,47 @@ fun SignInUI(
                         )
                     )
                 },
-                placeholder = { Text(text = "Email") },
+                placeholder = {
+                    Text(
+                        "Email",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 onValueChange = { viewModel.onEmailChange(it) },
+                trailingIcon = {
+                    if (isVisibleEmail) {
+                        IconButton(
+                            onClick = { viewModel.onEmailChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Search"
+                        )
+                    }
+                }
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            VerticalSpacer(6.dp)
             OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black),
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrectEnabled = true,
@@ -287,14 +401,41 @@ fun SignInUI(
                         )
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                placeholder = { Text("Senha") },
+                placeholder = {
+                    Text(
+                        "Senha",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
                 onValueChange = {
                     if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
                         it
                     )
+                },
+                trailingIcon = {
+                    if (isVisiblePassword) {
+                        IconButton(
+                            onClick = { viewModel.onPasswordChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Password,
+                            contentDescription = "Search"
+                        )
+                    }
                 }
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            VerticalSpacer(10.dp)
             ProgressButton(
                 modifier = Modifier
                     .padding(top = 16.dp, bottom = 26.dp)
