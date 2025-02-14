@@ -72,6 +72,7 @@ import com.example.pequenoexploradorapp.data.FavouriteImageToSave
 import com.example.pequenoexploradorapp.data.RoverImageInfo
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
+import com.example.pequenoexploradorapp.domain.util.formattedHeadRoverText
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
@@ -252,8 +253,6 @@ fun RenderSuccess(
                         .fillMaxWidth()
                         .padding(16.dp),
                     text = "Infelizmente, não foi possível encontrar as imagens pesquizadas",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge
@@ -270,7 +269,7 @@ fun RenderSuccess(
                                 scrollState.animateScrollToItem(0)
                             }
                         },
-                    text = "Foram encontradas ${listOfImagesFromApi.size}",
+                    text = listOfImagesFromApi.formattedHeadRoverText(),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Justify,
@@ -358,7 +357,6 @@ fun LoadRoverImageOnCard(
             )
         }
     }
-
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
@@ -393,10 +391,8 @@ fun LoadRoverImageOnCard(
                     .align(Alignment.BottomEnd)
                     .padding(3.dp)
                     .wrapContentSize(),
-                fontSize = 8.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                color = contentColor,
+                color = Color.Gray,
                 style = MaterialTheme.typography.labelSmall
             )
             IconButton(
@@ -426,11 +422,9 @@ fun LoadRoverImageOnCard(
                     .fillMaxWidth()
                     .align(Alignment.Center)
                     .padding(4.dp),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = PurpleGrey80,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }

@@ -28,7 +28,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -48,14 +47,12 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pequenoexploradorapp.R
+import com.example.pequenoexploradorapp.data.FutureSelectableDates
 import com.example.pequenoexploradorapp.domain.util.formattedRequestDateApi
 import com.example.pequenoexploradorapp.domain.util.formattedToMillis
-import com.example.pequenoexploradorapp.domain.util.formattedYear
 import com.example.pequenoexploradorapp.domain.util.toBrazilianDateFormat
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
@@ -147,11 +144,9 @@ fun RoverSearchImageScreen(
                     .padding(16.dp)
                     .fillMaxWidth(),
                 text = "As imagens da Missão Rover $nameRover estão disponíveis do dia $dateInitial ao dia $dateFinal",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
                 color = Color.White,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.bodyLarge
             )
             Box {
                 AnimatedLottieFile(
@@ -171,11 +166,9 @@ fun RoverSearchImageScreen(
                         .wrapContentWidth()
                         .clickable { isShowDatePickerDialog = true },
                     text = "Escolha uma data: ",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Start,
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Image(
                     painter = painterResource(R.drawable.icon_date),
@@ -184,7 +177,6 @@ fun RoverSearchImageScreen(
                         .size(54.dp)
                         .clickable { isShowDatePickerDialog = true }
                 )
-
             }
             if (isShowDatePickerDialog) {
                 DatePickerDialog(
@@ -221,11 +213,9 @@ fun RoverSearchImageScreen(
                         .background(backgroundColor, RoundedCornerShape(20.dp))
                         .padding(16.dp),
                     text = "Data Selecionada: $selectedDate",
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             AnimatedVisibility(
@@ -238,31 +228,11 @@ fun RoverSearchImageScreen(
                         .padding(16.dp)
                         .fillMaxWidth(),
                     text = "Pesquisar",
-                    isLoading = false,
                     onClick = {
                         onNavigateToLoadRoverImage(selectedDate.formattedRequestDateApi(), nameRover)
                     }
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-class FutureSelectableDates(
-    private val dateInitial: String,
-    private val dateFinal: String,
-) : SelectableDates {
-    private val adjustInitialDate = dateInitial.formattedToMillis(1)
-    private val adjustEndDate = dateFinal.formattedToMillis()
-    private val yearInitial = dateInitial.formattedYear()
-    private val yearFinal = dateFinal.formattedYear()
-
-    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return utcTimeMillis in adjustInitialDate..adjustEndDate
-    }
-
-    override fun isSelectableYear(year: Int): Boolean {
-        return year in yearInitial..yearFinal
     }
 }

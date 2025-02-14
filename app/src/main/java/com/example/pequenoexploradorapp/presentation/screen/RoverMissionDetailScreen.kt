@@ -42,10 +42,8 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
@@ -160,8 +158,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp, top = 16.dp),
                                 text = "Nome: ${state.mission.rover.name}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -171,8 +167,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Status: ${state.mission.rover.status.formattedMission()}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -182,8 +176,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Total de Fotos: ${state.mission.rover.totalPhotos}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -193,8 +185,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Sol: ${state.mission.rover.maxSun}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -204,8 +194,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Lançamento: ${state.mission.rover.launchDate.formattedDate()}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -215,8 +203,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Pouso em Marte: ${state.mission.rover.landingDate.formattedDate()}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -226,8 +212,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Última atividade: ${state.mission.rover.maxDate.formattedDate()}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -237,8 +221,6 @@ fun RoverMissionDetailScreen(
                                     .fillMaxWidth()
                                     .padding(start = 16.dp),
                                 text = "Quantidade de cameras: ${state.mission.rover.cameras.size - 1}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
                                 textAlign = TextAlign.Start,
                                 color = ListItemDefaults.contentColor,
                                 style = MaterialTheme.typography.titleLarge

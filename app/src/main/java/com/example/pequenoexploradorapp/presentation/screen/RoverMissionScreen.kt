@@ -137,7 +137,7 @@ fun RoverMissionScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 options.forEach { option ->
-                    VerticalSpacer(10.dp)
+                    VerticalSpacer(16.dp)
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -204,7 +204,7 @@ fun RoverMissionScreen(
                         }
                     }
                 }
-                VerticalSpacer(10.dp)
+                VerticalSpacer(16.dp)
             }
         }
     }
