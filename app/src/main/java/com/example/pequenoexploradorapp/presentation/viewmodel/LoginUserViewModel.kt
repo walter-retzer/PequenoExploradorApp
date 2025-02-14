@@ -40,7 +40,7 @@ class LoginUserViewModel(
     private val _userLoginState = MutableStateFlow(FirebaseUserData())
     val userLoginState = _userLoginState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Loading)
+    private val _uiState = MutableStateFlow<LoginUserViewState>(LoginUserViewState.Init)
     val uiState: StateFlow<LoginUserViewState> = _uiState.asStateFlow()
 
     val isConnected = connectivityObserver
@@ -58,6 +58,7 @@ class LoginUserViewModel(
     }
 
     fun onGoogleSignInResult(result: GoogleSignInResult) {
+        _uiState.value = LoginUserViewState.Loading(true)
         _state.update {
             it.copy(
                 isSignInSuccessful = result.data != null,
@@ -71,6 +72,7 @@ class LoginUserViewModel(
     }
 
     fun onFirebaseAuthSignIn(email: String, password: String) {
+        _uiState.value = LoginUserViewState.Loading(true)
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -82,6 +84,7 @@ class LoginUserViewModel(
     }
 
     fun onFirebaseAuthResetPassword(email: String) {
+        _uiState.value = LoginUserViewState.Loading(true)
         auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 _uiState.value = LoginUserViewState.SuccessResetPassword(ConstantsApp.SUCCESS_RESET_PASSWORD)
@@ -127,7 +130,8 @@ class LoginUserViewModel(
 
 
 sealed interface LoginUserViewState {
-    data object Loading : LoginUserViewState
+    data object Init : LoginUserViewState
+    data class Loading(val isLoading: Boolean) : LoginUserViewState
     data class Success(val message: String) : LoginUserViewState
     data class SuccessResetPassword(val message: String) : LoginUserViewState
     data class Error(val message: String) : LoginUserViewState

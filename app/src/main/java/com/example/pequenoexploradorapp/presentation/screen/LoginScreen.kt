@@ -5,12 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,314 +71,374 @@ import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewState
-import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
     onGoogleSignInClick: () -> Unit,
     onNavigateToSignIn: () -> Unit,
     onNavigateToHome: () -> Unit,
     viewModel: LoginUserViewModel = koinInject()
 ) {
-    val userLogin by viewModel.userLoginState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
-    val emailError by viewModel.emailError.collectAsState()
-    val passwordError by viewModel.passwordError.collectAsState()
-    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val isVisiblePassword by remember { derivedStateOf { userLogin.password.isNotBlank() } }
-    val isVisibleEmail by remember { derivedStateOf { userLogin.email.isNotBlank() } }
-    var progressButtonIsActivated by remember { mutableStateOf(false) }
-    var snackBarIsActivated by remember { mutableStateOf(false) }
-    var showBottomSheet by remember { mutableStateOf(false) }
 
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) { paddingValues ->
         when (val state = uiState) {
-            is LoginUserViewState.Loading -> {
-                progressButtonIsActivated = false
+            is LoginUserViewState.Init -> {
+                LoginUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onNavigateToSignIn = onNavigateToSignIn,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = false
+                )
             }
 
-            is LoginUserViewState.Error -> {
-                progressButtonIsActivated = false
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
+            is LoginUserViewState.Loading -> {
+                LoginUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onNavigateToSignIn = onNavigateToSignIn,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = state.isLoading
+                )
             }
 
             is LoginUserViewState.Success -> {
-                progressButtonIsActivated = false
-                LaunchedEffect(key1 = true) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message
-                    )
-                    delay(2000L)
-                    onNavigateToHome()
-                }
+                LoginUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onNavigateToSignIn = onNavigateToSignIn,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = false,
+                    isSuccess = true
+                )
             }
 
             is LoginUserViewState.SuccessResetPassword -> {
-                snackBarIsActivated = true
-                LaunchedEffect(snackBarIsActivated) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = state.message,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = false
-                }
-            }
-        }
-
-        if (isConnected == false && !snackBarIsActivated) {
-            LaunchedEffect(Unit) {
-                snackBarOnlyMessage(
+                LoginUI(
                     snackBarHostState = snackBarHostState,
-                    coroutineScope = scope,
-                    message = ConstantsApp.ERROR_WITHOUT_INTERNET,
-                    duration = SnackbarDuration.Long
+                    onNavigateToHome = onNavigateToHome,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onNavigateToSignIn = onNavigateToSignIn,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = false,
+                    hasMessage = true,
+                    message = state.message
                 )
-                snackBarIsActivated = false
             }
-        }
 
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .paint(
-                    painterResource(id = R.drawable.simple_background),
-                    contentScale = ContentScale.FillBounds
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = modifier
-                    .padding(start = 16.dp, end = 16.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                VerticalSpacer(16.dp)
-                Text(
-                    text = "Seja Bem Vindo!",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
+            is LoginUserViewState.Error -> {
+                LoginUI(
+                    snackBarHostState = snackBarHostState,
+                    onNavigateToHome = onNavigateToHome,
+                    onGoogleSignInClick = onGoogleSignInClick,
+                    onNavigateToSignIn = onNavigateToSignIn,
+                    viewModel = viewModel,
+                    paddingValues = paddingValues,
+                    isLoading = false,
+                    hasMessage = true,
+                    message = state.message
                 )
-                Row {
-                    AnimatedLottieFile(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .align(Alignment.CenterVertically),
-                        file = R.raw.astronaut_moon,
-                        speed = 2f,
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Text(
-                    modifier = Modifier.align(alignment = Alignment.Start),
-                    text = "Informe seus dados:",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                VerticalSpacer(10.dp)
-                OutlinedTextField(
-                    textStyle = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black, RoundedCornerShape(20.dp)),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedContainerColor = backgroundColor
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrectEnabled = true,
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = userLogin.email,
-                    isError = emailError,
-                    supportingText = {
-                        if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
-                    },
-                    placeholder = {
-                        Text(
-                            "Email",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    onValueChange = { viewModel.onEmailChange(it) },
-                    trailingIcon = {
-                        if (isVisibleEmail) {
-                            IconButton(
-                                onClick = { viewModel.onEmailChange("") }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = "Clear"
-                                )
-                            }
-                        }
-                    },
-                    leadingIcon = {
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = "Search"
-                            )
-                        }
-                    }
-                )
-                VerticalSpacer(6.dp)
-                OutlinedTextField(
-                    textStyle = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black, RoundedCornerShape(20.dp)),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedContainerColor = backgroundColor
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrectEnabled = true,
-                        keyboardType = KeyboardType.NumberPassword,
-                        imeAction = ImeAction.Next
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    value = userLogin.password,
-                    isError = passwordError,
-                    supportingText = {
-                        if (passwordError)
-                            Text(text = viewModel.validatePassword(userLogin.password))
-                    },
-                    visualTransformation = PasswordVisualTransformation(),
-                    placeholder = {
-                        Text(
-                            "Senha",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    onValueChange = {
-                        if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
-                            it
-                        )
-                    },
-                    trailingIcon = {
-                        if (isVisiblePassword) {
-                            IconButton(
-                                onClick = { viewModel.onPasswordChange("") }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = "Clear"
-                                )
-                            }
-                        }
-                    },
-                    leadingIcon = {
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Password,
-                                contentDescription = "Search"
-                            )
-                        }
-                    }
-                )
-                Text(
-                    modifier = Modifier
-                        .align(alignment = Alignment.End)
-                        .clickable { showBottomSheet = true },
-                    text = "Esqueceu a senha?",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodySmall
-                )
-                VerticalSpacer(10.dp)
-                ProgressButton(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .fillMaxWidth(),
-                    text = "Entrar",
-                    isLoading = progressButtonIsActivated,
-                    onClick = {
-                        viewModel.validateEmail(userLogin.email)
-                        viewModel.validatePassword(userLogin.password)
-                        if (!emailError && !passwordError && userLogin.password.length == ConstantsApp.PASSWORD_MAX_NUMBER) {
-                            viewModel.onFirebaseAuthSignIn(
-                                userLogin.email,
-                                userLogin.password
-                            )
-                        }
-                    }
-                )
-                VerticalSpacer(16.dp)
-                Button(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(54.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(PurpleGrey40),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    onClick = { onGoogleSignInClick() },
-                ) {
-                    Text(
-                        text = "Google",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-                VerticalSpacer(32.dp)
-                Text(
-                    modifier = Modifier.clickable { },
-                    text = "Ainda não tem uma conta?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
-                )
-                VerticalSpacer(10.dp)
-                Text(
-                    modifier = Modifier
-                        .clickable { onNavigateToSignIn() },
-                    text = "Cadastre-se",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = mainColor,
-                )
-                VerticalSpacer(32.dp)
-                if (showBottomSheet) {
-                    BottomSheet(viewModel) {
-                        showBottomSheet = false
-                    }
-                }
             }
         }
     }
 }
 
+
+@Composable
+fun LoginUI(
+    snackBarHostState: SnackbarHostState,
+    onNavigateToHome: () -> Unit,
+    onGoogleSignInClick: () -> Unit,
+    onNavigateToSignIn: () -> Unit,
+    viewModel: LoginUserViewModel,
+    paddingValues: PaddingValues,
+    isLoading: Boolean,
+    isSuccess: Boolean? = false,
+    hasMessage: Boolean? = false,
+    message: String? = null
+) {
+    val scope = rememberCoroutineScope()
+    val userLogin by viewModel.userLoginState.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val passwordError by viewModel.passwordError.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+    val isVisiblePassword by remember { derivedStateOf { userLogin.password.isNotBlank() } }
+    val isVisibleEmail by remember { derivedStateOf { userLogin.email.isNotBlank() } }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var initLoading by remember { mutableStateOf(false) }
+    var snackBarIsActivated by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .paint(
+                painterResource(id = R.drawable.simple_background),
+                contentScale = ContentScale.FillBounds
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            VerticalSpacer(16.dp)
+            Text(
+                text = "Seja Bem Vindo!",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Row {
+                AnimatedLottieFile(
+                    modifier = Modifier
+                        .size(200.dp)
+                        .align(Alignment.CenterVertically),
+                    file = R.raw.astronaut_moon,
+                    speed = 2f,
+                    contentScale = ContentScale.Crop
+                )
+            }
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Start),
+                text = "Informe seus dados:",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            VerticalSpacer(10.dp)
+            OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = true,
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                shape = RoundedCornerShape(20.dp),
+                value = userLogin.email,
+                isError = emailError,
+                supportingText = {
+                    if (emailError) Text(text = viewModel.validateEmail(userLogin.email))
+                },
+                placeholder = {
+                    Text(
+                        "Email",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                onValueChange = { viewModel.onEmailChange(it) },
+                trailingIcon = {
+                    if (isVisibleEmail) {
+                        IconButton(
+                            onClick = { viewModel.onEmailChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Search"
+                        )
+                    }
+                }
+            )
+            VerticalSpacer(6.dp)
+            OutlinedTextField(
+                textStyle = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black, RoundedCornerShape(20.dp)),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.Gray,
+                    focusedContainerColor = backgroundColor
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = true,
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Next
+                ),
+                shape = RoundedCornerShape(20.dp),
+                value = userLogin.password,
+                isError = passwordError,
+                supportingText = {
+                    if (passwordError)
+                        Text(text = viewModel.validatePassword(userLogin.password))
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                placeholder = {
+                    Text(
+                        "Senha",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                onValueChange = {
+                    if (it.length <= ConstantsApp.PASSWORD_MAX_NUMBER) viewModel.onPasswordChange(
+                        it
+                    )
+                },
+                trailingIcon = {
+                    if (isVisiblePassword) {
+                        IconButton(
+                            onClick = { viewModel.onPasswordChange("") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                },
+                leadingIcon = {
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Password,
+                            contentDescription = "Search"
+                        )
+                    }
+                }
+            )
+            Text(
+                modifier = Modifier
+                    .align(alignment = Alignment.End)
+                    .clickable { showBottomSheet = true },
+                text = "Esqueceu a senha?",
+                color = Color.White,
+                style = MaterialTheme.typography.bodySmall
+            )
+            VerticalSpacer(10.dp)
+            ProgressButton(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxWidth(),
+                text = "Entrar",
+                onClick = {
+                    initLoading = true
+                    viewModel.validateEmail(userLogin.email)
+                    viewModel.validatePassword(userLogin.password)
+                    if (!emailError && !passwordError && userLogin.password.length == ConstantsApp.PASSWORD_MAX_NUMBER) {
+                        viewModel.onFirebaseAuthSignIn(
+                            userLogin.email,
+                            userLogin.password
+                        )
+                    }
+                }
+            )
+            VerticalSpacer(16.dp)
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PurpleGrey40),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                onClick = {
+                    initLoading = true
+                    onGoogleSignInClick()
+                },
+            ) {
+                Text(
+                    text = "Google",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            VerticalSpacer(32.dp)
+            Text(
+                modifier = Modifier.clickable { },
+                text = "Ainda não tem uma conta?",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White,
+            )
+            VerticalSpacer(10.dp)
+            Text(
+                modifier = Modifier
+                    .clickable { onNavigateToSignIn() },
+                text = "Cadastre-se",
+                style = MaterialTheme.typography.bodyMedium,
+                color = mainColor,
+            )
+            VerticalSpacer(32.dp)
+            if (showBottomSheet) {
+                BottomSheet(viewModel) {
+                    showBottomSheet = false
+                }
+            }
+        }
+        if (isLoading || initLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = mainColor
+            )
+        }
+    }
+    if (isConnected == false && !snackBarIsActivated) {
+        LaunchedEffect(Unit) {
+            snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                duration = SnackbarDuration.Long
+            )
+            snackBarIsActivated = true
+        }
+    }
+    if (isSuccess == true) {
+        LaunchedEffect(Unit) {
+            onNavigateToHome()
+        }
+    }
+    if (hasMessage == true && !snackBarIsActivated) {
+        LaunchedEffect(Unit) {
+            snackBarOnlyMessage(
+                snackBarHostState = snackBarHostState,
+                coroutineScope = scope,
+                message = message.toString(),
+                duration = SnackbarDuration.Long
+            )
+            snackBarIsActivated = true
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
