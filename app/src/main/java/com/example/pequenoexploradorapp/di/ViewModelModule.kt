@@ -30,7 +30,10 @@ val viewModelModules = module {
         )
     }
     factory<SignInViewModel> {
-        SignInViewModel(get())
+        SignInViewModel(
+            provideConnectivityStatus(androidApplication()),
+            get()
+        )
     }
     factory<SearchImageViewModel> {
         SearchImageViewModel(

@@ -1,18 +1,23 @@
 package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.pequenoexploradorapp.data.NewUserSignInContact
+import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.secure.SharedPrefApp
 import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 
 class SignInViewModel(
+    private val connectivityObserver: ConnectivityObserver,
     private val sharedPref: SharedPrefApp
 ) : ViewModel() {
 
@@ -35,6 +40,14 @@ class SignInViewModel(
 
     private val _phoneNumberError = MutableStateFlow(false)
     val phoneNumberError = _phoneNumberError.asStateFlow()
+
+    val isConnected = connectivityObserver
+        .isConnected
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            null
+        )
 
     fun onSignInUser(name: String, email: String, password: String, phoneNumber: String) {
         authService.createUserWithEmailAndPassword(email, password)
