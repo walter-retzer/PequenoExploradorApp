@@ -85,6 +85,7 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewState
@@ -137,7 +138,7 @@ fun PictureOfTheDayScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink80
                     )
                 }
                 viewModel.onPictureOfTheDayRequest(date)
@@ -285,7 +286,7 @@ fun RenderSuccessLoadImage(
                                     modifier = Modifier
                                         .size(24.dp)
                                         .align(Alignment.Center),
-                                    color = mainColor
+                                    color = Pink80
                                 )
                             }
                         },
@@ -337,7 +338,7 @@ fun RenderSuccessLoadImage(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink80
             )
         }
     }

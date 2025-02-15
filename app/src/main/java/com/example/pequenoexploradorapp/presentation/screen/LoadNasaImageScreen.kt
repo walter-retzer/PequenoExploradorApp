@@ -35,7 +35,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItemDefaults.contentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -63,10 +62,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.pequenoexploradorapp.R
@@ -78,7 +75,7 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -137,7 +134,7 @@ fun LoadNasaImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = Pink40
+                        color = Pink80
                     )
                 }
                 viewModel.onNasaImageSearch(imageSearch)
@@ -328,7 +325,7 @@ fun RenderSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = Pink40
+                color = Pink80
             )
         }
     }
@@ -423,7 +420,7 @@ fun LoadImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = Pink40
+                            color = Pink80
                         )
                     }
                 },

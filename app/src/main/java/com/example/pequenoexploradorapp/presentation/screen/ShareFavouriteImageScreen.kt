@@ -55,7 +55,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,7 +122,7 @@ fun ShareFavouriteImageScreen(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.Center),
-                                color = Pink40
+                                color = Pink80
                             )
                         }
                     },

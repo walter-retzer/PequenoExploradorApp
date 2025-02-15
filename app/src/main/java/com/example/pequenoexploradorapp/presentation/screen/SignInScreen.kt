@@ -60,8 +60,8 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SignInViewState
 import org.koin.compose.koinInject
@@ -469,7 +469,7 @@ fun SignInUI(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink80
             )
         }
     }

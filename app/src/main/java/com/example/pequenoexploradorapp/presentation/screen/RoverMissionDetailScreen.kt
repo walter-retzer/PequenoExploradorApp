@@ -53,7 +53,7 @@ import com.example.pequenoexploradorapp.domain.util.formattedMission
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.scaffoldColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewState
@@ -108,7 +108,7 @@ fun RoverMissionDetailScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink80
                     )
                 }
                 viewModel.onRoverMissionDetailRequest(roverName)

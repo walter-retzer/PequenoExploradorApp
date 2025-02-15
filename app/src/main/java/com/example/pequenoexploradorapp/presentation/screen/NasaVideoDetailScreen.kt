@@ -52,7 +52,7 @@ import com.example.pequenoexploradorapp.R
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.mainColor
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewState
 import kotlinx.coroutines.delay
@@ -130,7 +130,7 @@ fun NasaVideoDetailScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = mainColor
+                        color = Pink80
                     )
                 }
                 viewModel.onVideoUrlToLoad(video)
@@ -148,9 +148,7 @@ fun NasaVideoDetailScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //println("Video => ${state.video}")
-                    //val u = "https://images-assets.nasa.gov/video/NHQ_2019_0311_Go Forward to the Moon/NHQ_2019_0311_Go Forward to the Moon~large.mp4"
-                    Row {
+                   Row {
                         if (URLUtil.isValidUrl(state.video)) {
                             val exoPlayer = ExoPlayer.Builder(context).build()
                             LaunchedEffect(exoPlayer) {
@@ -229,7 +227,7 @@ fun NasaVideoDetailScreen(
                             modifier = Modifier
                                 .width(64.dp)
                                 .align(Alignment.Center),
-                            color = mainColor
+                            color = Pink80
                         )
                     }
                 }

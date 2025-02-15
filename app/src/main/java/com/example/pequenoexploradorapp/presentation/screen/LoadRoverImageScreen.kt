@@ -74,7 +74,7 @@ import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
-import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -132,7 +132,7 @@ fun LoadRoverImageScreen(
                         modifier = Modifier
                             .width(64.dp)
                             .align(Alignment.Center),
-                        color = Pink40
+                        color = Pink80
                     )
                 }
                 viewModel.onRequestRoverImages(date, nameRover)
@@ -308,7 +308,7 @@ fun RenderSuccess(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = Pink40
+                color = Pink80
             )
         }
     }
@@ -370,7 +370,7 @@ fun LoadRoverImageOnCard(
                             modifier = Modifier
                                 .size(24.dp)
                                 .align(Alignment.Center),
-                            color = Pink40
+                            color = Pink80
                         )
                     }
                 },

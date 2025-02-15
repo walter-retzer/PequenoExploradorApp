@@ -66,6 +66,7 @@ import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFi
 import com.example.pequenoexploradorapp.presentation.components.ProgressButton
 import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey40
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
@@ -407,7 +408,7 @@ fun LoginUI(
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center),
-                color = mainColor
+                color = Pink80
             )
         }
     }
