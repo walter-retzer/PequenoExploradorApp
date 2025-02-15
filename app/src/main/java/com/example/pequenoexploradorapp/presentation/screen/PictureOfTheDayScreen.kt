@@ -83,6 +83,7 @@ import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.formattedDate
 import com.example.pequenoexploradorapp.domain.util.toHttpsPrefix
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
+import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
@@ -256,14 +257,15 @@ fun RenderSuccessLoadImage(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            VerticalSpacer(16.dp)
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.Black)
                     .border(
@@ -318,6 +320,7 @@ fun RenderSuccessLoadImage(
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
+            VerticalSpacer(16.dp)
         }
     }
     AnimatedVisibility(
@@ -398,6 +401,7 @@ fun WebView(videoUrl: String, explanation: String) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        VerticalSpacer(16.dp)
         Box(
             modifier = Modifier
                 .height(450.dp)
@@ -428,7 +432,7 @@ fun WebView(videoUrl: String, explanation: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp)
+                .padding(10.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.Black)
                 .border(
@@ -450,6 +454,7 @@ fun WebView(videoUrl: String, explanation: String) {
             )
         }
     }
+    VerticalSpacer(10.dp)
 }
 
 class CustomWebChromeClient : WebChromeClient() {
