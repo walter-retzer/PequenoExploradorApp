@@ -1,6 +1,6 @@
 package com.example.pequenoexploradorapp.data
 
-data class MessageFirebaseResponse(
+data class FirebaseDataBaseResponse(
 //    val imageQuestion1: String = "",
 //    val imageQuestion2: String = "",
 //    val imageQuestion3: String = "",

@@ -2,7 +2,7 @@ package com.example.pequenoexploradorapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pequenoexploradorapp.data.MessageFirebaseResponse
+import com.example.pequenoexploradorapp.data.FirebaseDataBaseResponse
 import com.example.pequenoexploradorapp.domain.connectivity.ConnectivityObserver
 import com.example.pequenoexploradorapp.domain.repository.remote.FirebaseDataBaseRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +47,6 @@ class QuestionsViewModel(
 sealed interface QuestionsViewState {
     data object Init : QuestionsViewState
     data class Loading(val isLoading: Boolean) : QuestionsViewState
-    data class Success(val message: MessageFirebaseResponse) : QuestionsViewState
+    data class Success(val message: FirebaseDataBaseResponse) : QuestionsViewState
     data class Error(val message: String) : QuestionsViewState
 }
