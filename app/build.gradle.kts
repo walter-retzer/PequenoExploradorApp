@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.play.service.auth)
     implementation(libs.lottie.compose)
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.translate)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
