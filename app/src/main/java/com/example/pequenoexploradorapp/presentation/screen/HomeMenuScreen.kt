@@ -57,6 +57,7 @@ fun HomeMenuScreen(
     onNavigateToPlanets: () -> Unit,
     onNavigateToGallerySearch: () -> Unit,
     onNavigateToProfile: () -> Unit,
+    onNavigateToQuestions: () -> Unit,
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
@@ -82,7 +83,7 @@ fun HomeMenuScreen(
             DrawOptionsMenuButton(
                 titleButtonLeft = "Curiosidades",
                 iconButtonLeft = R.drawable.icon_question,
-                actionButtonLeft = { onNavigateToSearchImage() },
+                actionButtonLeft = { onNavigateToQuestions() },
                 titleButtonRight = "Perfil",
                 iconButtonRight = R.drawable.icon_astronaut,
                 actionButtonRight = { onNavigateToProfile() }
