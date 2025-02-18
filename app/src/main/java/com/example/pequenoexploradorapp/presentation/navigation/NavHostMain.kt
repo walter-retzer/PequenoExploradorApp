@@ -51,6 +51,7 @@ import com.example.pequenoexploradorapp.presentation.screen.PictureOfTheDayScree
 import com.example.pequenoexploradorapp.presentation.screen.PlanetsScreen
 import com.example.pequenoexploradorapp.presentation.screen.AvatarSelectionScreen
 import com.example.pequenoexploradorapp.presentation.screen.ProfileScreen
+import com.example.pequenoexploradorapp.presentation.screen.QuestionsScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionDetailScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverMissionScreen
 import com.example.pequenoexploradorapp.presentation.screen.RoverSearchImageScreen
@@ -270,6 +271,9 @@ private fun NavGraphBuilder.homeNavGraph(
                         },
                         onNavigateToProfile = {
                             navController.navigate(Route.ProfileScreenRoute.route)
+                        },
+                        onNavigateToQuestions = {
+                            navController.navigate(Route.QuestionsScreenRoute.route)
                         }
                     )
                 }
@@ -657,6 +661,20 @@ private fun NavGraphBuilder.homeNavGraph(
                         },
                         onNavigateToChooseAvatar = {
                             navController.navigate(Route.AvatarSelectionScreenRoute.route)
+                        }
+                    )
+                }
+
+                composable(
+                    route = Route.QuestionsScreenRoute.route,
+                    enterTransition = NavAnimations.slideLeftEnterAnimation,
+                    exitTransition = NavAnimations.slideLeftExitAnimation,
+                    popEnterTransition = NavAnimations.popEnterRightAnimation,
+                    popExitTransition = NavAnimations.popExitRightAnimation
+                ) {
+                    QuestionsScreen(
+                        onNavigateToHome = {
+                            navController.navigate(Route.HomeScreenRoute.route)
                         }
                     )
                 }
