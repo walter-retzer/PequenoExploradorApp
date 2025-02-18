@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -69,6 +70,7 @@ import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMess
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
@@ -96,7 +98,17 @@ fun LoadFavouriteImageScreen(
 
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    containerColor = backgroundColor,
+                    contentColor = Color.LightGray,
+                    actionColor = Color.White,
+                    dismissActionContentColor = Color.LightGray,
+                    snackbarData = data
+                )
+            }
+        },
         topBar = {
             MenuToolbar(
                 title = "Favoritos",

@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -58,6 +59,8 @@ import com.example.pequenoexploradorapp.presentation.components.SimpleToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.Pink40
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewState
 import org.koin.compose.koinInject
@@ -85,7 +88,17 @@ fun ProfileScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    containerColor = backgroundColor,
+                    contentColor = Color.LightGray,
+                    actionColor = Color.White,
+                    dismissActionContentColor = Color.LightGray,
+                    snackbarData = data
+                )
+            }
+        },
         topBar = {
             SimpleToolbar(
                 title = "Perfil",
