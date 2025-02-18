@@ -12,6 +12,7 @@ import com.example.pequenoexploradorapp.presentation.viewmodel.LoginUserViewMode
 import com.example.pequenoexploradorapp.presentation.viewmodel.NasaVideoDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.PictureOfTheDayViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewModel
+import com.example.pequenoexploradorapp.presentation.viewmodel.QuestionsViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.RoverMissionDetailViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.SearchNasaViewModel
@@ -94,6 +95,12 @@ val viewModelModules = module {
     }
     factory<ProfileViewModel> {
         ProfileViewModel(get())
+    }
+    factory<QuestionsViewModel> {
+        QuestionsViewModel(
+            get(),
+            provideConnectivityStatus(androidApplication())
+        )
     }
 }
 
