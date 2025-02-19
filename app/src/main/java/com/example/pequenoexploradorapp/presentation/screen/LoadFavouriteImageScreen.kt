@@ -69,9 +69,7 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
 import com.example.pequenoexploradorapp.presentation.theme.Pink80
-import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
 import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
-import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadFavouriteImageViewState
@@ -101,10 +99,7 @@ fun LoadFavouriteImageScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { data ->
                 Snackbar(
-                    containerColor = backgroundColor,
-                    contentColor = Color.LightGray,
-                    actionColor = Color.White,
-                    dismissActionContentColor = Color.LightGray,
+                    actionColor = mainColor,
                     snackbarData = data
                 )
             }
@@ -400,7 +395,7 @@ fun LoadFavouriteImageOnCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(cardColor),
+                .background(backgroundColor),
         ) {
             Text(
                 text = date,
@@ -409,7 +404,7 @@ fun LoadFavouriteImageOnCard(
                     .align(Alignment.Center)
                     .padding(4.dp),
                 textAlign = TextAlign.Center,
-                color = PurpleGrey80,
+                color = Color.LightGray,
                 style = MaterialTheme.typography.titleMedium
             )
         }

@@ -58,8 +58,7 @@ import com.example.pequenoexploradorapp.presentation.components.LoadingWithLine
 import com.example.pequenoexploradorapp.presentation.components.SimpleToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.components.snackBarWithActionButton
-import com.example.pequenoexploradorapp.presentation.theme.Pink40
-import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
+import com.example.pequenoexploradorapp.presentation.theme.Purple80
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewModel
 import com.example.pequenoexploradorapp.presentation.viewmodel.ProfileViewState
@@ -91,10 +90,7 @@ fun ProfileScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { data ->
                 Snackbar(
-                    containerColor = backgroundColor,
-                    contentColor = Color.LightGray,
-                    actionColor = Color.White,
-                    dismissActionContentColor = Color.LightGray,
+                    actionColor = mainColor,
                     snackbarData = data
                 )
             }
@@ -149,7 +145,7 @@ fun ProfileScreen(
                 Text(
                     text = name,
                     textAlign = TextAlign.Center,
-                    color = Pink40,
+                    color = Purple80,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -171,7 +167,7 @@ fun ProfileScreen(
                     text = email,
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             Row(
@@ -192,7 +188,7 @@ fun ProfileScreen(
                     text = phone.formattedAsPhone(),
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             Row(
@@ -213,7 +209,7 @@ fun ProfileScreen(
                     text = "ID: $uid",
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             LoadingWithLine(isLoading)
@@ -254,7 +250,7 @@ fun ProfileScreen(
                     text = "Excluir Conta",
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             Row(
@@ -294,7 +290,7 @@ fun ProfileScreen(
                     text = "Sair",
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             when (val state = uiState) {
