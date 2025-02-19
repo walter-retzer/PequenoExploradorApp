@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ import com.example.pequenoexploradorapp.data.DrawOptionsMenuButton
 import com.example.pequenoexploradorapp.presentation.components.AnimatedLottieFile
 import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.VerticalSpacer
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,7 +82,14 @@ fun RoverMissionScreen(
 
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    contentColor = mainColor,
+                    snackbarData = data
+                )
+            }
+        },
         topBar = {
             MenuToolbar(
                 title = "Rovers",
