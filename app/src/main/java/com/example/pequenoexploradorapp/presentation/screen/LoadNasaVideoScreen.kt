@@ -78,6 +78,7 @@ import com.example.pequenoexploradorapp.presentation.components.MenuToolbar
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
 import com.example.pequenoexploradorapp.presentation.theme.Pink80
 import com.example.pequenoexploradorapp.presentation.theme.PurpleGrey80
+import com.example.pequenoexploradorapp.presentation.theme.backgroundColor
 import com.example.pequenoexploradorapp.presentation.theme.cardColor
 import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.example.pequenoexploradorapp.presentation.viewmodel.LoadNasaVideoViewModel
@@ -482,7 +483,7 @@ fun LoadVideoOnCard(
         Box(
             Modifier
                 .fillMaxWidth()
-                .background(cardColor),
+                .background(backgroundColor),
         ) {
             Text(
                 text = date,
@@ -491,7 +492,7 @@ fun LoadVideoOnCard(
                     .align(Alignment.Center)
                     .padding(4.dp),
                 textAlign = TextAlign.Center,
-                color = PurpleGrey80,
+                color = Color.LightGray,
                 style = MaterialTheme.typography.titleMedium
             )
         }
