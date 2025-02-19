@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,6 +53,7 @@ import com.example.pequenoexploradorapp.domain.secure.UserPreferences
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp
 import com.example.pequenoexploradorapp.domain.util.ConstantsApp.Companion.TAG_FIREBASE_MESSAGING
 import com.example.pequenoexploradorapp.presentation.components.snackBarOnlyMessage
+import com.example.pequenoexploradorapp.presentation.theme.mainColor
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.delay
@@ -98,7 +100,14 @@ fun SplashScreen(
 
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) { data ->
+                Snackbar(
+                    contentColor = mainColor,
+                    snackbarData = data
+                )
+            }
+        },
         containerColor = Color.Transparent
     ) {
         if (!hasNotificationPermission) {

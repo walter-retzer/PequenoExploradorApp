@@ -77,7 +77,8 @@ fun QuestionsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
-    val toolbarBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val toolbarBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
 
     Scaffold(
@@ -207,6 +208,17 @@ fun QuestionsSuccessUI(
             ),
         contentAlignment = Alignment.Center
     ) {
+        if (isConnected == false && !snackBarIsActivated) {
+            LaunchedEffect(Unit) {
+                snackBarOnlyMessage(
+                    snackBarHostState = snackBarHostState,
+                    coroutineScope = scope,
+                    message = ConstantsApp.ERROR_WITHOUT_INTERNET,
+                    duration = SnackbarDuration.Long
+                )
+                snackBarIsActivated = true
+            }
+        }
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -215,18 +227,6 @@ fun QuestionsSuccessUI(
                 color = Pink80
             )
         } else {
-            if (isConnected == false && !snackBarIsActivated) {
-                LaunchedEffect(Unit) {
-                    snackBarOnlyMessage(
-                        snackBarHostState = snackBarHostState,
-                        coroutineScope = scope,
-                        message = ConstantsApp.ERROR_WITHOUT_INTERNET,
-                        duration = SnackbarDuration.Long
-                    )
-                    snackBarIsActivated = true
-                }
-            }
-
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp)
